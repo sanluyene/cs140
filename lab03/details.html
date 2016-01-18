@@ -1,0 +1,169 @@
+<title> CS140 -- Lab 3</title>
+
+<h1> CS140 -- Lab 3</h1>
+<UL> <LI> CS140 -- Data Structures
+<LI> Spring, 2014
+<LI> <a href=http://www.cs.utk.edu/~plank>James S. Plank</a>
+<LI> <a href=http://www.cs.utk.edu/~plank/plank/classes/cs140/Labs/Lab3>
+     <b>http://www.cs.utk.edu/~plank/plank/classes/cs140/Labs/Lab3</b></a>
+<LI> Lab Directory: <b>/home/plank/cs140/Labs/Lab3</b>
+</UL>
+<hr>
+
+Back to PGM files.  
+<p>
+To do this lab, you are 
+to copy the program 
+<b><a href=pgm_editor.cpp>pgm_editor.cpp</a></b>
+from <b>/home/plank/cs140/Labs/Lab3</b>.  You'll note that there is a comment that
+says "DO NOT CHANGE ANYTHING BELOW THIS LINE".   I feel that this comment is pretty 
+self-explanatory.  The gradescript will check to see if you have changed anything
+below the line, and if you do, it will flag it as an error.  What you do is write
+code where it says "Write your code here".  You compile this program and run it,
+and that is what you submit for grading.
+<p>
+Here is <b><a href=pgm_editor.cpp>pgm_editor.cpp</a></b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+#include &lt;cstdio&gt;
+#include &lt;cstdlib&gt;
+#include &lt;string&gt;
+#include &lt;sstream&gt;
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+typedef vector &lt;int&gt; IVec;
+
+// Write your code here:
+
+// DO NOT CHANGE ANYTHING BELOW THIS LINE
+
+void bad_pgm(string s)
+{
+  cerr &lt;&lt; "Bad PGM file: " &lt;&lt; s &lt;&lt; endl;
+  exit(1);
+
+}
+
+....
+</pre></td></table></center><p>
+
+Your job is to write seven procedures.  You can figure out their parameter
+types from how they are called within <b>pgm_editor.cpp</b>.  They all 
+revolve around PGM files, which are held in a vector of vectors of ints.
+Suppose that we have a PGM file <b>p</b>, declared as:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+vector &lt;IVec&gt; p;
+</pre></td></table></center><p>
+
+Then <b>p.size()</b> is the number of rows of the PGM file.  Each element <b>p[i]</b>
+will be a vector of the same size.  <b>p[i].size()</b> is the number of columns in the
+PGM file.  And <b>p[i][j]</b> contains the pixel value in row <i>i</i> column <i>j</i>.
+In the procedures that you write, you may assume that you get a valid PGM file as
+input.  You do not have to error check.
+
+<p>
+The seven procedures are:
+<OL>
+<LI> <b>pgm_write(p)</b>: This writes a PGM file <b>p</b> to standard output.  I want the
+output to be in a very specific format:
+<P>
+<UL>
+<LI> The first line is "P2"
+<LI> The second line is the number of columns followed by a space and the number of rows.
+There should be no special formatting to the second line.
+<LI> The third line is the word "255".
+<LI> The remaining lines have the pixels, 20 per line, each pixel printed with 
+<b>printf("%4d")</b> and no extra spaces.  Obviously, the last line may be incomplete.
+</UL>
+<p>
+<LI> <b>pgm_create(r, c, pv)</b>.  This creates and returns a PGM file which has <i>r</i>
+rows, <i>c</i> columns, and all pixels have the value <i>pv</i>.
+<p>
+<LI> <b>pgm_cw(p)</b>.  This rotates <b>p</b> 90 degrees clockwise.  Obviously, <b>p</b>
+must be a reference parameter.
+<p>
+<LI> <b>pgm_ccw(p)</b>.  This rotates <b>p</b> 90 degrees counterclockwise.  Obviously, <b>p</b>
+must be a reference parameter.
+<p>
+<LI> <b>pgm_pad(p, w, pv)</b>.  This adds <i>w</i> pixels around the border of <b>p</b>.  All the pixels
+will have the value <b>pv</b>.
+<p>
+<LI> <b>pgm_panel(p, r, c)</b>.  This changes <b>p</b> so that it has <b>r*c</b> copies of 
+the PGM file, laid out in a <i>r * c</i> grid.  See the examples.
+<p>
+<LI> <b>pgm_crop(p, r, c, rows, cols)</b>.  This changes <b>p</b> so that it has a subset of
+the original picture -- the rectangle starting at row <i>r</i> and column <i>c</i>, with 
+<i>rows</i> rows and <i>cols</i> cols.
+</OL>
+
+When <b>pgm_editor</b> is compiled and running correctly, you can use it either to create
+a PGM file, or to edit the PGM file on standard input and print the result on standard 
+output.  For example:
+
+<pre>
+UNIX> <font color=darkred><b>pgm_editor</b></font>
+usage: pgm_editor command....
+
+        CREATE rows cols pixvalue
+        CW
+        CCW
+        PAD pixels pixvalue
+        PANEL r c
+        CROP r c rows cols
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+<center>
+<hr>
+<pre>UNIX> <font color=darkred><b>pgm_editor CREATE 50 200 0 | convert - example_create.jpg</b></font></pre>
+<IMG src=example_create.jpg><hr>
+<pre>UNIX> <font color=darkred><b>pgm_editor CW < Red.pgm | convert - example_cw.jpg</b></font></pre>
+<IMG src=example_cw.jpg><hr>
+<pre>UNIX> <font color=darkred><b>pgm_editor CCW < Red.pgm | convert - example_ccw.jpg</b></font></pre>
+<IMG src=example_ccw.jpg><hr>
+<pre>UNIX> <font color=darkred><b>pgm_editor PAD 30 0 < Rodney.pgm | convert - example_pad_1.jpg</b></font></pre>
+<IMG src=example_pad_1.jpg><hr>
+<pre>UNIX> <font color=darkred><b>pgm_editor PAD 30 0 < Rodney.pgm | pgm_editor PAD 30 255 | pgm_editor PAD 1 0 | convert - example_pad_2.jpg</b></font></pre>
+<IMG src=example_pad_2.jpg><hr>
+<pre>UNIX> <font color=darkred><b>pgm_editor PANEL 2 4 < Red.pgm | convert - example_panel_1.jpg</b></font></pre>
+<IMG src=example_panel_1.jpg><hr>
+<pre>UNIX> <font color=darkred><b>pgm_editor PAD 6 0 < Rodney.pgm | pgm_editor PAD 3 255 | pgm_editor PANEL 3 5 | convert - example_panel_2.jpg</b></font></pre>
+<IMG src=example_panel_2.jpg><hr>
+<pre>UNIX> <font color=darkred><b>pgm_editor CROP 45 60 50 100 < Red.pgm | convert - example_crop.jpg</b></font></pre>
+<IMG src=example_crop.jpg><hr>
+<pre>UNIX> <font color=darkred><b>pgm_editor CROP 45 60 50 100 < Red.pgm | pgm_editor PAD 2 0 | pgm_editor PAD 1 255 | pgm_editor PANEL 4 9 | convert - example_crop_panel.jpg </b></font></pre>
+<IMG src=example_crop_panel.jpg><hr>
+</center>
+<hr>
+<h3>BVZ Notes</h3>
+<p>
+<ol>
+<li> Dr. Plank's main is not declared to return an int, which could cause
+  your program not to compile on a Mac. You can fix this problem by having
+  your main return an int when compiling and testing it on a Mac. However,
+  when you transfer the file to a hydra machine to test it, you will need
+  to change main back to not returning an int. If you do not, then Dr. Plank's
+  gradeall script will flag your program as incorrect, since you will have
+  changed something below the "Do Not Change Anything" line.
+<p>
+<li> In pgm_write, you need to ensure that your pgm file ends with exactly
+  one newline character. Hence if the number of pixels in your pgm file is
+  not a multiple of 20, then you will need to output a newline character
+  at the end of your pgm_write procedure. If the number of pixels in your
+  pgm file is a multiple of 20, then your pgm_write procedure will already
+  have written a newline character and you should not print a second one.
+</ol>
+<hr>
+<h3>Grading and Starting</h3>
+
+Once again, you cannot modify the part of the program
+that says "<b>DO NOT CHANGE ANYTHING BELOW THIS LINE.</b>".  If so, the gradescript will
+yell at you and won't get it correct.
+<p>
+To start this lab -- <i><b>and do this during lab</b></i>, write dummy versions of these
+procedures that don't work, but that compile.  That way you at least have the procedure
+declarations correct.  Then work on <b>pgm_create()</b> and <b>pgm_write()</b>.  
+Then the others.  Think about when you should be using reference parameters.
