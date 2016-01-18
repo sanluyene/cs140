@@ -1,0 +1,215 @@
+<title>CS140 Lab 8 - Dlists</title>
+<body bgcolor=ffffff>
+<h2>CS140 Lab 8 - Dlists</h2>
+<UL>
+<LI><a href=http://www.cs.utk.edu/~plank>Jim Plank</a> with minor modifications
+	by Brad Vander Zanden.
+</UL>
+<hr>
+
+<h3>Part 1: dlist.cpp</h3>
+
+This lab has two parts.  The first is straightforward.  Write <b>dlist.cpp</b> so that it
+properly implements all of the methods of the <b>Dlist</b> class, as 
+described in the 
+<a href=http://web.eecs.utk.edu/~plank/plank/classes/cs140/Notes/Linked/index.html>lecture
+notes on linked data structures</a>.
+<p>
+Your program should meet the following requirements:
+<p>
+<ol>
+<li> You are <i>not</i> allowed to have any STL data structures or header files in your
+implementation -- you may only include <b>&lt;iostream&gt;</b>
+<b>&lt;cstdlib&gt;</b> and <b>"dlist.h"</b>.  
+<p>
+<li> The implementation should be as described
+in the lecture notes: as a circular list with a sentinel node.
+<p>
+<li> Your destructor is not allowed to call <b>Erase()</b> or <b>Pop_Back()</b> or <b>Pop_Front()</b>.
+You should manually delete every node on the list.
+<p>
+<li> If your list is empty, then the <b>Begin()</b> and <b>Rbegin()</b> methods
+	should return a pointer to the sentinel node. Since the <b>End()</b> and
+	<b>Rend()</b> methods also return a pointer to the sentinel node, this
+	arrangement will ensure that if you attempt to iterate through an
+	empty list using a for loop, your for loop will immediately terminate
+	without ever executing the loop body.
+</ol>
+<p>
+The gradescript will test all of the <b>dlistrev-<i>x</i>.cpp</b> programs from the
+lecture notes, plus the program <b>list_editor</b> that I describe below.
+<p>
+
+<hr>
+<h3>Part 2: dl_hash.cpp</h3>
+
+Behold 
+<b><a href=dl_hash.h>dl_hash.h</a></b>, which gives the API for a hash table for strings:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+#include "dlist.h"
+#include &lt;vector&gt;
+using namespace std;
+
+class DL_Hash {
+  public:
+    DL_Hash(int size);
+    ~DL_Hash();
+    void Insert(string &s);
+    int Present(string &s);
+    void Erase(string &s);
+    void Strip_All_Substring(string &s);
+    void Print();
+  protected:
+    vector &lt;Dlist *&gt; table;
+};
+</pre></td></table></center><p>
+
+Your job is to implement this class in <b>dl_hash.cpp</b>.
+<p>
+The hash table is going to use separate chaining, using the <b>Dlist</b> type
+to implement the chains.  Please make note that each element of the hash table
+is a pointer to a list, so you'll have to call "<b>new Dlist</b>" for every 
+element of the table in your constructor.  You'll also have to call <b>delete</b>
+in the destructor.
+<p>
+<b>Insert()</b> inserts a string into the hash table.  Use <b>djb_hash()</b> as the
+hash function.  If the string is already there,
+it should do nothing.  <b>Present()</b> returns whether the string is present in the
+hash table, and <b>Erase()</b> erases the string if it is there.  If it's not there,
+<b>Erase()</b> should do nothing.
+<p>
+<b>Strip_All_Substring()</b> should delete every entry in the hash table that 
+has the given string as a substring.  You should not use the <b>Erase()</b> method
+of the <b>DL_Hash</b> class for this.  You should use the <b>Erase()</b> method of
+the <b>Dlist</b> class.
+<p>
+Finally, <b>Print()</b> prints out the hash table.  It does this in order of hash table
+entry, and for strings that have the same hash value, they are printed in 
+the order in which the elements were inserted into the hash table.  The format should
+be one string per line, where each line contains the hash index, padded to four characters
+and right justified, then a space and then the string.
+<p>
+To test this, I have written 
+<b><a href=dl_hash_test.cpp>dl_hash_test.cpp</a></b>
+which is a simple command-based program which supports <b>INSERT</b>,
+<b>INSERT</b>, <b>PRESENT</b>, <b>ERASE</b>, <b>STRIP</b>, <b>PRINT</b> and <b>QUIT</b>.
+Its command line arguments are the table size and a prompt. 
+Using it is straightforward:
+
+<pre>
+UNIX> <font color=darkred><b>dl_hash_test 50 'DL_Hash>'</b></font>
+DL_Hash> <font color=darkred><b>INSERT Thor</b></font>
+DL_Hash> <font color=darkred><b>INSERT Binky</b></font>
+DL_Hash> <font color=darkred><b>INSERT Brody Masonry</b></font>
+DL_Hash> <font color=darkred><b>PRESENT Thor</b></font>
+Yes
+DL_Hash> <font color=darkred><b>PRESENT Frenchy</b></font>
+No
+DL_Hash> <font color=darkred><b>PRINT</b></font>
+  42 Binky
+  42 Brody Masonry
+  46 Thor
+DL_Hash> <font color=darkred><b>ERASE Thor</b></font>
+DL_Hash> <font color=darkred><b>PRINT</b></font>
+  42 Binky
+  42 Brody Masonry
+DL_Hash> <font color=darkred><b>ERASE Thor</b></font>           -- This does nothing, since Thor is no longer in the table.
+DL_Hash> <font color=darkred><b>PRINT</b></font>
+  42 Binky
+  42 Brody Masonry
+DL_Hash> <font color=darkred><b>INSERT Binky</b></font>         -- This does nothing, since Binky is already in the table.
+DL_Hash> <font color=darkred><b>PRINT</b></font>
+  42 Binky
+  42 Brody Masonry
+DL_Hash> <font color=darkred><b>INSERT Pinky</b></font>
+DL_Hash> <font color=darkred><b>INSERT Dinky</b></font>
+DL_Hash> <font color=darkred><b>INSERT Winky</b></font>
+DL_Hash> <font color=darkred><b>PRINT</b></font>
+  33 Winky
+  34 Dinky
+  36 Pinky
+  42 Binky
+  42 Brody Masonry
+DL_Hash> <font color=darkred><b>STRIP ink</b></font>
+DL_Hash> <font color=darkred><b>PRINT</b></font>
+  42 Brody Masonry
+DL_Hash> <font color=darkred><b>QUIT</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+<hr>
+<h3>The list editor</h3>
+
+<a href=list_editor.cpp>List_editor.cpp</a>
+is yet another command-line program that lets me test your code.  
+There is always a current list that is being edited.  The list holds 
+strings that are single words, and the words in a list must be unique.
+<p>
+The following commands are supported:
+<p>
+<UL>
+<LI> <b>CLEAR</b>: This deletes the list and creates a new one with <b>new</b>.
+<LI> <b>PRINT_FORWARD</b>: This prints the list, all on one line in the forward direction.
+<LI> <b>PRINT_REVERSE</b>: This prints the list, all on one line in the reverse direction.
+<LI> <b>PUSH_BACK <i>s</i></b>: This calls <b>Push_Back</b> on the string <i>s</i>.
+<LI> <b>PUSH_FRONT <i>s</i></b>: This calls <b>Push_Front</b> on the string <i>s</i>.
+<LI> <b>POP_BACK <i>s</i></b>: This calls <b>Pop_Back</b> on the string <i>s</i>.
+<LI> <b>POP_FRONT <i>s</i></b>: This calls <b>Pop_Front</b> on the string <i>s</i>.
+<LI> <b>ERASE <i>s</i></b>: This calls <b>Erase</b> on the pointer to the node that holds string 
+<i>s</i>.  If <i>s</i> is not on the list, this does nothing.
+<LI> <b>INSERT_BEFORE <i>s1</i> <i>s2</i></b>: This calls <b>Insert_Before(s1, d)</b>, 
+where <b>d</b> is the pointer to the node that holds string <i>s2</i>.  If <i>s2</i> is not on the list, this does nothing.
+<LI> <b>INSERT_AFTER <i>s1</i> <i>s2</i></b>: This calls <b>Insert_After(s1, d)</b>, 
+where <b>d</b> is the pointer to the node that holds string <i>s2</i>.  If <i>s2</i> is not on the list, this does nothing.
+<LI> <b>EMPTY</b>: This returns whether the list is empty.
+<LI> <b>SIZE</b>: This returns the list's size.
+<LI> <b>QUIT</b>: Exit.
+</UL>
+
+So, for example:
+
+<pre>
+UNIX> <font color=darkred><b>list_editor 'Editor>'</b></font>
+Editor> <font color=darkred><b>PUSH_BACK a</b></font>
+Editor> <font color=darkred><b>PUSH_BACK b</b></font>
+Editor> <font color=darkred><b>PUSH_BACK c</b></font>
+Editor> <font color=darkred><b>PUSH_BACK d</b></font>
+Editor> <font color=darkred><b>PRINT_FORWARD</b></font>
+a b c d
+Editor> <font color=darkred><b>PUSH_FRONT z</b></font>
+Editor> <font color=darkred><b>PRINT_FORWARD</b></font>
+z a b c d
+Editor> <font color=darkred><b>PRINT_REVERSE</b></font>
+d c b a z
+Editor> <font color=darkred><b>POP_BACK</b></font>
+d
+Editor> <font color=darkred><b>POP_FRONT</b></font>
+z
+Editor> <font color=darkred><b>PRINT_FORWARD</b></font>
+a b c
+Editor> <font color=darkred><b>SIZE</b></font>
+3
+Editor> <font color=darkred><b>EMPTY </b></font>
+No
+Editor> <font color=darkred><b>INSERT_BEFORE xxx b</b></font>
+Editor> <font color=darkred><b>PRINT_FORWARD</b></font>
+a xxx b c
+Editor> <font color=darkred><b>INSERT_AFTER yyy b</b></font>
+Editor> <font color=darkred><b>PRINT_FORWARD</b></font>
+a xxx b yyy c
+Editor> <font color=darkred><b>ERASE b</b></font>
+Editor> <font color=darkred><b>PRINT_FORWARD</b></font>
+a xxx yyy c
+Editor> <font color=darkred><b>SIZE</b></font>
+4
+Editor> <font color=darkred><b>CLEAR</b></font>
+Editor> <font color=darkred><b>EMPTY</b></font>
+Yes
+Editor> <font color=darkred><b>PUSH_BACK a</b></font>
+Editor> <font color=darkred><b>PRINT_FORWARD</b></font>
+a
+Editor> <font color=darkred><b>QUIT</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
