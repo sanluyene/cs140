@@ -1,0 +1,127 @@
+<title> CS140 -- Lab A</title>
+
+<h1> CS140 -- Lab A</h1>
+<h3>
+<UL> <LI> CS140 -- Data Structures and Algorithms I
+<LI> <a href=http://www.cs.utk.edu/~plank>James S. Plank</a>
+<LI> This file:
+<a href=http://www.cs.utk.edu/~plank/plank/classes/cs140/Labs/LabA>
+     <b>http://www.cs.utk.edu/~plank/plank/classes/cs140/Labs/LabA</b></a>
+</UL>
+</h3>
+
+This lab builds on the Binary Search Tree data structure from the 
+<a href=http://web.eecs.utk.edu/~plank/plank/classes/cs140/Notes/Trees/index.html>lecture
+notes on trees.</a>  In particular, I have copied 
+<b>bstree.h</b>, <b>bstree.cpp</b> and <b>bstree_test.cpp</b> to
+<b><a href=laba.h>laba.h</a></b>, 
+<b><a href=laba.cpp>laba.cpp</a></b>, 
+<b><a href=laba_test.cpp>laba_test.cpp</a></b> respectively.
+I then added some public and protected methods to 
+<b><a href=laba.h>laba.h</a></b>.  Your job is to implement them in 
+<b>laba.cpp</b>:
+<UL>
+<LI> <b>void Postorder()</b> -- this does a postorder printing of the tree.  As with the 
+<b>Print()</b> method, each line should precede each name by <i>2l</i> spaces, where <i>l</i>
+is the depth of the node.  When you 
+implement it, you should use the protected method
+<b>recursive_postorder()</b>.  You should <i>not</i> call <b>Depth()</b> to determine the
+depth of a node.  The TA's will look for that, and they will take off for it.
+
+<p><LI> <b>void Preorder()</b> -- this does a preorder printing of the tree.  Its format is
+like <b>Postorder()</b>.  
+When you 
+implement it, you should use the protected method
+<b>recursive_preorder()</b>.  Again, you should <i>not</i> call <b>Depth()</b> to determine the
+depth of a node.  The TA's will look for that, and they will take off for it.
+
+<p><LI> <b>int Depth(string key)</b> -- this prints the depth of the node with the given key.
+You don't need recursion to implement this.
+If the key is not in the tree, return -1.
+
+<p><LI> <b>int Height()</b> -- this prints the depth of the node with the maximum depth
+in the tree.  You should call the recursive protected method
+<b>recursive_height()</b> to implement this.  You should not call <b>Depth()</b>.
+If the tree is empty, its height is -1.
+
+<p><LI> <b>int IsAVL()</b> -- this returns 1 if the tree is an AVL tree and 0 if it is not.
+You should call the recursive protected method
+<b>recursive_height_and_avl_check()</b> to implement this.  When I implemented 
+<b>recursive_height_and_avl_check(n)</b>, I had it return the height of the tree rooted
+at <b>n</b> if it is a legal AVL tree, and -2 if it is not a legal AVL tree.
+
+<p><LI> <b>int Rotate(string key)</b> -- this finds the node with the given key and
+performs a rotation about this node, as defined in the 
+<a href=http://web.eecs.utk.edu/~plank/plank/classes/cs140/Notes/AVL-Trees/index.html>AVL
+Tree Lecture Notes</a>.  It should return 1 if it is successful.  It should return 0 if
+either the key is not in the tree, or the key is the root of the tree, since you cannot
+rotate the root.
+</UL>
+
+Your job is to implement these methods in <b>laba.cpp</b>.  That is the file that you should
+submit.  <i>You are not allowed to modify <b>laba.h</b> or <b>laba_test.cpp</b>.</i>
+<hr>
+<h3>The testing program</h3>
+
+The program that we will use in the gradescript is <b>laba_test.cpp</b>.  It is simply an
+augmentation of <b>bstree_test</b> from the binary search tree lecture notes.  It has 
+additional commands for each of the methods that you are implementing.  So:
+
+<pre>
+UNIX> <font color=darkred><b>laba_test LABA':'</b></font>
+LABA: <font color=darkred><b>INSERT Adam Resistant 833-118-4192 470-10-0161</b></font>
+LABA: <font color=darkred><b>INSERT Dylan Politician 451-532-5606 940-23-2116</b></font>
+LABA: <font color=darkred><b>INSERT Kaitlyn Fortescue 323-215-8830 975-92-4704</b></font>
+LABA: <font color=darkred><b>PRINT</b></font>
+    Kaitlyn Fortescue
+  Dylan Politician
+Adam Resistant
+LABA: <font color=darkred><b>INSERT Brianna Quintillion 537-619-7786 208-57-2191</b></font>
+LABA: <font color=darkred><b>PRINT</b></font>
+    Kaitlyn Fortescue
+  Dylan Politician
+    Brianna Quintillion
+Adam Resistant
+LABA: <font color=darkred><b>POSTORDER</b></font>
+    Brianna Quintillion
+    Kaitlyn Fortescue
+  Dylan Politician
+Adam Resistant
+LABA: <font color=darkred><b>PREORDER</b></font>
+Adam Resistant
+  Dylan Politician
+    Brianna Quintillion
+    Kaitlyn Fortescue
+LABA: <font color=darkred><b>HEIGHT</b></font>
+2
+LABA: <font color=darkred><b>DEPTH Adam Resistant</b></font>
+0
+LABA: <font color=darkred><b>DEPTH Brianna Quintillion</b></font>
+2
+LABA: <font color=darkred><b>DEPTH Dylan Politician</b></font>
+1
+LABA: <font color=darkred><b>ISAVL</b></font>
+No
+LABA: <font color=darkred><b>ROTATE Dylan Politician</b></font>
+Rotated.
+LABA: <font color=darkred><b>PRINT</b></font>
+  Kaitlyn Fortescue
+Dylan Politician
+    Brianna Quintillion
+  Adam Resistant
+LABA: <font color=darkred><b>ISAVL</b></font>
+Yes
+LABA: <font color=darkred><b>QUIT</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+The grading script does the following:
+
+<UL>
+<LI> Cases 1 - 10 test <b>Insert()</b>, <b>Preorder()</b> and <b>Postorder</b>.
+<LI> Cases 11 - 20 test <b>Insert()</b> and <b>Depth()</b>.
+<LI> Cases 21 - 30 test <b>Insert()</b> and <b>Height()</b>.
+<LI> Cases 31 - 40 test <b>Insert()</b> and <b>IsAVL()</b>.
+<LI> Cases 40 - 50 test <b>Insert()</b>, <b>Rotate()</b> and <b>Print()</b>.
+<LI> Cases 51 - 100 test every method in the <b>BSTree</b> class.
+</UL>

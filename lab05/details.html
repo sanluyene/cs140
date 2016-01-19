@@ -1,0 +1,801 @@
+<title> CS140 -- Lab 5</title>
+
+<h1> CS140 -- Lab 5</h1>
+<h3>
+<UL> 
+<LI> CS140 -- Data Structures
+<LI> <a href=http://www.cs.utk.edu/~plank>James S. Plank</a>
+<LI> Spring, 2014
+<LI> Directory for files, makefile, executables and gradescript:
+<b>/home/plank/cs140/Labs/Lab5</b>
+<LI> This is a two week lab, but parts of it are due after week 1.
+<li> For week 1, cases 1-28 and 101-120 must work (you might find that 
+  a few other cases work, but that will be pure luck).
+</UL>
+
+<hr>
+<h2>You are not allowed...</h2>
+
+You are not allowed to modify <b>bitmatrix.h</b> or 
+<b>bitmatrix_editor.cpp</b>.
+
+<hr>
+<h2>Bit-matrices</h2>
+
+This lab is all about bit-matrices.  These are matrices whose values can only be
+zero or one, and arithmetic is modulo 2.  You would be surprised how powerful
+these are.  They are used in fault-tolerant storage applications, among other
+things, which is why I am fond of them.
+<p>
+Let's take some simple examples.  Here are four bit-matrices:
+
+<p><center><table border=3>
+<td valign=top align=center width=150> <b><a href=C003.txt>C003.txt</a></b><br><img src=C003.jpg> </td>
+<td valign=top align=center width=150> <b><a href=C244.txt>C244.txt</a></b><br><img src=C244.jpg> </td>
+<td valign=top align=center width=150> <b><a href=RV.txt>RV.txt</a></b><br><img src=RV.jpg> </td>
+<td valign=top align=center width=150> <b><a href=CV.txt>CV.txt</a></b><br><img src=CV.jpg> </td>
+</table></center><p>
+
+When you add bit-matrices, you simply add elements in corresponding rows and columns, modulo
+two.  So, for example:
+<p>
+<center>
+<table border=0>
+<td valign=center><IMG src=C003.jpg></td>
+<td valign=center>+</td> 
+<td valign=center><IMG src=C244.jpg> </td>
+<td valign=center>=</td>
+<td valign=center><IMG src=3-plus-244.jpg></td>
+</table>
+<p>
+and
+<p>
+<table border=0>
+<td valign=center><IMG src=RV.jpg></td>
+<td valign=center>+</td> 
+<td valign=center><IMG src=RV.jpg> </td>
+<td valign=center>=</td>
+<td valign=center><IMG src=ZV.jpg></td>
+</table>
+</center>
+<p>
+
+Bit-matrix multiplication is just like standard matrix multiplication,
+except that addition and multiplication of the individual elements is
+done modulo two.  For example, multiplying
+<b><a href=RV.txt>RV.txt</a></b> and
+<b><a href=CV.txt>CV.txt</a></b> will yield a 1 X 1 matrix whose value is:
+
+<p><center>
+(1*1) + (0*0) + (1*1) + (0*1) + (0*1) + (0*0) + (0*0) + (1*1)
+</center><p>
+
+This is 1+0+1+0+0+0+0+1 which equals 3%2 which equals 1.  Thus:
+
+<p>
+<center>
+<table border=0>
+<td valign=center><IMG src=RV.jpg></td>
+<td valign=center>*</td> 
+<td valign=center><IMG src=CV.jpg> </td>
+<td valign=center>=</td>
+<td valign=center><IMG src=O.jpg></td>
+</table>
+<p>
+Similarly:
+<p>
+<table border=0>
+<td valign=center><IMG src=CV.jpg> </td>
+<td valign=center>*</td> 
+<td valign=center><IMG src=RV.jpg></td>
+<td valign=center>=</td>
+<td valign=center><IMG src=Outer.jpg></td>
+</table>
+<p>
+<table border=0>
+<td valign=center><IMG src=C003.jpg></td>
+<td valign=center>*</td> 
+<td valign=center><IMG src=CV.jpg> </td>
+<td valign=center>=</td>
+<td valign=center><IMG src=C003-CV.jpg></td>
+</table>
+<p>
+and
+<p>
+<table border=0>
+<td valign=center><IMG src=C003.jpg></td>
+<td valign=center>*</td> 
+<td valign=center><IMG src=C244.jpg> </td>
+<td valign=center>=</td>
+<td valign=center><IMG src=I.jpg></td>
+</table>
+</center>
+<p>
+That last example is interesting -- when the product of two square matrices
+is equal to the identity matrix, then these two matrices are <i>inverses</i>
+of each other.  Some matrices, like the one below, have no inverses:
+
+<p><center><IMG src=Outer.jpg></td></center><p>
+<hr>
+<h3>Bitmatrix.h</h3>
+
+You have a big job.  Behold 
+<b><a href=bitmatrix.h>bitmatrix.h</a></b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+class Bitmatrix {
+  public:
+    Bitmatrix(string fn);            // Read from a file
+    Bitmatrix(int rows, int cols);   // Create an empty bitmatrix
+    void Print(int w);               // Print it on standard ouptput with spaces & blank lines 
+    void Write(string fn);           // Write it to a file either as hex or zeros & ones
+    void PGM(string fn, int pixels, int border);  // Write it to a pgm file 
+    int Rows();
+    int Cols();
+    void Set(int row, int col, char val); // Set the specified element to val
+    char Val(int row, int col);           // Return the specified element
+    void Swap_Rows(int r1, int r2);
+    void R1_Plus_Equals_R2(int r1, int r2);
+    Bitmatrix *Copy();
+  protected:
+    vector &lt;string&gt; M; // The matrix.  Elements are '0' or '1'.
+};
+
+Bitmatrix *Sum(Bitmatrix *a1, Bitmatrix *a2);
+Bitmatrix *Product(Bitmatrix *a1, Bitmatrix *a2);
+Bitmatrix *Sub_Matrix(Bitmatrix *a1, vector &lt;int&gt; &rows);
+Bitmatrix *Inverse(Bitmatrix *m);
+
+class HTE {
+  public:
+    string key;
+    Bitmatrix *bm;
+};
+
+typedef vector &lt;HTE *&gt; HTVec;
+
+class BM_Hash {
+  public:
+    BM_Hash(int size);
+    void Store(string &key, Bitmatrix *bm);
+    Bitmatrix *Recall(string &key);
+    HTVec All();
+  protected:
+    vector &lt;HTVec&gt; table;
+};
+</pre></td></table></center><p>
+
+The <b>Bitmatrix</b> class implements methods that allow you to create, read, write
+and manipulate bit-matrices.  Here are the methods:
+
+<UL>
+<LI> <b>Bitmatrix(int rows, int cols):</b> Create a bitmatrix of the specified size
+whose entries are all zeros.  If <b>rows</b> or <b>cols</b> is less than or equal to
+zero, print an error message, but still create a 1 X 1 bit-matrix whose entry is zero.
+<p>
+<LI> <b>Bitmatrix(string fn)</b>: Read a bit-matrix from a file.  The file should contain
+only zeros, ones, spaces and newlines, and each line should either be blank, or it
+should contain the same number of non-spaces as all other lines.  I've written this
+one for you, so you don't need to sweat about it too much.
+<p>
+<LI> <b>void Write(string fn)</b>: Write the bit-matrix to a file.  Here, just write
+out the zeros and ones with no spaces.  Each row of the bit-matrix gets one row of output.
+<p>
+<LI> <b>void Print(int w):</b> Print the matrix on standard output.  If <b>w</b> is less than
+or equal to zero, print each row on its own line with no spaces.  Otherwise, print a space
+after every <b>w</b> columns and a blank line after every <b>w</b> rows.  I've written
+this one for you.
+<p>
+<LI> <b>void PGM(string fn, int pixels, int border)</b>: Create a PGM file from the bit-matrix.
+This is how I made the pictures above.  The zero entries are white (255) and the
+one entries are gray (100).  Each entry is a <b>pixels</b> by <b>pixels</b> square.  If <b>border</b>
+is greater than zero, then there should be a black border of that many pixels separating each
+square and around the whole matrix.  The above matrices were created with <b>PGM(xxx, 10, 2)</b>.
+<p>
+<LI> <b>int Rows()</b>: Return the number of rows in the bit-matrix.
+<p>
+<LI> <b>int Cols()</b>: Return the number of columns in the bit-matrix.
+<p>
+<LI> <b>void Set(int row, int col, char val)</b>: Set the element in the specified row and
+column (zero-indexed, of course) to the given value. <b>Val</b> can be either 0 or '0' to
+specify zero, and either 1 or '1' to specify one. The character your program
+actually stores should be a '0' or a '1'. Hence if <b>val</b> is either the
+integer 0 or 1, as opposed to the integer 48 or 49, which represent '0' and
+'1', then
+you need to convert it to '0' or '1'. You can do so by adding '0' to <b>val</b>.
+If <b>row</b> or <b>col</b> are bad,
+simply do nothing -- your code should not be erroneous if given bad values.
+<p>
+<LI> <b>char Val(int row, int col)</b>: Return the specified value -- '0' should
+be returned as the integer 0 and '1' should be returned as the integer 1. Even
+though Val returns a char, you can have your return statement return the
+integer 0 or the integer 1 and it will work properly. 
+This also means that when you use Val to retrieve a value from
+a matrix, and you want to store its return value back into another matrix
+(e.g., the Copy method will need to do this),
+you will need to first convert the return value to the character 
+'0' or '1'. You can do this by
+adding '0' to the return value.
+<b>Val()</b> should return -1 if given bad input.
+<p>
+<LI> <b>void Swap_Rows(int r1, int r2)</b>: Swap the specified rows.  This should do nothing
+if given bad values. 
+<p>
+<LI> <b>void R1_Plus_Equals_R2(int r1, int r2)</b> Set row <b>r1</b> to be the sum of
+rows <b>r1</b> and <b>r2</b>.  Again, this should do nothing if given bad values.  It's
+ok for <b>r2</b> to equal <b>r1</b>.
+<p>
+<LI> <b>Bitmatrix *Copy()</b> Create a new bit-matrix that is a copy of the given bit-matrix
+and return a pointer to it.  To do this, you'll have to create a new empty bit-matrix of
+the proper size, and then use <b>Set()</b> to set its elements properly.
+</UL>
+
+The only piece of data in a <b>bitmatrix</b> is a vector of strings named <b>M</b>.  
+If <b>M</b> is storing a <i>r</i> by <i>c</i> matrix, then it will contain <i>r</I>
+strings, each of which has <i>c</i> characters.  The characters are either '0' for zero
+or '1' for one.
+<p>
+So, you have to implement 10 methods (there are 12, but I've implemented two of them
+for you), and only one of them (<b>PGM()</b>) is difficult.  Were I you, I'd wait until the 
+end to do <b>PGM()</b>.
+<p>
+You have to implement four procedures which operate on pointers.  Since these are not
+part of the data structure, you have to use <b>Rows()</b> <b>Cols()</b>, <b>Set()</b>,
+and <b>Val()</b> to implement them.  You should <i>not</i> modify the input matrices
+in any way.
+
+<p>
+<UL>
+<LI> <b>Bitmatrix *Sum(Bitmatrix *a1, Bitmatrix *a2)</b>: This creates a new bit-matrix which is the sum of <b>a1</b> and <b>a2</b>.  If <b>a1</b> and <b>a2</b> are
+not the same size, return NULL.
+<p>
+<LI> <b>Bitmatrix *Product(Bitmatrix *a1, Bitmatrix *a2)</b>: This creates a new bit-matrix which is the product of <b>a1</b> and <b>a2</b>.  This product will have <b>a1->Rows()</b>
+rows and <b>a2->Cols()</b> columns.  If <b>a1->Cols()</b> 
+and <b>a2->Rows()</b> do not match, then return NULL.
+<p>
+<LI> <b>Bitmatrix *Sub_Matrix(Bitmatrix *a1, vector &lt;int&gt; &amp;rows)</b>: This
+creates a new bit-matrix composed of the specified rows of the given bit-matrix.  
+It is ok to repeat entries in <b>rows</b>. However, if <b>rows</b> is empty or contains
+bad indices, return NULL.
+<p>
+<LI> <b>Bitmatrix *Inverse(Bitmatrix *a1)</b>: Create and return the inverse of <b>a1</b>.
+To do this, you should also use the <b>Swap_Rows()</b> and <b>R1_Plus_Equals_R2()</b> methods.
+I'll go into more detail on how to invert a bit-matrix below.   If <b>a1</b> is not square or
+not invertible, return <b>NULL</b>.
+</UL>
+
+The first three of these are very easy.  <b>Inverse()</b> will be tougher.
+<p>
+Finally, you are also going to implement a hash table to store bit-matrices with keys
+that are strings.  You should use the <b>djb_hash()</b> function from class as the
+hash function and you should use separate chaining as the collision resolution 
+mechanism.  Your hash table is a vector of vectors of pointers to <b>HTE</b>'s (hash
+table entries).  Each hash table entry stores a key and a pointer to a bit-matrix.
+<p>
+The <b>BM_Hash</b> class has four methods:
+<p>
+<UL>
+<LI> <b>BM_Hash(int size)</b>: The constructor specifies the size of the table.
+<p><LI> <b>void Store(string &key, Bitmatrix *bm)</b>: Store the given key and bit-matrix
+in the hash table.  If the key is already there, replace the bit-matrix with the
+given one.  
+<p><LI> <b>Bitmatrix *Recall(string &key);</b> return the bit-matrix corresponding to the 
+given <b>key</b>.  If the key is not in the hash table, then return NULL.
+<p><LI> <b>HTVec All()</b>: Return a vector of all hash table entries in the table.  The
+vector should be ordered just like the hash table.  In other words, suppose "A" hashes to 5,
+"B" hashes to 1 and "C" hashes to 1.  And suppose that "B" was added to the table before "C".
+Then <b>All()</b> should return the HTE's in the order "B", "C", "A".
+</UL>
+You should <i>not</i> call <b>new</b> or <b>delete</b> on bit-matrices when you implement any
+of the hash table methods.  You should call <b>new</b> when you create a new <b>HTE</b>.
+That is the only time that you will call <b>new</b> in the hash table methods.
+<p>
+<hr>
+<h3>Starter Code</h3>
+
+The file 
+<b><a href=bitmatrix_start.cpp>bitmatrix_start.cpp</a></b>
+provides dummy implementations for everything in the lab, with the exception of
+<b>Bitmatrix(string fn)</b> and <b>Print()</b>.  The nice thing about it is that
+it will compile with any program that uses <b>bitmatrix.h</b>.  However, it won't 
+run correctly.   It's a good starting place for you. <b>Make sure that you
+copy bitmatrix_start.cpp to bitmatrix.cpp before you submit your code!</b>.
+
+<hr>
+<h3>The testing program matrix_editor.cpp</h3>
+
+I've written 
+<b><a href=bitmatrix_editor.cpp>bitmatrix_editor.cpp</a></b> as a program that uses
+all of the features of <b>bitmatrix.h</b>.  You run it with an optional prompt
+as a command line argument.  If you don't specify a prompt, it will not print a 
+prompt.  This is nice because you can treat the editor as an interactive editor,
+or you can write scripts for it.
+<p>
+Copy <b>bitmatrix_editor.cpp</b>, <b>bitmatrix.h</b> and <b>makefile</b> to your
+directory.  Then 
+copy <b>bitmatrix_start.cpp</b> to <b>bitmatrix.cpp</b> and type <b>make</b>:
+
+<pre>
+UNIX> <font color=darkred><b>make</b></font>
+g++ -c bitmatrix_editor.cpp
+g++ -c bitmatrix.cpp
+g++ -o bitmatrix_editor bitmatrix_editor.o bitmatrix.o
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+Now you have a version of <b>bitmatrix_editor</b> that only works for what
+I have implemented.  However, let's explore those.  Go ahead and copy 
+the following matrix files too: 
+<b><a href=C003.txt>C003.txt</a></b>,
+<b><a href=C244.txt>C244.txt</a></b>,
+<b><a href=CM4_3.txt>CM4_3.txt</a></b>,
+<b><a href=CV.txt>CV.txt</a></b>,
+<b><a href=RV.txt>RV.txt</a></b>,
+<b><a href=t3.txt>t3.txt</a></b> and 
+<b><a href=t4.txt>t4.txt</a></b>.
+
+<b>Bitmatrix_editor</b> reads lines of text from standard input.  Blank lines
+and lines that begin with '#' are ignored.  Otherwise, the first word on a line
+is a command and the remaining words are arguments.  
+<p>
+At all times, there is one "current matrix."  You may also store and recall matrices
+with single-word keys.  Three simple commands are:
+<UL>
+<LI> <b>READ <i>filename</i></b>: This reads a bit-matrix from a given file using the <b>Read()</b>
+method.  If there is an error, it will return a single-element matrix whose element is zero.
+<p>
+<LI> <b>PRINT <i>[w]</i></b>: This calls the <b>Print()</b> method on the current matrix.
+If an argument is specified, it is the value of <b>w</b> that is passed to the <b>Print()</b>
+method.  Otherwise, 0 is passed.
+<LI> <b>QUIT</b>: Exits.  You can also simply close standard input with CNTL-D.
+</UL>
+
+Since I have implemented these for you in <b>bitmatrix_start.cpp</b>, they will work
+without any extra effort from you:
+
+<pre>
+UNIX> <font color=darkred><b>bitmatrix_editor "BM-Editor>"</b></font>
+BM-Editor> <font color=darkred><b>READ C003.txt</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+10000001
+11000000
+01100001
+00110001
+00011001
+00001100
+00000110
+00000011
+BM-Editor> <font color=darkred><b>PRINT 4</b></font>
+1000 0001
+1100 0000
+0110 0001
+0011 0001
+
+0001 1001
+0000 1100
+0000 0110
+0000 0011
+BM-Editor> <font color=darkred><b>READ RV.txt</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+10100001
+BM-Editor> <font color=darkred><b>PRINT 4</b></font>
+1010 0001
+BM-Editor> <font color=darkred><b>QUIT</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+<b>bitmatrix_editor</b> also implements the following commands, which of course will only 
+work when you implement the proper methods and procedures:
+
+<UL>
+<LI> <b>EMPTY <i>rows</i> <i>cols</i></b>: Creates a bit-matrix of the given size whose
+values are all zeros.  It sets the current matrix to this matrix.
+<p>
+<LI> <b>SET <i>row</i> <i>col</i> <i>value</i></b>: Sets the given element of the current
+matrix to the given value.
+<p>
+<LI> <b>VAL <i>row</i> <i>col</i></b>: Returns the value of the given element.
+<p>
+<LI> <b>SWAP <i>r1</i> <i>r2</i></b>: Swaps the given rows of the current matrix using <b>Swap_Rows()</b>.
+<p>
+<LI> <b>+= <i>r1</i> <i>r2</i></b>: Sets <b>r1</b> of the current matrix 
+equal to <b>r1+r2</b> using the
+<b>R1_Plus_Equals_R2()</b> method.
+<p>
+<LI> <b>WRITE <i>fn</i></b>: Calls the <b>Write()</b> method to write the current matrix
+to the specified file.
+<p>
+<LI> <b>PGM <i>fn</i> <i>pixels</i> <i>border</i></b>: Calls the <b>PGM()</b> method 
+to create a PGM picture of the current matrix.
+<p>
+<LI> <b>STORE <i>key</i></b>: Makes a copy of the current matrix and stores it into the
+hash table with the given key.  If the key is already in the hash table, it will delete
+the bit-matrix before putting the copy into the hash table.
+<p>
+<LI> <b>RECALL <i>key</i></b>: If the key is in the hash table, this will set the 
+current matrix to a copy of the bit-matrix stored in the hash table.
+<p>
+<LI> <b>ALL</b>: This calls <b>All()</b> and prints out each key, along with
+the dimensions of the bit-matrix stored there.
+<p>
+<LI> <b>SUM <i>key1</i> <i>key2</i></b>: This adds the two matrices stored with the
+given keys and puts the sum into the current matrix.  
+<p>
+<LI> <b>PRODUCT <i>key1</i> <i>key2</i></b>: This multiplies the two matrices stored with the
+given keys and puts the product into the current matrix.  
+<p>
+<LI> <b>SUBMATRIX <i>row1</i> <i>row2</i> <i>...</i></b>: This creates a submatrix of the
+current matrix with the specified rows, and replaces the current matrix with the submatrix.
+<p>
+<LI> <b>INVERT</b>: This inverts the current matrix and replaces it with the inverse.
+</UL>
+
+With these last four commands, <b>bitmatrix_editor</b> checks to make sure that you haven't
+modified the input matrices.
+<p>
+Some examples with the above matrices:
+
+<pre>
+UNIX> <font color=darkred><b>bitmatrix_editor 'BM-Editor>'</b></font>
+BM-Editor> <font color=darkred><b>READ C003.txt</b></font>
+BM-Editor> <font color=darkred><b>STORE C003</b></font>
+BM-Editor> <font color=darkred><b>READ C244.txt</b></font>
+BM-Editor> <font color=darkred><b>STORE C244</b></font>
+BM-Editor> <font color=darkred><b>READ CV.txt</b></font>
+BM-Editor> <font color=darkred><b>STORE CV</b></font>
+BM-Editor> <font color=darkred><b>READ RV.txt</b></font>
+BM-Editor> <font color=darkred><b>STORE RV</b></font>
+BM-Editor> <font color=darkred><b>READ t3.txt</b></font>
+BM-Editor> <font color=darkred><b>STORE t3</b></font>
+BM-Editor> <font color=darkred><b>READ t4.txt</b></font>
+BM-Editor> <font color=darkred><b>STORE t4</b></font>
+BM-Editor> <font color=darkred><b>RECALL RV</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+10100001
+BM-Editor> <font color=darkred><b>ALL</b></font>
+CV                               8 X   1
+RV                               1 X   8
+t3                              16 X   8
+t4                               8 X  16
+C003                             8 X   8
+C244                             8 X   8
+BM-Editor> <font color=darkred><b>SUM C003 C003</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+BM-Editor> <font color=darkred><b>SUM C003 C244</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+11111110
+11111111
+10000001
+00111110
+11100001
+11110000
+11111000
+11111100
+BM-Editor> <font color=darkred><b>PRODUCT RV CV</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+1
+BM-Editor> <font color=darkred><b>PRODUCT C003 C244</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+10000000
+01000000
+00100000
+00010000
+00001000
+00000100
+00000010
+00000001
+BM-Editor> <font color=darkred><b>PRODUCT C003 CV</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+0
+1
+0
+1
+1
+1
+0
+1
+BM-Editor> <font color=darkred><b>RECALL t3</b></font>
+BM-Editor> <font color=darkred><b>PRINT 8</b></font>
+10000001
+11000000
+01100001
+00110001
+00011001
+00001100
+00000110
+00000011
+
+01111111
+00111111
+11100000
+00001111
+11111000
+11111100
+11111110
+11111111
+BM-Editor> <font color=darkred><b>RECALL t4</b></font>
+BM-Editor> <font color=darkred><b>PRINT 8</b></font>
+10000001 01111111
+11000000 00111111
+01100001 11100000
+00110001 00001111
+00011001 11111000
+00001100 11111100
+00000110 11111110
+00000011 11111111
+BM-Editor> <font color=darkred><b>PRODUCT t3 t4</b></font>
+BM-Editor> <font color=darkred><b>PRINT 8</b></font>
+10000010 10000000
+01000001 01000000
+10100010 00100000
+01010011 00010000
+00101011 00001000
+00010101 00000100
+00001010 00000010
+00000101 00000001
+
+10000000 11010101
+01000000 11101010
+00100000 10100000
+00010000 00000101
+00001000 01010111
+00000100 10101011
+00000010 01010101
+00000001 10101010
+BM-Editor> <font color=darkred><b>PRODUCT t4 t3</b></font>
+BM-Editor> <font color=darkred><b>PRINT 8</b></font>
+01010111
+10101011
+00000010
+01010110
+01111100
+10111110
+01011111
+10101111
+BM-Editor> <font color=darkred><b>RECALL C003</b></font>
+BM-Editor> <font color=darkred><b>INVERT</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+01111111
+00111111
+11100000
+00001111
+11111000
+11111100
+11111110
+11111111
+BM-Editor> <font color=darkred><b>RECALL C244</b></font>
+BM-Editor> <font color=darkred><b>INVERT</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+10000001
+11000000
+01100001
+00110001
+00011001
+00001100
+00000110
+00000011
+BM-Editor> <font color=darkred><b>PRODUCT CV RV</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+10100001
+00000000
+10100001
+10100001
+10100001
+00000000
+00000000
+10100001
+BM-Editor> <font color=darkred><b>INVERT</b></font>
+Matrix not invertible.
+BM-Editor> <font color=darkred><b>QUIT</b></font>
+UNIX>
+</pre>
+
+<hr>
+<h3>Inverting a bit-matrix</h3>
+
+Inverting a bit-matrix is easier than doing a general matrix inversion.
+However, the steps are the same.  Suppose you want to invert the square
+matrix <i>M</i>.  What you do is make a copy of <i>M</i>, and create
+an identity matrix of the same size as <i>M</i>.  Call this matrix <i>Inv</i>.
+Then you perform <b>"SWAP"</b>
+and <b>"+="</b> operations on the copy of <i>M</i> to turn it into an identity matrix.
+You perform the exact same operations on <i>Inv</i>.  When you're done, the
+inverse of the original matrix is in <i>Inv</i>
+<p>
+Let's perform an example on the matrix in 
+<b><a href=Inv-Ex.txt>Inv-Ex.txt</a></b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+10110
+01011
+10011
+11001
+01100
+</pre></td></table></center><p>
+
+You first go through each row of <i>M</i> from the first to the last, doing the 
+following steps:
+<p>
+<UL>
+<LI> Suppose you are at row <i>i</i>.  If <i>M[i][i]</i> is not one, then find
+a row <i>j</i> where <i>j &gt; i</i> such that <i>M[j][i]</i> equals one, and
+swap rows <i>i</i> and <i>j</i>.  If you can't find such a row, the matrix is
+not invertible.
+<p>
+<LI> Now, look at every row <i>j</i> such that <i>j &gt; i</i>.  If <i>M[j][i]</i> equals
+one, then set row <i>j</i> equal to the sum of rows <i>i</i> and <i>j</i>.
+</UL>
+
+We'll do this for our example:
+
+<center><p>
+<table border=3>
+<tr>
+<td align=center><b>Action</b></td>
+<td align=center width=150><i>M</i></td>
+<td align=center width=150><i>Inv</i></td>
+</tr>
+<tr>
+<td align=center valign=center>Start</td>
+<td align=center valign=center><img src=Ex-0.jpg></td>
+<td align=center valign=center><img src=Inv-0.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=0</i><br>
+No swap necesary.<br>
+Set row 2 = row 2 + row 0.</td>
+<td align=center valign=center><img src=Ex-1.jpg></td>
+<td align=center valign=center><img src=Inv-1.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=0 still.</i><br>
+Set row 3 = row 3 + row 0.</td>
+<td align=center valign=center><img src=Ex-2.jpg></td>
+<td align=center valign=center><img src=Inv-2.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=1</i><br>
+No swap necesary.<br>
+Set row 3 = row 3 + row 1.</td>
+<td align=center valign=center><img src=Ex-3.jpg></td>
+<td align=center valign=center><img src=Inv-3.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=1 still.</i><br>
+Set row 4 = row 4 + row 1.</td>
+<td align=center valign=center><img src=Ex-4.jpg></td>
+<td align=center valign=center><img src=Inv-4.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=2</i><br>
+Swap row 2 and row 3</td>
+<td align=center valign=center><img src=Ex-5.jpg></td>
+<td align=center valign=center><img src=Inv-5.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=2 still.</i><br>
+Set row 4 = row 4 + row 2.</td>
+<td align=center valign=center><img src=Ex-6.jpg></td>
+<td align=center valign=center><img src=Inv-6.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=3</i><br>
+Swap row 3 and row 4</td>
+<td align=center valign=center><img src=Ex-7.jpg></td>
+<td align=center valign=center><img src=Inv-7.jpg></td>
+</tr>
+</table>
+</center>
+
+When you're done with this pass, <i>M</I> will be an upper-triangular matrix.
+Now, you start with the last row and go to the first row.  Suppose you are
+in row <i>i</i>:
+
+<UL>
+<LI> If there is any <i>j &gt i</i> where <i>M[i][j]</i> equals one, replace
+row <i>i</i> with the sum of row <i>i</i> and row <i>j</i>.
+</UL>
+
+When you are done with this step, <i>M</i> will be the identity matrix, and <i>Inv</i>
+will be the inverse of the original <i>M</i>:
+
+
+<center><p>
+<table border=3>
+<tr>
+<td align=center><b>Action</b></td>
+<td align=center width=150><i>M</i></td>
+<td align=center width=150><i>Inv</i></td>
+</tr>
+<tr>
+<td align=center valign=center>Start:<br>
+<i>i=4</i><br>
+No action necessary.</td>
+<td align=center valign=center><img src=Ex-7.jpg></td>
+<td align=center valign=center><img src=Inv-7.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=3</i><br>
+Set row 3 = row 3 + row 4.</td>
+<td align=center valign=center><img src=Ex-8.jpg></td>
+<td align=center valign=center><img src=Inv-8.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=2</i><br>
+No action necessary.</td>
+<td align=center valign=center><img src=Ex-8.jpg></td>
+<td align=center valign=center><img src=Inv-8.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=1</i><br>
+Set row 1 = row 1 + row 3.</td>
+<td align=center valign=center><img src=Ex-9.jpg></td>
+<td align=center valign=center><img src=Inv-9.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=1</i> still.<br>
+Set row 1 = row 1 + row 4.</td>
+<td align=center valign=center><img src=Ex-A.jpg></td>
+<td align=center valign=center><img src=Inv-A.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=0</i><br>
+Set row 0 = row 0 + row 2.</td>
+<td align=center valign=center><img src=Ex-B.jpg></td>
+<td align=center valign=center><img src=Inv-B.jpg></td>
+</tr>
+<tr>
+<td align=center valign=center><i>i=0</i> still.<br>
+Set row 0 = row 0 + row 3.</td>
+<td align=center valign=center><img src=Ex-C.jpg></td>
+<td align=center valign=center><img src=Inv-C.jpg></td>
+</tr>
+</table>
+</center>
+<p>
+
+Finally, let's double-check ourselves:
+
+<pre>
+BM-Editor> <font color=darkred><b>READ Inv-Ex.txt</b></font>
+BM-Editor> <font color=darkred><b>STORE Inv-Ex</b></font>
+BM-Editor> <font color=darkred><b>INVERT</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+01101
+11011
+11010
+00111
+10100
+BM-Editor> <font color=darkred><b>STORE Inv</b></font>
+BM-Editor> <font color=darkred><b>PRODUCT Inv Inv-Ex</b></font>
+BM-Editor> <font color=darkred><b>PRINT</b></font>
+10000
+01000
+00100
+00010
+00001
+BM-Editor> <font color=darkred><b></b></font>
+</pre>
+
+
+<hr>
+<h3>Gradescript Rubric</h3>
+
+First, this lab will count double.
+<p>
+The gradescript will have up to 200 test cases.  30 percent of them will test matrix inversion
+and 20 percent of them will test the PGM file.  Your PGM doesn't have to match mine in format;
+however, its size and pixels must match mine exactly.
