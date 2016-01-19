@@ -12,6 +12,10 @@ int main() {
 	int ounces = 0;
 
 	while (cin >> input) {
+		// The only rocks that have gold underneath them are
+		// designated with the characters 'A', 'C', and 'Z'.
+		// All other characters can be ignored, for they are
+		// either dirt or plain rocks.
 		switch(input) {
 			case 'A':
 				ounces += 1;
@@ -26,6 +30,7 @@ int main() {
 				break;
 		}
 	}
+	// We will display to the digger how much gold they found.
 	cout << ounces << "\n";
 
 	return 0;
