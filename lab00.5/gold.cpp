@@ -11,25 +11,16 @@ int main() {
 	char input;
 	int ounces = 0;
 
-	while (cin >> input) {
+	cin >> input;
+	while (!cin.eof()) {
 		// The only rocks that have gold underneath them are
-		// designated with the characters 'A', 'C', and 'Z'.
-		// All other characters can be ignored, for they are
-		// either dirt or plain rocks.
-		switch(input) {
-			case 'A':
-				ounces += 1;
-				break;
-			case 'C':
-				ounces += 3;
-				break;
-			case 'Z':
-				ounces += 26;
-				break;
-			default:
-				break;
-		}
+		// designated with the capital alphabetical characters.
+		if (input < 65 || input > 91) ounces = ounces; 
+		else ounces += (input - 64);
+		cin.clear();
+		cin >> input;
 	}
+
 	// We will display to the digger how much gold they found.
 	cout << ounces << "\n";
 
