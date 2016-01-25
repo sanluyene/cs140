@@ -1,9 +1,10 @@
 // CS140 Spring 2016
 // Lab 01: Alphabetical checkerboard generator
 // Author: Ashley Sattler
-// Date: 01/19/2016
+// Date: 01/25/2016
 
 #include <iostream>
+#include <cstdio>
 
 using namespace std;
 
@@ -13,20 +14,20 @@ int main() {
 	char startingCharacter, printChar;
 
 	// User needs to input 2 ints, a single char, and 2 ints
-	if (!(cin >> rows >> columns >> startingCharacter >> cycleSize >> width)) {
-		cout << "Invalid arguments given. ";
-		cout << "Please enter 2 ints, a character, and 2 ints.\n";
+	if (!(cin >> rows >> columns >> startingCharacter >> cycleSize >> width) || cin.fail()) {
+		//printf("Invalid arguments given. ");
+		//printf("Please enter 2 ints, a character, and 2 ints.\n");
 		return 1;
 	}
 
 	// We will process the input and check for errors before progressing.
 	if (rows <= 0 || columns <= 0 || cycleSize <= 0 || width <= 0) {
-		cout << "Cannot use zero or negative numbers.\n";
+		//printf("Cannot use zero or negative numbers.\n");
 		return 2;
 	}
 	if (startingCharacter + cycleSize > 127) {
-		cout << "Invalid input. ";
-		cout << "Please enter a different character or a smaller cycle size.\n";
+		//printf("Invalid input. ");
+		//printf("Please enter a different character or a smaller cycle size.\n");
 		return 3;
 	}
 
@@ -35,10 +36,10 @@ int main() {
 			for (int c = 0; c < columns; c++) {
 				for (int wc = 0; wc < width; wc++) {
 					printChar = startingCharacter + (r + c) % cycleSize;
-					cout << printChar;
+					printf("%c",printChar);
 				}
 			}
-			cout << "\n";
+			printf("\n");
 		}
 	}
 
