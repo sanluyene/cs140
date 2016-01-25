@@ -37,8 +37,7 @@ int main() {
 			score += avgScore;
 
 			// Reset temporary variables when done
-			avgScore = 0;
-			numAvg = 0;
+			avgScore = tempNumber = numAvg = 0;
 		}
 		// The student's name proceeds immediately after the word "NAME"
 		if (input[j] == "NAME") name = input[j+1];
