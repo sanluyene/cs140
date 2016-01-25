@@ -13,9 +13,9 @@ using namespace std;
 
 int main() {
 	vector <string> input;
-	string name, tempInput = "";
-	int j = 0, numAvg = 1;
-	double score, avgScore = 0;
+	string name = "", tempInput = "";
+	int j = 0, numAvg = 0;
+	double score = 0, tempNumber = 0, avgScore = 0;
 
 	cin >> tempInput;
 
@@ -29,21 +29,22 @@ int main() {
 		if (input[j] == "NAME") name = input[j+1];
 		// There are possibly scores that need to be averaged after the word "AVERAGE"
 		if (input[j] == "AVERAGE") {
-			while (atof(input[j+numAvg].c_str())) {
-				avgScore += atof(input[j+numAvg].c_str());
+			j++;
+			while (tempNumber = atof(input[j].c_str())) {
+				avgScore += tempNumber;
+				j++;
 				numAvg++;
 			}
 			
 			avgScore /= numAvg;
 			score += avgScore;
-			numAvg = 1;
+			numAvg = 0;
 		}
 		// Score totals appear as plain numbers
 		if (atof(input[j].c_str()))	score += atof(input[j].c_str());
-
 	}
 
-	printf("%s %.0f \n", name.c_str(), score);
+	printf("%s %g\n", name.c_str(), score);
 
 	return 0;
 }

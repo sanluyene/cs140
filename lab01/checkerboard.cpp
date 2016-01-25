@@ -10,7 +10,7 @@ using namespace std;
 
 int main() {
 	// We have variables for input from the user.
-	int rows, columns, cycleSize, width = 0;
+	int rows = 0, columns = 0, cycleSize = 0, width = 0;
 	char startingCharacter, printChar;
 
 	// User needs to input 2 ints, a single char, and 2 ints
