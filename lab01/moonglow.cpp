@@ -13,15 +13,15 @@ using namespace std;
 
 int main() {
 	vector <string> input;
-	string name = "";
-	int i, j = 0;
-	int numAvg = 1;
-	double temp, score, avgScore = 0;
+	string name, tempInput = "";
+	int j = 0, numAvg = 1;
+	double score, avgScore = 0;
 
-	cin >> input[0];
+	cin >> tempInput;
+
 	while (!cin.eof()) {
-		i++;
-		cin >> input[i];
+		input.push_back(tempInput);
+		cin >> tempInput;
 	}
 
 	for (j; j < input.size(); j++) {
@@ -39,12 +39,11 @@ int main() {
 			numAvg = 1;
 		}
 		// Score totals appear as plain numbers
-		if (temp == atof(input[j].c_str())) score += temp;
+		if (atof(input[j].c_str()))	score += atof(input[j].c_str());
 
-		temp = 0;
 	}
 
-	printf("%s %f", name.c_str(), score);
+	printf("%s %.0f \n", name.c_str(), score);
 
 	return 0;
 }
