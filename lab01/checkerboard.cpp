@@ -14,7 +14,7 @@ int main() {
 	char startingCharacter, printChar;
 
 	// User needs to input 2 ints, a single char, and 2 ints
-	if (!(cin >> rows >> columns >> startingCharacter >> cycleSize >> width) || cin.fail()) {
+	if (!(cin >> rows >> columns >> startingCharacter >> cycleSize >> width)) {
 		//printf("Invalid arguments given. ");
 		//printf("Please enter 2 ints, a character, and 2 ints.\n");
 		return 1;
