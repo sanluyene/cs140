@@ -15,19 +15,15 @@ int main() {
 
 	// User needs to input 2 ints, a single char, and 2 ints
 	if (!(cin >> rows >> columns >> startingCharacter >> cycleSize >> width)) {
-		//printf("Invalid arguments given. ");
-		//printf("Please enter 2 ints, a character, and 2 ints.\n");
+		printf("usage: checkerboard  - stdin should contain R, C, SC, CS and W\n");
 		return 1;
 	}
 
 	// We will process the input and check for errors before progressing.
 	if (rows <= 0 || columns <= 0 || cycleSize <= 0 || width <= 0) {
-		//printf("Cannot use zero or negative numbers.\n");
 		return 2;
 	}
 	if (startingCharacter + cycleSize > 127) {
-		//printf("Invalid input. ");
-		//printf("Please enter a different character or a smaller cycle size.\n");
 		return 3;
 	}
 

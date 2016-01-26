@@ -16,33 +16,45 @@ int main() {
 	string name = "", tempInput = "";
 	int i = 0, j = 0, numAvg = 0;
 	double score = 0, tempNumber = 0, avgScore = 0;	
+	bool avgFlag = false;
 
-	cin >> tempInput;
-
+	cin >> tempNumber;
 	while (!cin.eof()) {
-		input.push_back(tempInput);
-		cin >> tempInput;
-	}
+		if (cin.fail()) {
+			cin.clear();			
+			cin >> tempInput;
 
-	for (j; j < input.size(); j++) {
-		// There are possibly scores that need to be averaged after the word "AVERAGE"
-		if (input[j] == "AVERAGE") {
-			while (tempNumber = atof(input[j+1].c_str())) {
+			// There are possibly scores that need to be averaged after the word "AVERAGE".
+			// We add the last calculated average to the score, if there is one.
+			if (numAvg > 0) {
+				avgScore /= numAvg;
+				score += avgScore;
+			}
+			// We will need to reset this flag, along with the average-related variables
+			// if cin fails, because it did not read in a number.
+			avgFlag = false;
+			avgScore = 0, numAvg = 0;
+			// We will turn on the avgFlag so that cin knows that numbers that are read in
+			// need to be a part of an average calculation.
+			if (tempInput == "AVERAGE") avgFlag = true;
+
+			// The student's name proceeds immediately after the word "NAME".
+			if (tempInput == "NAME") {
+				cin.clear();
+				cin >> name;
+			}
+		}
+		else {
+			// All other input are score numbers. If the avgFlag is true, then they are part of
+			// the average calculation.
+			if (avgFlag == true) {
 				avgScore += tempNumber;
-				j++;
 				numAvg++;
 			}
-			
-			avgScore /= numAvg;
-			score += avgScore;
-
-			// Reset temporary variables when done
-			avgScore = tempNumber = numAvg = 0;
+			else score += tempNumber;
 		}
-		// The student's name proceeds immediately after the word "NAME"
-		if (input[j] == "NAME") name = input[j+1];
-		// Score totals appear as plain numbers
-		if (atof(input[j].c_str())) score += atof(input[j].c_str());
+
+		cin >> tempNumber;
 	}
 
 	printf("%s %g\n", name.c_str(), score);
