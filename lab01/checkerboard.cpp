@@ -5,6 +5,9 @@
 
 #include <iostream>
 #include <cstdio>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 
 using namespace std;
 
@@ -15,7 +18,7 @@ int main() {
 
 	// User needs to input 2 ints, a single char, and 2 ints
 	if (!(cin >> rows >> columns >> startingCharacter >> cycleSize >> width)) {
-		printf("usage: checkerboard  - stdin should contain R, C, SC, CS and W\n");
+		fprintf(stderr, "usage: checkerboard  - stdin should contain R, C, SC, CS and W\n");
 		return 1;
 	}
 
