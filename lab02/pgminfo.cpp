@@ -21,14 +21,14 @@ struct Pixel {
 	Pixel(int r, int g, int b);
 };
 
-class PPMFile {
+class PGMFile {
 	vector<Pixel> pixv;
 	int width, height, color, numPixels;
 	string p2 = "";
 
 	public: 
-		// This is a 0-argument constructor class for PPMFile
-		PPMFile();
+		// This is a 0-argument constructor class for PGMFile
+		PGMFile();
 		
 		// This function reads a file.
 		// It takes a const string by reference as a fileName. It returns a bool
@@ -37,7 +37,7 @@ class PPMFile {
 };
 
 int main(int argc, char **argv) {
-	PPMFile ppm;
+	PGMFile ppm;
 	bool goodFile;
 	double avgPixel = 0;
 	
@@ -67,10 +67,10 @@ Pixel::Pixel(){}
 Pixel::Pixel(int r, int g, int b)
 	: red(r), green(g), blue(b) {}
 
-PPMFile::PPMFile()
+PGMFile::PGMFile()
 	: width(0), height(0), color(0), numPixels(0) {}
 
-bool PPMFile::readFile(const string& fileName) {
+bool PGMFile::readFile(const string& fileName) {
 	ifstream fin;
 	string line;
 	int currentPixel = 1;

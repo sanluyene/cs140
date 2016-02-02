@@ -22,14 +22,14 @@ struct Pixel {
 	Pixel(int r, int g, int b);
 };
 
-class PPMFile {
+class PGMFile {
 	vector<Pixel> pixv;
 	int width, height, color, numPixels;
 	string p2 = "";
 
 	public: 
-		// This is a 0-argument constructor class for PPMFile
-		PPMFile();
+		// This is a 0-argument constructor class for PGMFile
+		PGMFile();
 		
 		// This function gets a pixel's properties.
 		// It takes two ints for width and height coordinates, and a 
@@ -59,7 +59,7 @@ class PPMFile {
 };
 
 int main(int argc, char **argv) {
-	PPMFile ppm;
+	PGMFile ppm;
 	bool goodFile;
 	double avgPixel = 0;
 	
@@ -80,10 +80,10 @@ Pixel::Pixel(){}
 Pixel::Pixel(int r, int g, int b)
 	: red(r), green(g), blue(b) {}
 
-PPMFile::PPMFile()
+PGMFile::PGMFile()
 	: width(0), height(0), color(0), numPixels(0) {}
 
-bool PPMFile::getPixel(int x, int y, Pixel& p) {	
+bool PGMFile::getPixel(int x, int y, Pixel& p) {	
 	if (x > width || y > height) return false;
 	else {
 		// pixel(x,y) = (row# * width) + col#
@@ -93,7 +93,7 @@ bool PPMFile::getPixel(int x, int y, Pixel& p) {
 	}
 }
 
-bool PPMFile::setPixel(int x, int y, const Pixel& p) {
+bool PGMFile::setPixel(int x, int y, const Pixel& p) {
 	if (x > width || y > height) return false;
 	else {
 		int index = (y * width) + x;
@@ -102,7 +102,7 @@ bool PPMFile::setPixel(int x, int y, const Pixel& p) {
 	}
 }
 
-bool PPMFile::writeFile(const string& fileName) {
+bool PGMFile::writeFile(const string& fileName) {
 	ofstream fout;
 	
 	fout.open(fileName);
@@ -122,7 +122,7 @@ bool PPMFile::writeFile(const string& fileName) {
 	}
 }
 
-bool PPMFile::readFile(const string& fileName) {
+bool PGMFile::readFile(const string& fileName) {
 	ifstream fin;
 	string line;
 	int currentPixel = 1;
@@ -187,7 +187,7 @@ bool PPMFile::readFile(const string& fileName) {
 	}
 }
 
-void PPMFile::flipImage() {
+void PGMFile::flipImage() {
 	int x, y;
 	Pixel p1, p2;
 
