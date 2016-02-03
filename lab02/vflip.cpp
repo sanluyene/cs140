@@ -94,8 +94,7 @@ void PGMFile::vflipImage() {
 	// Then print the pixels beginning from the last row
 	for (y = row; y > 0; y--) {
 		for(x = 0; x < column; x++) {
-			// Current pixel index = ((row# * column) + column#)
-			int index = ((y * column) + x);
+			int index = (((y - 1) * column) + x);
 			pixelTmp = pixels[index];
 			printf("%d ", pixelTmp);
 		}

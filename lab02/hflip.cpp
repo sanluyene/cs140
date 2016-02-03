@@ -94,8 +94,7 @@ void PGMFile::flipImage() {
 	// Then print each pixel, starting from the farthest column
 	for (y = 0; y < row; y++) {
 		for(x = column; x > 0; x--) {
-			// Current pixel index = ((row# * column) + column#)
-			int index = ((y * column) + x);
+			int index = ((y * column) + x - 1);
 			pixelTmp = pixels[index];
 			printf("%d ", pixelTmp);
 		}
