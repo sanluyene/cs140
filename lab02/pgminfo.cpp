@@ -33,33 +33,32 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Bad PGM file -- first word is not P2\n");
 		return -1;
 	}
-	//printf("P2? %s\n",pgm.p2.c_str());
 
+	// Next should be a number of columns
 	cin >> pgm.column;
 	if (pgm.column < 0) {
 		fprintf(stderr, "Bad PGM file -- No column specification\n");
 		return -1;
 	}
-	//printf("column? %d\n",pgm.column);
 
+	// Next should be a number of rows
 	cin >> pgm.row;
 	if (pgm.row < 0) {
 		fprintf(stderr, "Bad PGM file -- No row specification\n");
 		return -1;
 	}
-	//printf("row? %d\n",pgm.row);
 
+	// Next should be 255
 	cin >> pgm.color;
 	if (pgm.color != 255) {
 		fprintf(stderr, "Bad PGM file -- 255 missing\n");
 		return -1;
 	}
-	//printf("color? %d\n",pgm.color);
 
 	pgm.numPixels = pgm.row * pgm.column;
 
+	// Then should be all of the pixels
 	for (currentPixel = 0; currentPixel < pgm.numPixels; currentPixel++) {
-		// Copy all the pixels
 		cin >> tempNumber;
 		if (tempNumber < 0 || tempNumber > 255) {
 			fprintf(stderr, "Bad PGM file -- pixel %d is not a number between 0 and 255\n", currentPixel);
@@ -68,6 +67,7 @@ int main(int argc, char **argv) {
 		pgm.pixels.push_back(tempNumber);
 	}
 
+	// Anything beyond is not acceptable data
 	if (cin >> input) {
 		fprintf(stderr, "Bad PGM file -- Extra stuff after the pixels\n");
 		return -1;
