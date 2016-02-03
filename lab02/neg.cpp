@@ -89,17 +89,16 @@ int main(int argc, char **argv) {
 PGMFile::PGMFile()
 	: column(0), row(0), color(0), numPixels(0) {}
 
-	void PGMFile::negateImage() {
-		int index, pixelTmp = 0;
+void PGMFile::negateImage() {
+	int index, pixelTmp = 0;
 
-		// Print the beginning of the file
-		printf("%s\n%d %d\n%d\n", p2.c_str(), column, row, color);
+	// Print the beginning of the file
+	printf("%s\n%d %d\n%d\n", p2.c_str(), column, row, color);
 
-		// Then print each pixel's inverse
-		for (index = 0; index < pixels.size(); index++) {
-			pixelTmp = (255 - pixels[index]);
-			printf("%d ", pixelTmp);
-		}
-		printf("\n");
+	// Then print each pixel's inverse
+	for (index = 0; index < pixels.size(); index++) {
+		pixelTmp = (255 - pixels[index]);
+		printf("%d ", pixelTmp);
 	}
-
+	printf("\n");
+}
