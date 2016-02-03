@@ -92,12 +92,13 @@ void PGMFile::vflipImage() {
 	printf("%s\n%d %d\n%d\n",p2.c_str(), column, row, color);
 
 	// Then print the pixels beginning from the last row
-	for(x = 0; x < column; x++) {
-		for (y = row; y > 0; y--) {
+	for (y = row; y > 0; y--) {
+		for(x = 0; x < column; x++) {
 			// Current pixel index = ((row# * column) + column#)
 			int index = ((y * column) + x);
 			pixelTmp = pixels[index];
 			printf("%d\n", pixelTmp);
 		}
+		printf("\n");
 	}
 }

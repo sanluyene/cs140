@@ -92,12 +92,13 @@ void PGMFile::flipImage() {
 	printf("%s\n%d %d\n%d\n", p2.c_str(), column, row, color);
 
 	// Then print each pixel, starting from the farthest column
-	for(x = column; x > 0; x--) {
-		for (y = 0; y < row; y++) {
+	for (y = 0; y < row; y++) {
+		for(x = column; x > 0; x--) {
 			// Current pixel index = ((row# * column) + column#)
 			int index = ((y * column) + x);
 			pixelTmp = pixels[index];
 			printf("%d\n", pixelTmp);
 		}
+		printf("\n");
 	}
 }

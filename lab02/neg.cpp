@@ -96,12 +96,13 @@ void PGMFile::negateImage() {
 	printf("%s\n%d %d\n%d\n", p2.c_str(), column, row, color);
 
 	// Then print each pixel's invese
-	for(x = 0; x < column; x++) {
-		for (y = 0; y < row; y++) {
+	for (y = 0; y < row; y++) {
+		for(x = 0; x < column; x++) {
 			// Current pixel index = ((row# * column) + column#)
 			int index = ((y * column) + x);
 			pixelTmp = (255 - pixels[index]);
-			printf("%d\n", pixelTmp);
+			printf("%d ", pixelTmp);
 		}
+		printf("\n");
 	}
 }
