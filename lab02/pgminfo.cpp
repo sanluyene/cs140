@@ -24,7 +24,8 @@ class PGMFile {
 int main(int argc, char **argv) {
 	PGMFile pgm;
 	double avgPixel = 0;
-	int i = 1, currentPixel = -1, tempNumber = 0;
+	int i = 0, currentPixel = 0, tempNumber = 0;
+	string input;
 
 	cin >> pgm.p2;
 	// First string should be P2
@@ -55,20 +56,20 @@ int main(int argc, char **argv) {
 	}
 	//printf("color? %d\n",pgm.color);
 
-	while(!cin.eof()) {
+	pgm.numPixels = pgm.row * pgm.column;
+
+	for (currentPixel = 0; currentPixel < pgm.numPixels; currentPixel++) {
 		// Copy all the pixels
+		cin >> tempNumber;
 		if (tempNumber < 0 || tempNumber > 255) {
 			fprintf(stderr, "Bad PGM file -- pixel %d is not a number between 0 and 255\n", currentPixel);
 			return -1;
 		}
 		pgm.pixels.push_back(tempNumber);
-		currentPixel++;
-		cin >> tempNumber;
 	}
 
-	pgm.numPixels = pgm.row * pgm.column;
-	if (pgm.numPixels != pgm.pixels.size()) {
-		fprintf(stderr, "Bad PGM file -- Extra stuff after the pixels");
+	if (cin >> input) {
+		fprintf(stderr, "Bad PGM file -- Extra stuff after the pixels\n");
 		return -1;
 	}
 
