@@ -44,14 +44,14 @@ int main(int argc, char **argv) {
 
 	// Next should be a number of columns
 	cin >> pgm.column;
-	if (pgm.column < 0 || cin.fail()) {
+	if (pgm.column < 1 || cin.fail()) {
 		fprintf(stderr, "Bad PGM file -- No column specification\n");
 		return -1;
 	}
 
 	// Next should be a number of rows
 	cin >> pgm.row;
-	if (pgm.row < 0 || cin.fail()) {
+	if (pgm.row < 1 || cin.fail()) {
 		fprintf(stderr, "Bad PGM file -- No row specification\n");
 		return -1;
 	}

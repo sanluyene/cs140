@@ -1,12 +1,11 @@
 // CS140 Spring 2016
 // Lab 02: Creating white pixel PGM files
 // Author: Ashley Sattler
-// Date: 02/01/2016
+// Date: 02/03/2016
 
 #include <iostream>
-#include <vector>
-#include <string>
 #include <sstream>
+#include <cstdio>
 
 using namespace std;
 
@@ -15,20 +14,26 @@ int main(int argc, char **argv) {
 	int row, column, i, totalPixels;
 
 	if (argc != 3) {
-		fprintf(stderr, "Bad PGM file -- arguments not correct\n");
+		fprintf(stderr, "usage: bigwhite rows cols\n");
 		return -1;
 	}
 
+	ss.clear();
 	ss.str(argv[1]);
 	if (!(ss >> row)) {
-		fprintf(stderr, "Argument %s is not an integer.\n", argv[1]);
+		fprintf(stderr, "usage: bigwhite rows cols\n", argv[1]);
 		return -1;
-	} 
-	printf("Argument i: %d\n", i);
+	}
 
+	ss.clear();
 	ss.str(argv[2]);
 	if (!(ss >> column)) {
-		fprintf(stderr, "Argument %s is not an integer.\n", argv[2]);
+		fprintf(stderr, "usage: bigwhite rows cols\n", argv[2]);
+		return -1;
+	}
+
+	if (row < 1 || column < 1) {
+		fprintf(stderr, "usage: bigwhite rows cols\n");
 		return -1;
 	}
 
@@ -39,7 +44,7 @@ int main(int argc, char **argv) {
 
 	// Then print each pixel
 	for (i = 0; i < totalPixels; i++) {
-		printf("0\n");
+		printf("255\n");
 	}
 
 	return 0;
