@@ -1,1 +1,0 @@
-Bad PGM file -- Extra stuff after the pixels
