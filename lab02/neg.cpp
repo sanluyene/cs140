@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
 	// Next should be 255
 	cin >> pgm.color;
 	if (pgm.color != 255) {
-		fprintf(stderr, "Bad PGM file -- 255 missing\n");
+		fprintf(stderr, "Bad PGM file -- No 255 following the rows and columns\n");
 		return -1;
 	}
 
