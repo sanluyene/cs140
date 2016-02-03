@@ -33,28 +33,28 @@ int main(int argc, char **argv) {
 
 	cin >> pgm.p2;
 	// First string should be P2
-	if (pgm.p2 != "P2") {
+	if (pgm.p2 != "P2" || cin.fail()) {
 		fprintf(stderr, "Bad PGM file -- first word is not P2\n");
 		return -1;
 	}
 
 	// Next should be a number of columns
 	cin >> pgm.column;
-	if (pgm.column < 0) {
+	if (pgm.column < 0 || cin.fail()) {
 		fprintf(stderr, "Bad PGM file -- No column specification\n");
 		return -1;
 	}
 
 	// Next should be a number of rows
 	cin >> pgm.row;
-	if (pgm.row < 0) {
+	if (pgm.row < 0 || cin.fail()) {
 		fprintf(stderr, "Bad PGM file -- No row specification\n");
 		return -1;
 	}
 
 	// Next should be 255
 	cin >> pgm.color;
-	if (pgm.color != 255) {
+	if (pgm.color != 255 || cin.fail()) {
 		fprintf(stderr, "Bad PGM file -- No 255 following the rows and columns\n");
 		return -1;
 	}
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 	// Then should be all of the pixels
 	for (currentPixel = 0; currentPixel < pgm.numPixels; currentPixel++) {
 		cin >> tempNumber;
-		if (tempNumber < 0 || tempNumber > 255) {
+		if (tempNumber < 0 || tempNumber > 255 || cin.fail()) {
 			fprintf(stderr, "Bad PGM file -- pixel %d is not a number between 0 and 255\n", currentPixel);
 			return -1;
 		}
