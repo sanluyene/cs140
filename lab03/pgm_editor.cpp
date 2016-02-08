@@ -109,27 +109,49 @@ void pgm_create(int r, int c, int pv) {
 
 void pgm_cw(IVec &p) {
 	// This will rotate the PGM file 90 degrees clockwise
+	IVec newp;
 
+	for (int c = 0; c < p[0].size(); c++) {
+		for (int r = (p.size() - 1); r >= 0; r--) {
+			if (c < p[r].size()) newp.push_back(p[r][c]);
+		}
+	}
+
+	pgm_write(&newp);
 }
 
 void pgm_ccw(IVec &p) {
 	// This will rotate the PGM file 90 degrees counter-clockwise
+	IVec newp;
 
+	for (int c = (p[0].size() - 1); c >= 0; c--) {
+		for (int r = 0; r < p.size(); r++) {
+			if (c < p[r].size()) newp.push_back(p[r][c]);
+		}
+	}
+
+	pgm_write(&newp);
 }
 
 void pgm_pad(IVec &p, int w, int pv) {
 	// This will add a border of w pixels to the PGM file
+	IVec newp;
 
+	pgm_write(&newp);
 }
 
 void pgm_panel(IVec &p, int r, int c) {
 	// This will multiply the PGM file into a grid of PGM files
+	IVec newp;
 
+	pgm_write(&newp);
 }
 
 void pgm_crop(IVec &p, int r, int c, int rows, int cols) {
 	// This will crop the PGM file
+	IVec newp;
 
+	pgm_write(&newp);
 }
 
 // DO NOT CHANGE ANYTHING BELOW THIS LINE
