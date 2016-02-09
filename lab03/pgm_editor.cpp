@@ -15,15 +15,15 @@ typedef vector <int> IVec;
 
 // Write your code here:
 
-void pgm_write(IVec &p);
+void pgm_write(vector <IVec> &p);
 void pgm_create(int r, int c, int pv);
-void pgm_cw(IVec &p);
-void pgm_ccw(IVec &p);
-void pgm_pad(IVec &p, int w, int pv);
-void pgm_panel(IVec &p, int r, int c);
-void pgm_crop(IVec &p, int r, int c, int rows, int cols);
+void pgm_cw(vector <IVec> &p);
+void pgm_ccw(vector <IVec> &p);
+void pgm_pad(vector <IVec> &p, int w, int pv);
+void pgm_panel(vector <IVec> &p, int r, int c);
+void pgm_crop(vector <IVec> &p, int r, int c, int rows, int cols);
 
-void pgm_write(IVec &p) {
+void pgm_write(vector <IVec> &p) {
   // This writes a PGM file
   // We will keep track of the number of printed pixels in order to maintain
   // the required formatting
@@ -65,9 +65,9 @@ void pgm_create(int r, int c, int pv) {
   }
 }
 
-void pgm_cw(IVec &p) {
+void pgm_cw(vector <IVec> &p) {
   // This will rotate the PGM file 90 degrees clockwise
-  IVec newp;
+  vector <IVec> newp;
 
   for (int c = 0; c < p[0].size(); c++) {
     for (int r = (p.size() - 1); r >= 0; r--) {
@@ -78,9 +78,9 @@ void pgm_cw(IVec &p) {
   p = newp;
 }
 
-void pgm_ccw(IVec &p) {
+void pgm_ccw(vector <IVec> &p) {
   // This will rotate the PGM file 90 degrees counter-clockwise
-  IVec newp;
+  vector <IVec> newp;
 
   for (int c = (p[0].size() - 1); c >= 0; c--) {
     for (int r = 0; r < p.size(); r++) {
@@ -91,9 +91,9 @@ void pgm_ccw(IVec &p) {
   p = newp;
 }
 
-void pgm_pad(IVec &p, int w, int pv) {
+void pgm_pad(vector <IVec> &p, int w, int pv) {
   // This will add a border of w pixels to the PGM file
-  IVec newp;
+  vector <IVec> newp;
 
   // The border needs to be added on the top, bottom, and both sides of the PGM file
   for (int r = 0; r < (p.size() + w); r++) {
@@ -106,9 +106,9 @@ void pgm_pad(IVec &p, int w, int pv) {
   p = newp; 
 }
 
-void pgm_panel(IVec &p, int r, int c) {
+void pgm_panel(vector <IVec> &p, int r, int c) {
   // This will multiply the PGM file into a grid of PGM files
-  IVec newp;
+  vector <IVec> newp;
 
   // We need to loop through the entire PGM file rxc times
   for (int i = 0; i < r; i++) {
@@ -125,9 +125,9 @@ void pgm_panel(IVec &p, int r, int c) {
   p = newp;
 }
 
-void pgm_crop(IVec &p, int r, int c, int rows, int cols) {
+void pgm_crop(vector <IVec> &p, int r, int c, int rows, int cols) {
   // This will crop the PGM file
-  IVec newp;
+  vector <IVec> newp;
 
   for (int i = r; i < (r + rows); i++) {
     for (int j = c; j < (c + cols); j++) {
