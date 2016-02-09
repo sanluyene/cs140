@@ -71,7 +71,7 @@ void pgm_cw(vector <IVec> &p) {
 
   for (int c = 0; c < p[0].size(); c++) {
     for (int r = (p.size() - 1); r >= 0; r--) {
-      if (c < p[r].size()) newp.push_back(p[r][c]);
+      if (c < p[r].size()) newp[r].push_back(p[r][c]);
     }
   }
 
@@ -84,7 +84,7 @@ void pgm_ccw(vector <IVec> &p) {
 
   for (int c = (p[0].size() - 1); c >= 0; c--) {
     for (int r = 0; r < p.size(); r++) {
-      if (c < p[r].size()) newp.push_back(p[r][c]);
+      if (c < p[r].size()) newp[r].push_back(p[r][c]);
     }
   }
 
@@ -98,8 +98,8 @@ void pgm_pad(vector <IVec> &p, int w, int pv) {
   // The border needs to be added on the top, bottom, and both sides of the PGM file
   for (int r = 0; r < (p.size() + w); r++) {
     for (int c = 0; c < (p[r].size() + w); c++) {
-        if (r < w || c < w || r > (p.size() - 1) || c > (p[r].size() - 1)) newp.push_back(pv);
-        else newp.push_back(p[r-w][c-w]);
+        if (r < w || c < w || r > (p.size() - 1) || c > (p[r].size() - 1)) newp[r].push_back(pv);
+        else newp[r].push_back(p[r-w][c-w]);
     }
   }
 
@@ -116,7 +116,7 @@ void pgm_panel(vector <IVec> &p, int r, int c) {
       // We need to loop through all of the pixels in the PGM file
       for (int pi = 0; pi < p.size(); pi++) {
         for (int pj = 0; pj < p[pi].size(); pj++) {
-          newp.push_back(p);
+          newp[i].push_back(p[pi][pj]);
         }
       }
     }
@@ -128,11 +128,14 @@ void pgm_panel(vector <IVec> &p, int r, int c) {
 void pgm_crop(vector <IVec> &p, int r, int c, int rows, int cols) {
   // This will crop the PGM file
   vector <IVec> newp;
+  int r = 0;
 
   for (int i = r; i < (r + rows); i++) {
     for (int j = c; j < (c + cols); j++) {
-      newp.push_back(p[i][j]);
+      newp[r].push_back(p[i][j]);
     }
+
+    r++;
   }
 
   p = newp;
