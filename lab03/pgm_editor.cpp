@@ -68,13 +68,15 @@ void pgm_ccw(vector <IVec> &p) {
 	// This will rotate the PGM file 90 degrees counter-clockwise
 	vector <IVec> newp;
 	int rows = p.size(), columns = p[0].size();
+	int newr = 0;
 	
 	// Number of rows and columns flip flop
 	newp.resize(columns, vector<int>());
 	for (int c = (columns - 1); c >= 0; c--) {
 		for (int r = 0; r < rows; r++) {
-			newp[c].push_back(p[r][c]);
+			newp[newr].push_back(p[r][c]);
 		}
+		newr++;
 	}
 
 	p = newp;
@@ -83,12 +85,14 @@ void pgm_ccw(vector <IVec> &p) {
 void pgm_pad(vector <IVec> &p, int w, int pv) {
 	// This will add a border of w pixels to the PGM file
 	vector <IVec> newp;
+	int rows = p.size(), columns = p[0].size();
+	int newrows = rows + (2 * w), newcolumns = columns + (2 * w);
 
-	newp.resize((p.size() + 2 * w), vector<int>((p[0].size() + 2 * w)));
+	newp.resize(newrows, vector<int>());
 	// The border needs to be added on the top, bottom, and both sides of the PGM file
-	for (int r = 0; r < (p.size() + w); r++) {
-		for (int c = 0; c < (p[r].size() + w); c++) {
-			if (r < w || c < w || r > (p.size() - 1) || c > (p[r].size() - 1)) newp[r].push_back(pv);
+	for (int r = 0; r < (newrows); r++) {
+		for (int c = 0; c < (newcolumns); c++) {
+			if (r < w || c < w || r >= rows || c >= columns) newp[r].push_back(pv);
 			else newp[r].push_back(p[r-w][c-w]);
 		}
 	}
@@ -99,6 +103,7 @@ void pgm_pad(vector <IVec> &p, int w, int pv) {
 void pgm_panel(vector <IVec> &p, int r, int c) {
 	// This will multiply the PGM file into a grid of PGM files
 	vector <IVec> newp;
+	int rows = p.size(), columns = p[0].size();
 
 	// We need to loop through the entire PGM file rxc times
 	for (int i = 0; i < r; i++) {
