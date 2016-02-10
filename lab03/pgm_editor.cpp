@@ -1,5 +1,5 @@
 // CS140 Spring 2016
-// Lab 03: 
+// Lab 03: Creating, editing, and manipulating PGM files 
 // Author: Ashley Sattler
 // Date: 02/09/2016
 
@@ -47,36 +47,44 @@ vector <IVec> pgm_create(int r, int c, int pv) {
 	return newp;
 }
 
-vector <IVec> pgm_cw(vector <IVec> &p) {
+void pgm_cw(vector <IVec> &p) {
 	// This will rotate the PGM file 90 degrees clockwise
 	vector <IVec> newp;
-
-	for (int c = 0; c < p[0].size(); c++) {
-		for (int r = (p.size() - 1); r >= 0; r--) {
-			if (c < p[r].size()) newp[r].push_back(p[r][c]);
+	IVec temp;
+	int rows = p.size(), columns = p[0].size();
+	
+	// Number of rows and columns flip flop
+	newp.resize(columns, vector<int>());
+	for (int c = 0; c < columns; c++) {
+		for (int r = (rows - 1); r >= 0; r--) {
+			newp[c].push_back(p[r][c]);
 		}
 	}
 
-	return newp;
+	p = newp;
 }
 
-vector <IVec> pgm_ccw(vector <IVec> &p) {
+void pgm_ccw(vector <IVec> &p) {
 	// This will rotate the PGM file 90 degrees counter-clockwise
 	vector <IVec> newp;
-
-	for (int c = (p[0].size() - 1); c >= 0; c--) {
-		for (int r = 0; r < p.size(); r++) {
-			if (c < p[r].size()) newp[r].push_back(p[r][c]);
+	int rows = p.size(), columns = p[0].size();
+	
+	// Number of rows and columns flip flop
+	newp.resize(columns, vector<int>());
+	for (int c = (columns - 1); c >= 0; c--) {
+		for (int r = 0; r < rows; r++) {
+			newp[c].push_back(p[r][c]);
 		}
 	}
 
-	return newp;
+	p = newp;
 }
 
-vector <IVec> pgm_pad(vector <IVec> &p, int w, int pv) {
+void pgm_pad(vector <IVec> &p, int w, int pv) {
 	// This will add a border of w pixels to the PGM file
 	vector <IVec> newp;
 
+	newp.resize((p.size() + 2 * w), vector<int>((p[0].size() + 2 * w)));
 	// The border needs to be added on the top, bottom, and both sides of the PGM file
 	for (int r = 0; r < (p.size() + w); r++) {
 		for (int c = 0; c < (p[r].size() + w); c++) {
@@ -85,10 +93,10 @@ vector <IVec> pgm_pad(vector <IVec> &p, int w, int pv) {
 		}
 	}
 
-	return newp; 
+	p = newp; 
 }
 
-vector <IVec> pgm_panel(vector <IVec> &p, int r, int c) {
+void pgm_panel(vector <IVec> &p, int r, int c) {
 	// This will multiply the PGM file into a grid of PGM files
 	vector <IVec> newp;
 
@@ -104,10 +112,10 @@ vector <IVec> pgm_panel(vector <IVec> &p, int r, int c) {
 		}
 	}
 
-	return newp;
+	p = newp;
 }
 
-vector <IVec> pgm_crop(vector <IVec> &p, int r, int c, int rows, int cols) {
+void pgm_crop(vector <IVec> &p, int r, int c, int rows, int cols) {
 	// This will crop the PGM file
 	vector <IVec> newp;
 	int row = 0;
@@ -120,7 +128,7 @@ vector <IVec> pgm_crop(vector <IVec> &p, int r, int c, int rows, int cols) {
 		row++;
 	}
 
-	return newp;
+	p = newp;
 }
 
 // DO NOT CHANGE ANYTHING BELOW THIS LINE
