@@ -16,14 +16,6 @@ typedef vector <int> IVec;
 
 // Write your code here:
 
-//void pgm_write(vector <IVec> &p);
-//vector <IVec> pgm_create(int r, int c, int pv);
-//vector <IVec> pgm_cw(vector <IVec> &p);
-//vector <IVec> pgm_ccw(vector <IVec> &p);
-//vector <IVec> pgm_pad(vector <IVec> &p, int w, int pv);
-//vector <IVec> pgm_panel(vector <IVec> &p, int r, int c);
-//vector <IVec> pgm_crop(vector <IVec> &p, int r, int c, int rows, int cols);
-
 void pgm_write(vector <IVec> &p) {
 	// This writes a PGM file
 	// We will keep track of the number of printed pixels in order to maintain
@@ -31,7 +23,7 @@ void pgm_write(vector <IVec> &p) {
 	int numPixel = 0;
 
 	// Print the required non-pixel values for the PGM file
-	printf("P2\n%d %d\n255\n", p.size(), p[0].size());
+	printf("P2\n%d %d\n255\n", p[0].size(), p.size());
 	// Then print the pizels
 	for (int r = 0; r < p.size(); r++) {
 		for (int c = 0; c < p[r].size(); c++) {
@@ -43,18 +35,14 @@ void pgm_write(vector <IVec> &p) {
 			}
 		}
 	}
+	if (numPixel != 0) printf("\n");
 }
 
 vector <IVec> pgm_create(int r, int c, int pv) {
 	// This will create a new PGM file pixel vector
 	vector <IVec> newp;
 
-	// Build the pixels
-	for (int rows = 0; rows < r; rows++) {
-		for (int columns = 0; columns < c; columns++) {
-			newp[rows].push_back(pv);
-		}
-	}
+	newp.resize(r, vector<int>(c, pv));
 
 	return newp;
 }
