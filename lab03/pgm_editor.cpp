@@ -88,14 +88,27 @@ void pgm_pad(vector <IVec> &p, int w, int pv) {
 	int rows = p.size(), columns = p[0].size();
 	int newrows = rows + (2 * w), newcolumns = columns + (2 * w);
 
+	// First we need to fill the new vector of vectors with the pad colour
 	newp.resize(newrows, vector<int>());
-	// The border needs to be added on the top, bottom, and both sides of the PGM file
-	for (int r = 0; r < (newrows); r++) {
-		for (int c = 0; c < (newcolumns); c++) {
-			if (r < w || c < w || r >= rows || c >= columns) newp[r].push_back(pv);
-			else newp[r].push_back(p[r-w][c-w]);
+	for (int i = 0; i < newrows; i++) {
+		for (int j = 0; j < newcolumns; j++) {
+			newp[i].push_back(pv);
 		}
 	}
+
+	// Then replace the pixels with the original image
+	for (int r = 0; r < rows; r++) {
+		for (int c = 0; c < columns; c++) {
+			newp[r+w][c+w] = p[r][c];
+		}
+	}
+
+	//for (int r = 0; r < (newrows); r++) {
+	//	for (int c = 0; c < (newcolumns); c++) {
+	//		if (r <= w || c <= w || r >= rows || c >= columns) newp[r].push_back(pv);
+	//		else newp[r].push_back(p[r-w][c-w]);
+	//	}
+	//}
 
 	p = newp; 
 }
