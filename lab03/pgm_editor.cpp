@@ -103,13 +103,6 @@ void pgm_pad(vector <IVec> &p, int w, int pv) {
 		}
 	}
 
-	//for (int r = 0; r < (newrows); r++) {
-	//	for (int c = 0; c < (newcolumns); c++) {
-	//		if (r <= w || c <= w || r >= rows || c >= columns) newp[r].push_back(pv);
-	//		else newp[r].push_back(p[r-w][c-w]);
-	//	}
-	//}
-
 	p = newp; 
 }
 
@@ -117,13 +110,17 @@ void pgm_panel(vector <IVec> &p, int r, int c) {
 	// This will multiply the PGM file into a grid of PGM files
 	vector <IVec> newp;
 	int rows = p.size(), columns = p[0].size();
+	int newrows = rows * r, newcolumns = columns * c;
+	cout << "r: " << r << " c: " << c << endl;
+
+	newp.resize(newrows, vector<int>());
 
 	// We need to loop through the entire PGM file rxc times
 	for (int i = 0; i < r; i++) {
 		for (int j = 0; j < c; j++) {
 			// We need to loop through all of the pixels in the PGM file
-			for (int pi = 0; pi < p.size(); pi++) {
-				for (int pj = 0; pj < p[pi].size(); pj++) {
+			for (int pi = 0; pi < rows; pi++) {
+				for (int pj = 0; pj < columns; pj++) {
 					newp[i].push_back(p[pi][pj]);
 				}
 			}
@@ -136,14 +133,16 @@ void pgm_panel(vector <IVec> &p, int r, int c) {
 void pgm_crop(vector <IVec> &p, int r, int c, int rows, int cols) {
 	// This will crop the PGM file
 	vector <IVec> newp;
-	int row = 0;
+	int endr = r + rows, endc = c + cols, newr = 0;
+	
+	newp.resize(rows, vector<int>());
 
-	for (int i = r; i < (r + rows); i++) {
-		for (int j = c; j < (c + cols); j++) {
-			newp[r].push_back(p[i][j]);
+	for (int i = r; i < endr; i++) {
+		for (int j = c; j < endc; j++) {
+			newp[newr].push_back(p[i][j]);
 		}
 
-		row++;
+		newr++;
 	}
 
 	p = newp;
