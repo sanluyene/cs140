@@ -108,19 +108,25 @@ void pgm_pad(vector <IVec> &p, int w, int pv) {
 
 void pgm_panel(vector <IVec> &p, int r, int c) {
 	// This will multiply the PGM file into a grid of repeated PGM files
+	// I have absolutely no idea why this isn't working properly
+	// I've attempted several methods resulting in no dice
+	// I'm going to sleep
+	
 	vector <IVec> newp;
-	int rows = p.size(), columns = p[0].size();
-	int newrows = rows * r;
+	int rows = p.size();
+	//int columns = p[0].size();
+	//int newrows = rows * r;
 
-//	newp.resize(newrows, vector<int>());
+	//newp.resize(newrows, vector<int>());
 
 	// We need to loop through the entire PGM file rxc times
 	// And we need to loop through all of the pixels in the PGM file
 	for (int i = 0; i < r; i++) {
-			for (int pi = 0; pi < rows; pi++) {
+		for (int pi = 0; pi < rows; pi++) {
+			for (int j = 0; j < c; j++) {
+				newp.push_back(p[pi]);
 				//for (int pj = 0; pj < columns; pj++) {
-		for (int j = 0; j < c; j++) {
-					newp.push_back(p[pi]);
+					//newp[i].push_back(p[pi][pj]);
 				//}
 			}
 		}
