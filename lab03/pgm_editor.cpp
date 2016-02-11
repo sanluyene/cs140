@@ -24,7 +24,7 @@ void pgm_write(vector <IVec> &p) {
 
 	// Print the required non-pixel values for the PGM file
 	printf("P2\n%d %d\n255\n", p[0].size(), p.size());
-	// Then print the pizels
+	// Then print the pixels
 	for (int r = 0; r < p.size(); r++) {
 		for (int c = 0; c < p[r].size(); c++) {
 			printf("%4d", p[r][c]);
@@ -107,22 +107,21 @@ void pgm_pad(vector <IVec> &p, int w, int pv) {
 }
 
 void pgm_panel(vector <IVec> &p, int r, int c) {
-	// This will multiply the PGM file into a grid of PGM files
+	// This will multiply the PGM file into a grid of repeated PGM files
 	vector <IVec> newp;
 	int rows = p.size(), columns = p[0].size();
-	int newrows = rows * r, newcolumns = columns * c;
-	cout << "r: " << r << " c: " << c << endl;
+	int newrows = rows * r;
 
-	newp.resize(newrows, vector<int>());
+//	newp.resize(newrows, vector<int>());
 
 	// We need to loop through the entire PGM file rxc times
+	// And we need to loop through all of the pixels in the PGM file
 	for (int i = 0; i < r; i++) {
-		for (int j = 0; j < c; j++) {
-			// We need to loop through all of the pixels in the PGM file
 			for (int pi = 0; pi < rows; pi++) {
-				for (int pj = 0; pj < columns; pj++) {
-					newp[i].push_back(p[pi][pj]);
-				}
+				//for (int pj = 0; pj < columns; pj++) {
+		for (int j = 0; j < c; j++) {
+					newp.push_back(p[pi]);
+				//}
 			}
 		}
 	}
