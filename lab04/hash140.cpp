@@ -26,7 +26,6 @@ HashTable::HashTable(int table_size, string function, string collision) {
 	if (collision == "Linear") Coll = 1;
 	else Coll = 2; // Double
 	nkeys = 0;
-	cout << keys.size() << endl;
 }
 
 // This is for adding a new entry to the HashTable, including values for
@@ -36,15 +35,17 @@ void HashTable::Add_Hash(string &key, string &val) {
 	if (nkeys == keys.size()) fprintf(stderr, "Hash Table Full\n");
 	else {
 		int i = 0; // Index
-		int hash = 0, err = 0;
+		int hash = 0, err = 0, temp = 0;
 		bool insert = false;
-cout << "i've started!" << endl;
+
+//cout << "i've started!" << endl;
+
 		if (Fxn == 1) hash = Last7(key);
 		else hash = XOR(key);
 
 		i = hash % keys.size();
 
-cout << "in add hash" << endl;
+//cout << "in add hash" << endl;
 
 		while (insert == false) {
 			if (keys[i] != "") {
@@ -52,13 +53,13 @@ cout << "in add hash" << endl;
 					i++;
 				}
 				else {
-					if (Fxn == 1) tmp = XOR(key) % keys.size();
+					if (Fxn == 1) temp = XOR(key) % keys.size();
 					else tmp = Last7(key) % keys.size();
-					if (tmp == 0) tmp = 1;
-					i = (hash + tmp) % keys.size();
-					cout << hash << " " << err << endl;
+					if (temp == 0) temp = 1;
+					i = (hash + temp) % keys.size();
+//cout << hash << " " << err << endl;
 					err++;
-					if (err >= 5) fprintf(stderr, "Couldn't put %s into the table", key.c_str());
+					if (err >= 25) fprintf(stderr, "Couldn't put %s into the table", key.c_str());
 				}
 			}
 			else {
@@ -72,6 +73,10 @@ cout << "in add hash" << endl;
 }
 
 string HashTable::Find(string &key) {
+	for (int i = 0; i < keys.size(); i++) {
+		if (keys[i] == key) return vals[i];
+		tmp++;
+	}
 
 	return "";
 }
@@ -85,8 +90,7 @@ void HashTable::Print() {
 }
 
 int HashTable::Total_Probes() {
-
-	return 0;
+	return tmp;
 }
 
 int Last7(string code) {
@@ -111,7 +115,7 @@ int Last7(string code) {
 }
 
 int XOR(string code) {
-	cout << "in xor" << endl;
+//	cout << "in xor" << endl;
 //	int i = 0;
 //	string temp1, temp2;
 //
@@ -123,6 +127,15 @@ int XOR(string code) {
 //		}
 //		(temp1 ^ temp2) >> hex >> i;
 //	}
+
+	int i = 0;
+	stringstream ss;
+	string temp;
+
+	if (code.length() <= 7) {
+		ss << code;
+		ss >> hex >> i;
+	}
 
 	return 0;
 }

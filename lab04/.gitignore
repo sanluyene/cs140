@@ -2,3 +2,4 @@ hash140
 hash_test.o
 hash140.o
 hash_test
+tmp*
