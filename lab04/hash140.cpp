@@ -39,3 +39,13 @@ int HashTable::Total_Probes() {
 
 	return 0;
 }
+
+string Last7(string code) {
+
+	return "";
+}
+
+string XOR(string code) {
+
+	return "";
+}
