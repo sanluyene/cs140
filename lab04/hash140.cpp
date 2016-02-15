@@ -13,23 +13,54 @@
 
 using namespace std;
 
+int Last7(string code);
+int XOR(string code);
+
 HashTable::HashTable(int table_size, string function, string collision) {
 	keys.resize(table_size);
 	vals.resize(table_size);
 	if (function == "Last7") Fxn = 1;
-	else Fxn = 2;
+	else Fxn = 2; // XOR
 	if (collision == "Linear") Coll = 1;
-	else Coll = 2;
+	else Coll = 2; // Double
+	nkeys = 0;
 }
 
 void HashTable::Add_Hash(string &key, string &val) {
-	// % 0xkey to find index
-	// HashTable[index] = val
-	//if HashTable[index] != ""
-	// then collision technique
 
-	//fprintf("Hash Table Full");
-	//fprintf("Couldn't put %s into the table", key);
+	if (nkeys == keys.size()) fprintf(stderr, "Hash Table Full\n");
+	else {
+		int i = 0; // Index
+		int hash = 0, err = 0;
+		bool insert = false;
+
+		if (Fxn == 1) hash = Last7(key);
+		else hash = XOR(key);
+
+		i = hash % keys.size();
+
+		while (insert == false) {
+			if (keys[i] != "") {
+				if (Coll == 1) {
+					i++;
+				}
+				else {
+					if (Fxn == 1) tmp = XOR(key) % keys.size();
+					else tmp = Last7(key) % keys.size();
+					if (tmp == 0) tmp = 1;
+					i = (hash + tmp) % keys.size();
+					err++;
+					if (err >= 5) fprintf(stderr, "Couldn't put %s into the table", key.c_str());
+				}
+			}
+			else {
+				keys[i] = key;
+				vals[i] = val;
+				insert = true;
+				nkeys++;
+			}
+		}
+	}
 }
 
 string HashTable::Find(string &key) {
@@ -40,7 +71,7 @@ string HashTable::Find(string &key) {
 void HashTable::Print() {
 	for (int i = 0; i < keys.size(); i++) {
 		if (keys[i] != "") {
-			printf("%-5d %s %s", i, keys[i].c_str(), vals[i].c_str());
+			printf("%5d %s %s\n", i, keys[i].c_str(), vals[i].c_str());
 		}
 	}
 }
@@ -50,12 +81,39 @@ int HashTable::Total_Probes() {
 	return 0;
 }
 
-string Last7(string code) {
+int Last7(string code) {
+	int i = 0;
+	stringstream ss;
+	string temp;
 
-	return "";
+	if (code.length() <= 7) {
+		ss << code;
+		ss >> hex >> i;
+	}
+	else {
+		int length = code.length();
+		for (int j = length - 7; j < length; j++) {
+			temp.push_back(code[j]);
+		}
+		ss << temp;
+		ss >> hex >> i;
+	}
+
+	return i;
 }
 
-string XOR(string code) {
+int XOR(string code) {
+//	int i = 0;
+//	string temp1, temp2;
+//
+//	if (code.length() <= 7) code >> hex >> i;
+//	else {
+//		int length = code.length();
+//		for (int j = length - 7; j < length; j++) {
+//			temp1.push_back(code[j])
+//		}
+//		(temp1 ^ temp2) >> hex >> i;
+//	}
 
-	return "";
+	return 0;
 }
