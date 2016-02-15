@@ -9,12 +9,11 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
+#include "hash140.h"
 
 using namespace std;
 
-HashTable(int table_size, string function, string collision) {
-
-}
+HashTable::HashTable(int table_size, string function, string collision) {}
 
 void HashTable::Add_Hash(string &key, string &val) {
 	// % 0xkey to find index
