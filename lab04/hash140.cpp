@@ -13,7 +13,14 @@
 
 using namespace std;
 
-HashTable::HashTable(int table_size, string function, string collision) {}
+HashTable::HashTable(int table_size, string function, string collision) {
+	keys.resize(table_size);
+	vals.resize(table_size);
+	if (function == "Last7") Fxn = 1;
+	else Fxn = 2;
+	if (collision == "Linear") Coll = 1;
+	else Coll = 2;
+}
 
 void HashTable::Add_Hash(string &key, string &val) {
 	// % 0xkey to find index
@@ -31,7 +38,10 @@ string HashTable::Find(string &key) {
 }
 
 void HashTable::Print() {
-
+	for (int i = 0; i < keys.size(); i++) {
+		//if [i] != ""
+		//printf(%-5d %s %s, i, key, val);
+	}
 }
 
 int HashTable::Total_Probes() {
