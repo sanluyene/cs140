@@ -39,8 +39,9 @@ string HashTable::Find(string &key) {
 
 void HashTable::Print() {
 	for (int i = 0; i < keys.size(); i++) {
-		//if [i] != ""
-		//printf(%-5d %s %s, i, key, val);
+		if (keys[i] != "") {
+			printf("%-5d %s %s", i, keys[i].c_str(), vals[i].c_str());
+		}
 	}
 }
 
