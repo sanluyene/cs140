@@ -9,6 +9,7 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
+#include <iso646.h>
 #include "hash140.h"
 
 using namespace std;
@@ -38,14 +39,10 @@ void HashTable::Add_Hash(string &key, string &val) {
 		int hash = 0, err = 0, temp = 0;
 		bool insert = false;
 
-//cout << "i've started!" << endl;
-
 		if (Fxn == 1) hash = Last7(key);
 		else hash = XOR(key);
 
 		i = hash % keys.size();
-
-//cout << "in add hash" << endl;
 
 		while (insert == false) {
 			if (keys[i] != "") {
@@ -57,9 +54,11 @@ void HashTable::Add_Hash(string &key, string &val) {
 					else tmp = Last7(key) % keys.size();
 					if (temp == 0) temp = 1;
 					i = (hash + temp) % keys.size();
-//cout << hash << " " << err << endl;
 					err++;
-					if (err >= 25) fprintf(stderr, "Couldn't put %s into the table", key.c_str());
+					if (err >= 5) {
+						fprintf(stderr, "Couldn't put %s into the table", key.c_str());
+						insert = true;
+					}
 				}
 			}
 			else {
@@ -115,27 +114,30 @@ int Last7(string code) {
 }
 
 int XOR(string code) {
-//	cout << "in xor" << endl;
-//	int i = 0;
-//	string temp1, temp2;
-//
-//	if (code.length() <= 7) code >> hex >> i;
-//	else {
-//		int length = code.length();
-//		for (int j = length - 7; j < length; j++) {
-//			temp1.push_back(code[j])
-//		}
-//		(temp1 ^ temp2) >> hex >> i;
-//	}
-
 	int i = 0;
 	stringstream ss;
-	string temp;
+//	string temp1, temp2, temp3, temp4, temp5;
 
 	if (code.length() <= 7) {
 		ss << code;
 		ss >> hex >> i;
 	}
+//	else {
+//		for (int j = 0; j < code.length(); j++) {
+//			if (j < 7) temp1.push_back(code[j]);
+//			else if (j < 14) temp2.push_back(code[j]);
+//			else if (j < 21) temp3.push_back(code[j]);
+//			else if (j < 28) temp4.push_back(code[j]);
+//			else if (j < 35) temp5.push_back(code[j]);
+//		}
+//		temp1 = (temp1 ^ temp2);
+//		if (temp3 != "") temp1 ^= temp3;
+//		if (temp4 != "") temp1 ^= temp4;
+//		if (temp5 != "") temp1 ^= temp5;
 
-	return 0;
+//		ss << temp1;
+//		ss >> hex >> i;
+//	}
+
+	return i;
 }
