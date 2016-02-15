@@ -13,9 +13,11 @@
 
 using namespace std;
 
+// Here we declare our two hash functions
 int Last7(string code);
 int XOR(string code);
 
+// This is our constructor for the HashTable
 HashTable::HashTable(int table_size, string function, string collision) {
 	keys.resize(table_size);
 	vals.resize(table_size);
@@ -24,8 +26,11 @@ HashTable::HashTable(int table_size, string function, string collision) {
 	if (collision == "Linear") Coll = 1;
 	else Coll = 2; // Double
 	nkeys = 0;
+	cout << keys.size() << endl;
 }
 
+// This is for adding a new entry to the HashTable, including values for
+// which hash and collision functions to use
 void HashTable::Add_Hash(string &key, string &val) {
 
 	if (nkeys == keys.size()) fprintf(stderr, "Hash Table Full\n");
@@ -33,11 +38,13 @@ void HashTable::Add_Hash(string &key, string &val) {
 		int i = 0; // Index
 		int hash = 0, err = 0;
 		bool insert = false;
-
+cout << "i've started!" << endl;
 		if (Fxn == 1) hash = Last7(key);
 		else hash = XOR(key);
 
 		i = hash % keys.size();
+
+cout << "in add hash" << endl;
 
 		while (insert == false) {
 			if (keys[i] != "") {
@@ -49,6 +56,7 @@ void HashTable::Add_Hash(string &key, string &val) {
 					else tmp = Last7(key) % keys.size();
 					if (tmp == 0) tmp = 1;
 					i = (hash + tmp) % keys.size();
+					cout << hash << " " << err << endl;
 					err++;
 					if (err >= 5) fprintf(stderr, "Couldn't put %s into the table", key.c_str());
 				}
@@ -103,6 +111,7 @@ int Last7(string code) {
 }
 
 int XOR(string code) {
+	cout << "in xor" << endl;
 //	int i = 0;
 //	string temp1, temp2;
 //
