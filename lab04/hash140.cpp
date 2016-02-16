@@ -71,6 +71,7 @@ void HashTable::Add_Hash(string &key, string &val) {
 	}
 }
 
+// This probes the hash table to find the requested key's value
 string HashTable::Find(string &key) {
 	for (int i = 0; i < keys.size(); i++) {
 		if (keys[i] == key) return vals[i];
@@ -80,6 +81,7 @@ string HashTable::Find(string &key) {
 	return "";
 }
 
+// This prints the values stored in the hash table
 void HashTable::Print() {
 	for (int i = 0; i < keys.size(); i++) {
 		if (keys[i] != "") {
@@ -88,10 +90,14 @@ void HashTable::Print() {
 	}
 }
 
+// This returns the total number of probes that were made against the
+// hash table to find the requested values
 int HashTable::Total_Probes() {
 	return tmp;
 }
 
+// This function hashes a given code by using the last 7 characters as
+// hex digits, and representing them as a decimal number
 int Last7(string code) {
 	int i = 0;
 	stringstream ss;
@@ -113,31 +119,51 @@ int Last7(string code) {
 	return i;
 }
 
+// This function hashes a given code by separating the string into 7 
+// character hex strings and performing an exclusive OR on them
 int XOR(string code) {
-	int i = 0;
+	int i = 0, j = 0;
 	stringstream ss;
-//	string temp1, temp2, temp3, temp4, temp5;
+	string temp1, temp2;
 
 	if (code.length() <= 7) {
 		ss << code;
 		ss >> hex >> i;
 	}
-//	else {
-//		for (int j = 0; j < code.length(); j++) {
-//			if (j < 7) temp1.push_back(code[j]);
-//			else if (j < 14) temp2.push_back(code[j]);
-//			else if (j < 21) temp3.push_back(code[j]);
-//			else if (j < 28) temp4.push_back(code[j]);
-//			else if (j < 35) temp5.push_back(code[j]);
-//		}
-//		temp1 = (temp1 ^ temp2);
-//		if (temp3 != "") temp1 ^= temp3;
-//		if (temp4 != "") temp1 ^= temp4;
-//		if (temp5 != "") temp1 ^= temp5;
+	else {
+		// The first 7 character chunk will be what we start with
+		int length = code.length();
+		for (int j = 0; j < 7; j++) {
+			temp1.push_back(code[j]);
+		}
 
-//		ss << temp1;
-//		ss >> hex >> i;
-//	}
+		// As long as we haven't reached the end of the code, we need
+		// to continue breaking it into 7 character chunks
+		while (j < length) {
+			for (j; j%7 <= 6; j++) {
+				temp2.push_back(code[j]);
+			}
+
+			// If the last chunk is less than 7 characters, we need to
+			// pad it with 0's from the left
+			if (temp2.length() != 7) {
+				int k = 7 - temp2.length();
+				string temp3;
+				for (int l = 0; l < k; l++) temp3.push_back("0");
+				for (int l = 0; l < temp2.length(); l++) temp3.push_back(temp2[]);
+				temp2 = temp3;
+			}
+
+			// Now that we have our chunks, we need to XOR the strings
+			// char by char
+			for (int k = 0; k < 7; k++) {
+				temp1[k] ^= temp2[k];
+			}
+		}
+
+		ss << temp1;
+		ss >> hex >> i;
+	}
 
 	return i;
 }
