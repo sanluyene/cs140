@@ -48,6 +48,7 @@ void HashTable::Add_Hash(string &key, string &val) {
 			if (keys[i] != "") {
 				if (Coll == 1) {
 					i++;
+					tmp++;
 				}
 				else {
 					if (Fxn == 1) temp = XOR(key) % keys.size();
@@ -55,6 +56,7 @@ void HashTable::Add_Hash(string &key, string &val) {
 					if (temp == 0) temp = 1;
 					i = (hash + temp) % keys.size();
 					err++;
+					tmp++;
 					if (err >= 5) {
 						fprintf(stderr, "Couldn't put %s into the table", key.c_str());
 						insert = true;
@@ -75,7 +77,7 @@ void HashTable::Add_Hash(string &key, string &val) {
 string HashTable::Find(string &key) {
 	for (int i = 0; i < keys.size(); i++) {
 		if (keys[i] == key) return vals[i];
-		tmp++;
+		//tmp++;
 	}
 
 	return "";
