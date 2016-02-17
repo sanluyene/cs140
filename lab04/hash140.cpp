@@ -133,7 +133,7 @@ int XOR(string code) {
 	else {
 		// The first 7 character chunk will be what we start with
 		int length = code.length();
-		for (int j = 0; j < 7; j++) {
+		for (j = 0; j < 7; j++) {
 			temp1.push_back(code[j]);
 		}
 
@@ -149,8 +149,8 @@ int XOR(string code) {
 			if (temp2.length() != 7) {
 				int k = 7 - temp2.length();
 				string temp3;
-				for (int l = 0; l < k; l++) temp3.push_back("0");
-				for (int l = 0; l < temp2.length(); l++) temp3.push_back(temp2[]);
+				for (int l = 0; l < k; l++) temp3.push_back('0');
+				for (int l = 0; l < temp2.length(); l++) temp3.push_back(temp2[l]);
 				temp2 = temp3;
 			}
 
