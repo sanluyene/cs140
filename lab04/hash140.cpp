@@ -35,15 +35,17 @@ void HashTable::Add_Hash(string &key, string &val) {
 	if (nkeys == keys.size()) fprintf(stderr, "Hash Table Full\n");
 	else {
 		int i = 0; // Index
-		int hash = 0, temp = 0, repeat = 0;
+		int hash = 0, step = 0, times = 1;
 		bool insert = false;
+		vector<int> repeats;
 
 		if (Fxn == 1) hash = Last7(key);
 		else hash = XOR(key);
 		i = hash % keys.size();
+
 		// For double hashing, if we get the same value more than once
 		// we know it can't be inserted into the table
-		repeat = i;
+		repeats.push_back(i);
 
 		while (insert == false) {
 			if (keys[i] != "") {
@@ -52,14 +54,20 @@ void HashTable::Add_Hash(string &key, string &val) {
 					tmp++;
 				}
 				else {
-					//if (Fxn == 1) temp = XOR(key) % keys.size();
-					//else tmp = Last7(key) % keys.size();
-					//if (temp == 0) temp = 1;
-					//i = (hash + temp) % keys.size();
-					//if (i == repeat) {
-					//fprintf(stderr, "Couldn't put %s into the table", key.c_str());
-					break;
-					//}
+					if (Fxn == 1) step = XOR(key) % keys.size();
+					else step = Last7(key) % keys.size();
+					if (step == 0) step = 1;
+//					cout << "step " << step << " i " << i << endl;
+					i = (hash + times * step) % keys.size();
+					repeats.push_back(i);
+					for (int j = 0; j < repeats.size(); j++) {
+						if (step == repeats[j]) {
+							fprintf(stderr, "Couldn't put %s into the table\n", key.c_str());
+							insert = true;
+							break;
+						}
+					}
+					times++;
 				}
 			}
 			else {
@@ -127,9 +135,8 @@ int XOR(string &code) {
 	unsigned int hash = 0, nextWord = 0;
 	stringstream ss;
 	istringstream ss2;
-	string temp1, temp2;
 	vector<string> subKeys;
-	
+
 	if (length <= 7) {
 		ss << code;
 		ss >> hex >> i;
@@ -138,23 +145,12 @@ int XOR(string &code) {
 		for (j = 0; j < length; j++) {
 			if (j%7 == 0) subKeys.push_back(code.substr(j, 7));
 		}
-//		for (j = 0; j < subKeys.size(); j++) cout << "sub " << j << " " << subKeys[j] << endl;
-		
-		for (j = 0; j < subKeys.size(); j++) {
-//			if (subKeys[j].length() != 7) {
-//				int k = 7 - subKeys[j].length();
-//				string temp3;
-//				for (int l = 0; l < k; l++) temp3.push_back('0');
-//				for (int l = 0; l < subKeys[j].length(); l++) temp3.push_back(subKeys[j][l]);
-//				temp2 = temp3;
-//			}
 
+		for (j = 0; j < subKeys.size(); j++) {
 			ss2.clear();
 			ss2.str(subKeys[j]);
 			ss2 >> hex >> nextWord;
-//cout << "hash " << hash << endl;
 			hash = nextWord ^ hash;
-//cout << " next " << nextWord << endl;
 		}
 	}
 
