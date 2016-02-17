@@ -20,19 +20,18 @@ int XOR(string &code);
 
 // This is our constructor for the HashTable
 HashTable::HashTable(int table_size, string function, string collision) {
+	nkeys = 0;
 	keys.resize(table_size);
 	vals.resize(table_size);
 	if (function == "Last7") Fxn = 1;
 	else Fxn = 2; // XOR
 	if (collision == "Linear") Coll = 1;
 	else Coll = 2; // Double
-	nkeys = 0;
 }
 
 // This is for adding a new entry to the HashTable, including values for
 // which hash and collision functions to use
 void HashTable::Add_Hash(string &key, string &val) {
-
 	if (nkeys == keys.size()) fprintf(stderr, "Hash Table Full\n");
 	else {
 		int i = 0; // Index
@@ -141,18 +140,15 @@ int XOR(string &code) {
 		// As long as we haven't reached the end of the code, we need
 		// to continue breaking it into 7 character chunks
 		while (j < length) {
-			for (j; j%7 <= 6; j++) {
-				temp2.push_back(code[j]);
+			if ((length - j) < 7) {
+				// If the last chunk is less than 7 characters, we need to
+				// pad it with 0's from the left
+				int k = 7 - j;
+				for (int l = 0; l < k; l++) temp2.push_back('0');
+				for (j; j < length; j++) temp2.push_back(code[j]);
 			}
-
-			// If the last chunk is less than 7 characters, we need to
-			// pad it with 0's from the left
-			if (temp2.length() != 7) {
-				int k = 7 - temp2.length();
-				string temp3;
-				for (int l = 0; l < k; l++) temp3.push_back('0');
-				for (int l = 0; l < temp2.length(); l++) temp3.push_back(temp2[l]);
-				temp2 = temp3;
+			else {
+				for (j; j%7 <= 6; j++) temp2.push_back(code[j]);
 			}
 
 			// Now that we have our chunks, we need to XOR the strings
