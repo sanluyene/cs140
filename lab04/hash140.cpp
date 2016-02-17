@@ -15,8 +15,8 @@
 using namespace std;
 
 // Here we declare our two hash functions
-int Last7(string code);
-int XOR(string code);
+int Last7(string &code);
+int XOR(string &code);
 
 // This is our constructor for the HashTable
 HashTable::HashTable(int table_size, string function, string collision) {
@@ -57,7 +57,7 @@ void HashTable::Add_Hash(string &key, string &val) {
 					i = (hash + temp) % keys.size();
 					err++;
 					tmp++;
-					if (err >= 5) {
+					if (err >= 15) {
 						fprintf(stderr, "Couldn't put %s into the table", key.c_str());
 						insert = true;
 					}
@@ -100,7 +100,7 @@ int HashTable::Total_Probes() {
 
 // This function hashes a given code by using the last 7 characters as
 // hex digits, and representing them as a decimal number
-int Last7(string code) {
+int Last7(string &code) {
 	int i = 0;
 	stringstream ss;
 	string temp;
@@ -123,8 +123,8 @@ int Last7(string code) {
 
 // This function hashes a given code by separating the string into 7 
 // character hex strings and performing an exclusive OR on them
-int XOR(string code) {
-	int i = 0, j = 0;
+int XOR(string &code) {
+	int i = 0, j = 0, length = code.length();
 	stringstream ss;
 	string temp1, temp2;
 
@@ -134,7 +134,6 @@ int XOR(string code) {
 	}
 	else {
 		// The first 7 character chunk will be what we start with
-		int length = code.length();
 		for (j = 0; j < 7; j++) {
 			temp1.push_back(code[j]);
 		}
