@@ -41,7 +41,6 @@ void HashTable::Add_Hash(string &key, string &val) {
 
 		if (Fxn == 1) hash = Last7(key);
 		else hash = XOR(key);
-
 		i = hash % keys.size();
 		// For double hashing, if we get the same value more than once
 		// we know it can't be inserted into the table
@@ -76,9 +75,35 @@ void HashTable::Add_Hash(string &key, string &val) {
 // This probes the hash table to find the requested key's value
 string HashTable::Find(string &key) {
 	tmp = 0;
-	for (int i = 0; i < keys.size(); i++) {
-		if (keys[i] == key) return vals[i];
-		tmp++;
+	int i = 0; // Index
+	bool found = false;
+	// for (int i = 0; i < keys.size(); i++) {
+	// 	if (keys[i] == key) return vals[i];
+	// 	tmp++;
+	// }
+
+	if (Fxn == 1) hash = Last7(key);
+	else hash = XOR(key);
+	i = hash % keys.size();
+
+	while (tmp < nkeys) {
+		if (keys[i] != key) {
+			if (Coll == 1) {
+				i = (i + 1) % keys.size();
+				tmp++;
+			}
+			else {
+				//if (Fxn == 1) temp = XOR(key) % keys.size();
+				//else tmp = Last7(key) % keys.size();
+				//if (temp == 0) temp = 1;
+				//i = (hash + temp) % keys.size();
+				//if (i == repeat) {
+					//fprintf(stderr, "Couldn't put %s into the table", key.c_str());
+					break;
+				//}
+			}
+		}
+		else return vals[i];
 	}
 
 	return "";
