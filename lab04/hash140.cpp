@@ -9,7 +9,6 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
-#include <iso646.h>
 #include "hash140.h"
 
 using namespace std;
@@ -58,8 +57,8 @@ void HashTable::Add_Hash(string &key, string &val) {
 					//if (temp == 0) temp = 1;
 					//i = (hash + temp) % keys.size();
 					//if (i == repeat) {
-						//fprintf(stderr, "Couldn't put %s into the table", key.c_str());
-						break;
+					//fprintf(stderr, "Couldn't put %s into the table", key.c_str());
+					break;
 					//}
 				}
 			}
@@ -128,9 +127,28 @@ int XOR(string &code) {
 	stringstream ss;
 	string temp1, temp2;
 
-	if (code.length() <= 7) {
+	if (length <= 7) {
 		ss << code;
 		ss >> hex >> i;
+	}
+	else {
+		// The first 7 character chunk will be what we start with
+		for (j = 0; j < 7; j++) {
+			temp1.push_back(code[j]);
+		}
+		cout << temp1 << endl;
+		for (j; j < 14; j++) {
+			temp2.push_back(code[j]);
+		}
+		cout << temp2 << endl;
+
+		for (int k = 0; k < 7; k++) {
+			char t;
+			cout << temp1[k] << " " << temp2[k] << endl;
+			t = temp1[k] ^ temp2[k];
+			cout << t;
+		}
+		cout << temp1 << endl;
 	}
 
 	return i;
