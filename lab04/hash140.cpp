@@ -27,6 +27,7 @@ HashTable::HashTable(int table_size, string function, string collision) {
 	else Fxn = 2; // XOR
 	if (collision == "Linear") Coll = 1;
 	else Coll = 2; // Double
+	nkeys = 0;
 }
 
 // This is for adding a new entry to the HashTable, including values for
@@ -35,31 +36,31 @@ void HashTable::Add_Hash(string &key, string &val) {
 	if (nkeys == keys.size()) fprintf(stderr, "Hash Table Full\n");
 	else {
 		int i = 0; // Index
-		int hash = 0, err = 0, temp = 0;
+		int hash = 0, temp = 0, repeat = 0;
 		bool insert = false;
 
 		if (Fxn == 1) hash = Last7(key);
 		else hash = XOR(key);
 
 		i = hash % keys.size();
+		// For double hashing, if we get the same value more than once
+		// we know it can't be inserted into the table
+		repeat = i;
 
 		while (insert == false) {
 			if (keys[i] != "") {
 				if (Coll == 1) {
-					i++;
-					tmp++;
+					i = (i + 1) % keys.size();
 				}
 				else {
-					if (Fxn == 1) temp = XOR(key) % keys.size();
-					else tmp = Last7(key) % keys.size();
-					if (temp == 0) temp = 1;
-					i = (hash + temp) % keys.size();
-					err++;
-					tmp++;
-					if (err >= 15) {
-						fprintf(stderr, "Couldn't put %s into the table", key.c_str());
-						insert = true;
-					}
+					//if (Fxn == 1) temp = XOR(key) % keys.size();
+					//else tmp = Last7(key) % keys.size();
+					//if (temp == 0) temp = 1;
+					//i = (hash + temp) % keys.size();
+					//if (i == repeat) {
+						//fprintf(stderr, "Couldn't put %s into the table", key.c_str());
+						break;
+					//}
 				}
 			}
 			else {
@@ -74,9 +75,10 @@ void HashTable::Add_Hash(string &key, string &val) {
 
 // This probes the hash table to find the requested key's value
 string HashTable::Find(string &key) {
+	tmp = 0;
 	for (int i = 0; i < keys.size(); i++) {
 		if (keys[i] == key) return vals[i];
-		//tmp++;
+		tmp++;
 	}
 
 	return "";
@@ -101,15 +103,15 @@ int HashTable::Total_Probes() {
 // hex digits, and representing them as a decimal number
 int Last7(string &code) {
 	int i = 0;
+	int length = code.length();
 	stringstream ss;
 	string temp;
 
-	if (code.length() <= 7) {
+	if (length <= 7) {
 		ss << code;
 		ss >> hex >> i;
 	}
 	else {
-		int length = code.length();
 		for (int j = length - 7; j < length; j++) {
 			temp.push_back(code[j]);
 		}
@@ -129,36 +131,6 @@ int XOR(string &code) {
 
 	if (code.length() <= 7) {
 		ss << code;
-		ss >> hex >> i;
-	}
-	else {
-		// The first 7 character chunk will be what we start with
-		for (j = 0; j < 7; j++) {
-			temp1.push_back(code[j]);
-		}
-
-		// As long as we haven't reached the end of the code, we need
-		// to continue breaking it into 7 character chunks
-		while (j < length) {
-			if ((length - j) < 7) {
-				// If the last chunk is less than 7 characters, we need to
-				// pad it with 0's from the left
-				int k = 7 - j;
-				for (int l = 0; l < k; l++) temp2.push_back('0');
-				for (j; j < length; j++) temp2.push_back(code[j]);
-			}
-			else {
-				for (j; j%7 <= 6; j++) temp2.push_back(code[j]);
-			}
-
-			// Now that we have our chunks, we need to XOR the strings
-			// char by char
-			for (int k = 0; k < 7; k++) {
-				temp1[k] ^= temp2[k];
-			}
-		}
-
-		ss << temp1;
 		ss >> hex >> i;
 	}
 
