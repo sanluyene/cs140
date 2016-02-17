@@ -124,40 +124,39 @@ int Last7(string &code) {
 // character hex strings and performing an exclusive OR on them
 int XOR(string &code) {
 	int i = 0, j = 0, length = code.length();
-	unsigned int it1, it2;
-	stringstream ss, ss2;
+	unsigned int hash = 0, nextWord = 0;
+	stringstream ss;
+	istringstream ss2;
 	string temp1, temp2;
+	vector<string> subKeys;
 	
 	if (length <= 7) {
 		ss << code;
 		ss >> hex >> i;
 	}
 	else {
-		// The first 7 character chunk will be what we start with
-		for (j = 0; j < 7; j++) {
-			temp1 = code.substr(0, 7);
+		for (j = 0; j < length; j++) {
+			if (j%7 == 0) subKeys.push_back(code.substr(j, 7));
 		}
-		ss << temp1;
-		ss >> hex >> it1;
+//		for (j = 0; j < subKeys.size(); j++) cout << "sub " << j << " " << subKeys[j] << endl;
+		
+		for (j = 0; j < subKeys.size(); j++) {
+//			if (subKeys[j].length() != 7) {
+//				int k = 7 - subKeys[j].length();
+//				string temp3;
+//				for (int l = 0; l < k; l++) temp3.push_back('0');
+//				for (int l = 0; l < subKeys[j].length(); l++) temp3.push_back(subKeys[j][l]);
+//				temp2 = temp3;
+//			}
 
-		for (j; j < length; j++) {
-			if (j%7 == 0) temp2 = code.substr(j - 7, 7);
-
-			if (temp2.length() != 7) {
-				int k = 7 - temp2.length();
-				string temp3;
-				for (int l = 0; l < k; l++) temp3.push_back('0');
-				for (int l = 0; l < temp2.length(); l++) temp3.push_back(temp2[l]);
-				temp2 = temp3;
-			}
-
-			ss2 << temp2;
-			ss2 >> hex >> it2;
-
-			it1 ^= it2;
-//cout << "it1 " << it1 << " it2 " << it2 << endl;
+			ss2.clear();
+			ss2.str(subKeys[j]);
+			ss2 >> hex >> nextWord;
+//cout << "hash " << hash << endl;
+			hash = nextWord ^ hash;
+//cout << " next " << nextWord << endl;
 		}
 	}
 
-	return it1;
+	return hash;
 }
