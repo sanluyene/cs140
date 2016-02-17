@@ -124,9 +124,10 @@ int Last7(string &code) {
 // character hex strings and performing an exclusive OR on them
 int XOR(string &code) {
 	int i = 0, j = 0, length = code.length();
-	stringstream ss;
+	unsigned int it1, it2;
+	stringstream ss, ss2;
 	string temp1, temp2;
-
+	
 	if (length <= 7) {
 		ss << code;
 		ss >> hex >> i;
@@ -134,22 +135,29 @@ int XOR(string &code) {
 	else {
 		// The first 7 character chunk will be what we start with
 		for (j = 0; j < 7; j++) {
-			temp1.push_back(code[j]);
+			temp1 = code.substr(0, 7);
 		}
-		cout << temp1 << endl;
-		for (j; j < 14; j++) {
-			temp2.push_back(code[j]);
-		}
-		cout << temp2 << endl;
+		ss << temp1;
+		ss >> hex >> it1;
 
-		for (int k = 0; k < 7; k++) {
-			char t;
-			cout << temp1[k] << " " << temp2[k] << endl;
-			t = temp1[k] ^ temp2[k];
-			cout << t;
+		for (j; j < length; j++) {
+			if (j%7 == 0) temp2 = code.substr(j - 7, 7);
+
+			if (temp2.length() != 7) {
+				int k = 7 - temp2.length();
+				string temp3;
+				for (int l = 0; l < k; l++) temp3.push_back('0');
+				for (int l = 0; l < temp2.length(); l++) temp3.push_back(temp2[l]);
+				temp2 = temp3;
+			}
+
+			ss2 << temp2;
+			ss2 >> hex >> it2;
+
+			it1 ^= it2;
+//cout << "it1 " << it1 << " it2 " << it2 << endl;
 		}
-		cout << temp1 << endl;
 	}
 
-	return i;
+	return it1;
 }
