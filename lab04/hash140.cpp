@@ -45,7 +45,7 @@ void HashTable::Add_Hash(string &key, string &val) {
 
 		// For double hashing, if we get the same value more than once
 		// we know it can't be inserted into the table
-		repeats.push_back(i);
+		//		repeats.push_back(i);
 
 		while (insert == false) {
 			if (keys[i] != "") {
@@ -57,16 +57,21 @@ void HashTable::Add_Hash(string &key, string &val) {
 					if (Fxn == 1) step = XOR(key) % keys.size();
 					else step = Last7(key) % keys.size();
 					if (step == 0) step = 1;
-//					cout << "step " << step << " i " << i << endl;
-					i = (hash + times * step) % keys.size();
-					repeats.push_back(i);
-					for (int j = 0; j < repeats.size(); j++) {
-						if (step == repeats[j]) {
-							fprintf(stderr, "Couldn't put %s into the table\n", key.c_str());
-							insert = true;
-							break;
-						}
+					i = (hash + step) % keys.size();
+					//					repeats.push_back(i);
+					//					for (int j = 0; j < repeats.size(); j++) {
+					//						if (step == repeats[j]) {
+					//							fprintf(stderr, "Couldn't put %s into the table\n", key.c_str());
+					//							insert = true;
+					//							break;
+					//						}
+					//					}
+					if (times >= nkeys) {
+						fprintf(stderr, "Couldn't put %s into the table\n", key.c_str());
+						insert = true;
+						break;
 					}
+					tmp++;
 					times++;
 				}
 			}
