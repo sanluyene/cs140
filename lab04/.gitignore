@@ -3,3 +3,4 @@ hash_test.o
 hash140.o
 hash_test
 tmp*
+allcat.txt
