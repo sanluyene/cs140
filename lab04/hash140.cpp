@@ -59,7 +59,7 @@ void HashTable::Add_Hash(string &key, string &val) {
 					i = (hash + (times * step)) % keys.size();
 						if (i == repeats) {
 							fprintf(stderr, "Couldn't put %s into the table\n", key.c_str());
-							break;
+							exit(1);
 						}
 					tmp++;
 					times++;
