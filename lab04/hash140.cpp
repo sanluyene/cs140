@@ -37,7 +37,7 @@ void HashTable::Add_Hash(string &key, string &val) {
 		int i = 0; // Index
 		int hash = 0, step = 0, times = 1;
 		bool insert = false;
-		vector<int> repeats;
+		int repeats = 0;
 
 		if (Fxn == 1) hash = Last7(key);
 		else hash = XOR(key);
@@ -45,8 +45,7 @@ void HashTable::Add_Hash(string &key, string &val) {
 
 		// For double hashing, if we get the same value more than once
 		// we know it can't be inserted into the table
-		//		repeats.push_back(i);
-
+		repeats = i;
 		while (insert == false) {
 			if (keys[i] != "") {
 				if (Coll == 1) {
@@ -54,23 +53,14 @@ void HashTable::Add_Hash(string &key, string &val) {
 					tmp++;
 				}
 				else {
-					if (Fxn == 1) step = XOR(key) % keys.size();
-					else step = Last7(key) % keys.size();
+					if (Fxn == 1) step = (XOR(key) % keys.size());
+					else step = (Last7(key) % keys.size());
 					if (step == 0) step = 1;
-					i = (hash + step) % keys.size();
-					//					repeats.push_back(i);
-					//					for (int j = 0; j < repeats.size(); j++) {
-					//						if (step == repeats[j]) {
-					//							fprintf(stderr, "Couldn't put %s into the table\n", key.c_str());
-					//							insert = true;
-					//							break;
-					//						}
-					//					}
-					if (times >= nkeys) {
-						fprintf(stderr, "Couldn't put %s into the table\n", key.c_str());
-						insert = true;
-						break;
-					}
+					i = (hash + (times * step)) % keys.size();
+						if (i == repeats) {
+							fprintf(stderr, "Couldn't put %s into the table\n", key.c_str());
+							break;
+						}
 					tmp++;
 					times++;
 				}
@@ -80,6 +70,7 @@ void HashTable::Add_Hash(string &key, string &val) {
 				vals[i] = val;
 				insert = true;
 				nkeys++;
+				repeats = 0;
 			}
 		}
 	}
