@@ -10,6 +10,8 @@
 #include <algorithm>
 #include "bitmatrix.h"
 
+using namespace std;
+
 Bitmatrix::Bitmatrix(int rows, int cols)
 {
 	if (rows <= 0 || cols <= 0) {
@@ -36,11 +38,13 @@ int Bitmatrix::Cols()
 
 void Bitmatrix::Set(int row, int col, char val)
 {
+	if (row < 0 || col < 0) return;
 	M[row][col] = val;
 }
 
 char Bitmatrix::Val(int row, int col)
 {
+	if (row < 0 || col < 0) return -1;
 	return (M[row][col] - 48);
 }
 
@@ -64,10 +68,21 @@ void Bitmatrix::Print(int w)
 
 void Bitmatrix::Write(string fn) 
 {
+	ofstream fout;
+	fout.open(fn.c_str());
+
+	for (int i = 0; i < M.size(); i++) {
+		for (int j = 0; j < M[i].size(); j++) {
+			fout << (M[i][j] - 48);
+		}
+		fout << "\n";
+	}
+	fout.close();
 }
 
 void Bitmatrix::Swap_Rows(int r1, int r2)
 {
+
 }
 
 void Bitmatrix::R1_Plus_Equals_R2(int r1, int r2)
