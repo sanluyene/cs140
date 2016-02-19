@@ -1,3 +1,8 @@
+// CS140 Spring 2016
+// Lab 05: Playing with bit matricies
+// Author: Ashley Sattler
+// Date: 02/19/2016
+
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
