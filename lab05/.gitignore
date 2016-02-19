@@ -2,3 +2,4 @@ bitmatrix_editor
 tmp*
 correct_dir
 your_dir
+*.o
