@@ -12,9 +12,9 @@
 
 using namespace std;
 
+// This constructor builds an empty bitmatrix for us to start from
 Bitmatrix::Bitmatrix(int rows, int cols)
 {
-//cout << "call bitmatrix constructor" << endl;
 	if (rows <= 0 || cols <= 0) {
 		fprintf(stderr, "Bad matrix file\n");
 		M.resize(1); M[0].resize(1), M[0][0] = '0';
@@ -27,32 +27,35 @@ Bitmatrix::Bitmatrix(int rows, int cols)
 	}
 }
 
+// This returns the number of rows in our bitmatrix
 int Bitmatrix::Rows()
 {
 	return M.size();
 }
 
+// This returns the number of columnss in our bitmatrix
 int Bitmatrix::Cols()
 {
 	return M[0].size();
 }
 
+// This method sets a specific bitmatrix entry to the desired value
 void Bitmatrix::Set(int row, int col, char val)
 {
-//cout << "call set" << endl;
 	if (row < 0 || col < 0) return;
 	M[row][col] = val;
 }
 
+// This method retrieves a value from the bitmatrix
 char Bitmatrix::Val(int row, int col)
 {
 	if (row < 0 || col < 0) return -1;
 	return (M[row][col] - 48);
 }
 
+// This method was given to us, and prints the entire bitmatrix
 void Bitmatrix::Print(int w) 
 {
-//cout << "call bitmatrix print" << endl;
 	int i, j;
 
 	for (i = 0; i < M.size(); i++) {
@@ -69,9 +72,9 @@ void Bitmatrix::Print(int w)
 	}
 }
 
+// This method writes the entire bitmatrix to a file
 void Bitmatrix::Write(string fn) 
 {
-//cout << "call write" << endl;
 	ofstream fout;
 	fout.open(fn.c_str());
 
@@ -84,9 +87,9 @@ void Bitmatrix::Write(string fn)
 	fout.close();
 }
 
+// This method swaps the given rows' entries 1 for 1
 void Bitmatrix::Swap_Rows(int r1, int r2)
 {
-//cout << "call swap" << endl;
 	if (r1 < 0 || r2 < 0) return;
 	int tmp;
 	for (int i = 0; i < M[0].size(); i++) {
@@ -96,19 +99,20 @@ void Bitmatrix::Swap_Rows(int r1, int r2)
 	}
 }
 
+// This method effectively XOR's the two given rows, and sets
+// the results to the first given row
 void Bitmatrix::R1_Plus_Equals_R2(int r1, int r2)
 {
 	int tmp;
-//cout << "call r1+=r2" << endl;
 	if (r1 < 0 || r2 < 0) return;
 	for (int i = 0; i < M[r1].size(); i++) {
-//		tmp = M[r1][i] + M[r2][i];
-//		M[r1][i] = tmp;
-		if((M[r1][i] == '0' && M[r2][i] == '0') || (M[r1][i] == '1' && M[r2][i] == '1')) M[r1][i] = '0';
+		if((M[r1][i] == '0' && M[r2][i] == '0') || (M[r1][i] == '1' && M[r2][i] == '1'))
+			M[r1][i] = '0';
 		else M[r1][i] = '1';
 	}
 }
 
+// This was given to us, and reads a given file to create a bitmatrix
 Bitmatrix::Bitmatrix(string fn) 
 {
 	ifstream f;
@@ -141,6 +145,7 @@ Bitmatrix::Bitmatrix(string fn)
 	f.close();
 }
 
+// This method prints a PGM of the bitmatrix, and makes it all pretty-like
 void Bitmatrix::PGM(string fn, int pixels, int border)
 {
 }
@@ -153,17 +158,44 @@ Bitmatrix *Bitmatrix::Copy()
 
 BM_Hash::BM_Hash(int size)
 {
+	table.resize(size);
 }
 
+// This stores a bitmatrix in a hash table with the given key,
+// or updates a hash entry if the key already exists
 void BM_Hash::Store(string &key, Bitmatrix *bm)
 {
+	bool update = false;
+	vector<HTE *> temp;
+	HTE hash;
+	hash.key = key;
+	hash.bm = bm;
+
+	for (int i = 0; i < table.size(); i++) {
+		for (int j = 0; j < table[i].size(); j++) {
+			if (table[i][j]->key == key) {
+				table[i][j]->bm = bm;
+				update = true;
+			}
+		}
+	}
+	if (update == false) {
+		table.push_back(temp);
+	}
 }
 
+// This retrieves a bitmatrix from the hashtable, if the key exists
 Bitmatrix *BM_Hash::Recall(string &key)
 {
+	for (int i = 0; i < table.size(); i++) {
+		for (int j = 0; j < table[i].size(); j++) {
+			if (table[i][j]->key == key) return table[i][j]->bm;
+		}
+	}
 	return NULL;
 }
 
+// This prints all of the hashtable bitmatrixes that are currently stored
 HTVec BM_Hash::All()
 {
 	HTVec rv;
