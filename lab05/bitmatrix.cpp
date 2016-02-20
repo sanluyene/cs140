@@ -82,11 +82,21 @@ void Bitmatrix::Write(string fn)
 
 void Bitmatrix::Swap_Rows(int r1, int r2)
 {
-
+	if (r1 < 0 || r2 < 0) return;
+	int tmp;
+	for (int i = 0; i < M[0].size(); i++) {
+		tmp = M[r1][i];
+		M[r1][i] = M[r2][i];
+		M[r2][i] = tmp;
+	}
 }
 
 void Bitmatrix::R1_Plus_Equals_R2(int r1, int r2)
 {
+	if (r1 < 0 || r2 < 0) return;
+	for (int i = 0; i < M[r1].size(); i++) {
+		M[r1][i] = int(M[r2][i]) ^ int(M[r1][i]);
+	}
 }
 
 Bitmatrix::Bitmatrix(string fn) 
