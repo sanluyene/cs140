@@ -14,6 +14,7 @@ using namespace std;
 
 Bitmatrix::Bitmatrix(int rows, int cols)
 {
+//cout << "call bitmatrix constructor" << endl;
 	if (rows <= 0 || cols <= 0) {
 		fprintf(stderr, "Bad matrix file\n");
 		M.resize(1); M[0].resize(1), M[0][0] = '0';
@@ -38,6 +39,7 @@ int Bitmatrix::Cols()
 
 void Bitmatrix::Set(int row, int col, char val)
 {
+//cout << "call set" << endl;
 	if (row < 0 || col < 0) return;
 	M[row][col] = val;
 }
@@ -50,6 +52,7 @@ char Bitmatrix::Val(int row, int col)
 
 void Bitmatrix::Print(int w) 
 {
+//cout << "call bitmatrix print" << endl;
 	int i, j;
 
 	for (i = 0; i < M.size(); i++) {
@@ -68,6 +71,7 @@ void Bitmatrix::Print(int w)
 
 void Bitmatrix::Write(string fn) 
 {
+//cout << "call write" << endl;
 	ofstream fout;
 	fout.open(fn.c_str());
 
@@ -82,6 +86,7 @@ void Bitmatrix::Write(string fn)
 
 void Bitmatrix::Swap_Rows(int r1, int r2)
 {
+//cout << "call swap" << endl;
 	if (r1 < 0 || r2 < 0) return;
 	int tmp;
 	for (int i = 0; i < M[0].size(); i++) {
@@ -93,9 +98,14 @@ void Bitmatrix::Swap_Rows(int r1, int r2)
 
 void Bitmatrix::R1_Plus_Equals_R2(int r1, int r2)
 {
+	int tmp;
+//cout << "call r1+=r2" << endl;
 	if (r1 < 0 || r2 < 0) return;
 	for (int i = 0; i < M[r1].size(); i++) {
-		M[r1][i] = int(M[r2][i]) ^ int(M[r1][i]);
+//		tmp = M[r1][i] + M[r2][i];
+//		M[r1][i] = tmp;
+		if((M[r1][i] == '0' && M[r2][i] == '0') || (M[r1][i] == '1' && M[r2][i] == '1')) M[r1][i] = '0';
+		else M[r1][i] = '1';
 	}
 }
 
