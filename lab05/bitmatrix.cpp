@@ -12,6 +12,20 @@
 
 using namespace std;
 
+// This is our hash function, our collision resolution is separate chaining
+unsigned int djb_hash(string &s)
+{
+	int i;
+	unsigned int h;
+
+	h = 5381;
+
+	for (i = 0; i < s.size(); i++) {
+		h = (h << 5) + h + s[i];
+	}
+	return h;
+}
+
 // This constructor builds an empty bitmatrix for us to start from
 Bitmatrix::Bitmatrix(int rows, int cols)
 {
@@ -166,32 +180,38 @@ BM_Hash::BM_Hash(int size)
 void BM_Hash::Store(string &key, Bitmatrix *bm)
 {
 	bool update = false;
-	vector<HTE *> temp;
-	HTE hash;
-	hash.key = key;
-	hash.bm = bm;
+	unsigned int hash;
+	vector<HTE *> newvec;
+	HTE *entry;
+	
+	entry->key = key;
+	entry->bm = bm;
+	newvec.push_back(entry);
+	hash = djb_hash(key);
 
-	for (int i = 0; i < table.size(); i++) {
-		for (int j = 0; j < table[i].size(); j++) {
-			if (table[i][j]->key == key) {
-				table[i][j]->bm = bm;
-				update = true;
-			}
+	for (int j = 0; j < table[hash].size(); j++) {
+		if (table[hash][j]->key == key) {
+			table[hash][j]->bm = bm;
+			update = true;
 		}
 	}
+
 	if (update == false) {
-		table.push_back(temp);
+		table[hash].push_back(entry);
 	}
 }
 
 // This retrieves a bitmatrix from the hashtable, if the key exists
 Bitmatrix *BM_Hash::Recall(string &key)
 {
-	for (int i = 0; i < table.size(); i++) {
-		for (int j = 0; j < table[i].size(); j++) {
-			if (table[i][j]->key == key) return table[i][j]->bm;
-		}
+	unsigned int hash;
+
+	hash = djb_hash(key);
+
+	for (int j = 0; j < table[hash].size(); j++) {
+		if (table[hash][j]->key == key) return table[hash][j]->bm;
 	}
+
 	return NULL;
 }
 
