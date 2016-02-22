@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <algorithm>
+#include <string>
 #include "bitmatrix.h"
 
 using namespace std;
@@ -180,14 +181,16 @@ BM_Hash::BM_Hash(int size)
 void BM_Hash::Store(string &key, Bitmatrix *bm)
 {
 	bool update = false;
-	unsigned int hash;
-	vector<HTE *> newvec;
+	int hash;
 	HTE *entry;
-	
-	entry->key = key;
-	entry->bm = bm;
-	newvec.push_back(entry);
-	hash = djb_hash(key);
+stringstream ss1;
+int temp1;
+ss1 << key;
+ss1 >> hex >> temp1;
+cout << "store key hex " << ss1;
+cout << "store key int " << temp1;
+
+	hash = djb_hash(key) % table.size();
 
 	for (int j = 0; j < table[hash].size(); j++) {
 		if (table[hash][j]->key == key) {
@@ -197,6 +200,10 @@ void BM_Hash::Store(string &key, Bitmatrix *bm)
 	}
 
 	if (update == false) {
+		entry = new HTE;
+		entry->key = key;
+		entry->bm = bm;
+
 		table[hash].push_back(entry);
 	}
 }
@@ -204,14 +211,24 @@ void BM_Hash::Store(string &key, Bitmatrix *bm)
 // This retrieves a bitmatrix from the hashtable, if the key exists
 Bitmatrix *BM_Hash::Recall(string &key)
 {
-	unsigned int hash;
+	int hash;
 
-	hash = djb_hash(key);
+stringstream ss1, ss2;
+int temp1, temp2;
 
+	hash = djb_hash(key) % table.size();
 	for (int j = 0; j < table[hash].size(); j++) {
-		if (table[hash][j]->key == key) return table[hash][j]->bm;
+cout << "table[hash][" << j << "]key " << key << endl;
+cout << "looking for key " << key << endl;
+//		if (table[hash][j]->key == key) return table[hash][j]->bm;
+ss1 << table[hash][j]->key;
+ss1 >> hex >> temp1;
+ss2 << key;
+ss2 >> hex >> temp2;
+cout << "table hash hex " << ss1 << endl;
+cout << "key hex " << ss2 << endl;
+if (temp1 == temp2) return table[hash][j]->bm;
 	}
-
 	return NULL;
 }
 
