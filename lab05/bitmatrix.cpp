@@ -1,5 +1,7 @@
 // CS140 Spring 2016
 // Lab 05: Playing with bit matricies
+// Part 1: 1-28 and 101-120 (2/24)
+// Part 2: Remainder (3/2)
 // Author: Ashley Sattler
 // Date: 02/19/2016
 
@@ -163,7 +165,54 @@ Bitmatrix::Bitmatrix(string fn)
 // This method prints a PGM of the bitmatrix, and makes it all pretty-like
 void Bitmatrix::PGM(string fn, int pixels, int border)
 {
+	ofstream fout;
+	FILE * pgm;
+	int rows = 0, cols = 0, newrows = 0, newcols = 0;
 
+	newrows = (rows * pixels) + ((rows + 1) * border);
+	newcols = (cols * pixels) + ((cols + 1) * border);
+
+	pgm = fopen(fn.c_str(), "w");
+
+	// Print the required non-pixel values for the PGM file
+	fprintf(pgm, "P2\n%d %d\n255\n", newcols, newrows);
+
+	// Print the beginning border rows
+	for (int i = 0; i < border; i++) {
+		for (int j = 0; j < newcols; j++) {
+			fprintf(pgm, "0 ");
+		}
+		fprintf(pgm, "\n");
+	}
+
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			for (int k = 0; k < pixels; k++) {
+				// The border before the pixel
+				for (int b = 0; b < border; b++) {
+					fprintf(pgm, "0 ");
+				}
+				// The actual pixel
+				if (M[i][j] == 48) fprintf(pgm, "255 ");
+				else fprintf(pgm, "100 ");
+			}
+		}
+		// The border at the end of the column
+		for (int b = 0; b < border; b++) {
+			fprintf(pgm, "0 ");
+		}
+		fprintf(pgm, "\n");
+	}
+
+	// Print the ending border rows
+	for (int i = 0; i < border; i++) {
+		for (int j = 0; j < newcols; j++) {
+			fprintf(pgm, "0 ");
+		}
+		fprintf(pgm, "\n");
+	}
+
+	fclose(pgm);
 }
 
 Bitmatrix *Bitmatrix::Copy()
