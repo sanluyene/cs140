@@ -163,6 +163,7 @@ Bitmatrix::Bitmatrix(string fn)
 // This method prints a PGM of the bitmatrix, and makes it all pretty-like
 void Bitmatrix::PGM(string fn, int pixels, int border)
 {
+
 }
 
 Bitmatrix *Bitmatrix::Copy()
@@ -227,6 +228,16 @@ Bitmatrix *BM_Hash::Recall(string &key)
 HTVec BM_Hash::All()
 {
 	HTVec rv;
+	int rows, cols;
+
+	for (int i = 0; i < table.size(); i++) {
+		for (int j = 0; j < table[i].size(); j++) {
+			rows = table[i][j]->bm->Rows();
+			cols = table[i][j]->bm->Cols();
+			printf("%-31s %2d X  %2d\n", table[i][j]->key.c_str(), rows, cols);
+		}
+	}
+
 	return rv;
 }
 
