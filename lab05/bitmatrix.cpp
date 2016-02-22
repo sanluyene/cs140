@@ -186,22 +186,24 @@ void Bitmatrix::PGM(string fn, int pixels, int border)
 	}
 
 	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < cols; j++) {
-			for (int k = 0; k < pixels; k++) {
+		for (int r = 0; r < pixels; r++) {
+			for (int j = 0; j < cols; j++) {
 				// The border before the pixel
 				for (int b = 0; b < border; b++) {
 					fprintf(pgm, "0 ");
 				}
-				// The actual pixel
-				if (M[i][j] == 48) fprintf(pgm, "255 ");
-				else fprintf(pgm, "100 ");
+				for (int k = 0; k < pixels; k++) {
+					// The actual pixel
+					if (M[i][j] == 48) fprintf(pgm, "255 ");
+					else fprintf(pgm, "100 ");
+				}
 			}
+			// The border at the end of the column
+			for (int b = 0; b < border; b++) {
+				fprintf(pgm, "0 ");
+			}
+			fprintf(pgm, "\n");
 		}
-		// The border at the end of the column
-		for (int b = 0; b < border; b++) {
-			fprintf(pgm, "0 ");
-		}
-		fprintf(pgm, "\n");
 	}
 
 	// Print the ending border rows
