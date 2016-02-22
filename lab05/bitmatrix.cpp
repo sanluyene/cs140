@@ -169,8 +169,15 @@ void Bitmatrix::PGM(string fn, int pixels, int border)
 	FILE * pgm;
 	int rows = 0, cols = 0, newrows = 0, newcols = 0;
 
+	rows = M.size();
+	cols = M[0].size();
 	newrows = (rows * pixels) + ((rows + 1) * border);
 	newcols = (cols * pixels) + ((cols + 1) * border);
+
+cout << "rows " << rows << endl;
+cout << "cols " << cols << endl;
+cout << "new rows " << newrows << endl;
+cout << "new cols " << newcols << endl;
 
 	pgm = fopen(fn.c_str(), "w");
 
