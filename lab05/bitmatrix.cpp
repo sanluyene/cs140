@@ -167,7 +167,16 @@ void Bitmatrix::PGM(string fn, int pixels, int border)
 
 Bitmatrix *Bitmatrix::Copy()
 {
-	return NULL;
+	Bitmatrix *bm;
+	bm = new Bitmatrix(M.size(), M[0].size());
+
+	for (int i = 0; i < M.size(); i++) {
+		for (int j = 0; j < M[i].size(); j++) {
+			bm->Set(i, j, M[i][j]);
+		}
+	}
+
+	return bm;
 }
 
 
@@ -183,12 +192,6 @@ void BM_Hash::Store(string &key, Bitmatrix *bm)
 	bool update = false;
 	int hash;
 	HTE *entry;
-stringstream ss1;
-int temp1;
-ss1 << key;
-ss1 >> hex >> temp1;
-cout << "store key hex " << ss1;
-cout << "store key int " << temp1;
 
 	hash = djb_hash(key) % table.size();
 
@@ -213,21 +216,9 @@ Bitmatrix *BM_Hash::Recall(string &key)
 {
 	int hash;
 
-stringstream ss1, ss2;
-int temp1, temp2;
-
 	hash = djb_hash(key) % table.size();
 	for (int j = 0; j < table[hash].size(); j++) {
-cout << "table[hash][" << j << "]key " << key << endl;
-cout << "looking for key " << key << endl;
-//		if (table[hash][j]->key == key) return table[hash][j]->bm;
-ss1 << table[hash][j]->key;
-ss1 >> hex >> temp1;
-ss2 << key;
-ss2 >> hex >> temp2;
-cout << "table hash hex " << ss1 << endl;
-cout << "key hex " << ss2 << endl;
-if (temp1 == temp2) return table[hash][j]->bm;
+		if (table[hash][j]->key == key) return table[hash][j]->bm;
 	}
 	return NULL;
 }
