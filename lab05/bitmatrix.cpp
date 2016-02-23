@@ -206,7 +206,7 @@ void Bitmatrix::PGM(string fn, int pixels, int border)
 			}
 			fprintf(pgm, "\n");
 		}
-		// Print the ending border rows
+		// Print the border rows inbetween rows and at the end
 		for (int i = 0; i < border; i++) {
 			for (int j = 0; j < newcols; j++) {
 				fprintf(pgm, "0 ");
@@ -293,22 +293,74 @@ HTVec BM_Hash::All()
 	return rv;
 }
 
-
+// This method will add two matricies together
 Bitmatrix *Sum(Bitmatrix *m1, Bitmatrix *m2)
 {
-	return NULL;
+	Bitmatrix *bm;
+	char m1val, m2val, newval;
+	int m1rows = 0, m1cols = 0, m2rows = 0, m2cols = 0;
+	m1rows = m1.Rows(); m1cols = m1.Cols();
+	m2rows = m2.Rows(); m2cols = m2.Cols();
+
+	if (m1rows != m2rows || m1cols != m2cols) return NULL;
+
+	bm = new Bitmatrix(m1rows, m1cols);
+	for (int r = 0; r < m1rows; r++) {
+		for (int c = 0; c < m1cols; c++) {
+			m1val = m1->Val(r, c); m2val = m2->Val(r, c);
+			newval = (m1val + m2val) % 2;
+			bm->Set(r, c, newval);
+		}
+	}
+
+	return bm;
 }
 
+// This method will multiply two matricies together
 Bitmatrix *Product(Bitmatrix *m1, Bitmatrix *m2)
 {
-	return NULL;
+	Bitmatrix *bm;
+	char m1val, m2val, newval;
+	int m1rows = 0, m1cols = 0, m2rows = 0, m2cols = 0;
+	m1rows = m1.Rows(); m1cols = m1.Cols();
+	m2rows = m2.Rows(); m2cols = m2.Cols();
+
+	if (m1cols != m2rows) return NULL;
+
+	bm = new Bitmatrix(m1rows, m2cols);
+	for (int r = 0; r < m1rows; r++) {
+		for (int c = 0; c < m2cols; c++) {
+			m1val = m1->Val(r, c); m2val = m2->Val(r, c);
+			newval = (m1val * m2val);
+			bm->Set(r, c, newval);
+		}
+	}
+
+	return bm;
 }
 
+// This method will create a new matrix from part of an existing matrix
 Bitmatrix *Sub_Matrix(Bitmatrix *m, vector <int> &rows)
 {
-	return NULL;
+	Bitmatrix *bm;
+	char mval;
+	int mrows = 0, mcols = 0;
+	mrows = m.Rows(); mcols = m.Cols();
+
+	if (rows.size() >= m1rows || rows.size() <= 0) return NULL;
+
+	bm = new Bitmatrix(rows, mcols);
+	for (int r = 0; r < rows.size(); r++) {
+		for (int c = 0; c < mcols; c++) {
+			mval = m->Val(rows[r], c);
+			bm->Set(r, c, mval);
+		}
+	}
+
+	return bm;
 }
 
+// This method will generate the inverse of an existing matrix
 Bitmatrix *Inverse(Bitmatrix *m)
 {
 	return NULL;
