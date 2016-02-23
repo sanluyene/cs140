@@ -299,8 +299,8 @@ Bitmatrix *Sum(Bitmatrix *m1, Bitmatrix *m2)
 	Bitmatrix *bm;
 	char m1val, m2val, newval;
 	int m1rows = 0, m1cols = 0, m2rows = 0, m2cols = 0;
-	m1rows = m1.Rows(); m1cols = m1.Cols();
-	m2rows = m2.Rows(); m2cols = m2.Cols();
+	m1rows = m1->Rows(); m1cols = m1->Cols();
+	m2rows = m2->Rows(); m2cols = m2->Cols();
 
 	if (m1rows != m2rows || m1cols != m2cols) return NULL;
 
@@ -322,8 +322,8 @@ Bitmatrix *Product(Bitmatrix *m1, Bitmatrix *m2)
 	Bitmatrix *bm;
 	char m1val, m2val, newval;
 	int m1rows = 0, m1cols = 0, m2rows = 0, m2cols = 0;
-	m1rows = m1.Rows(); m1cols = m1.Cols();
-	m2rows = m2.Rows(); m2cols = m2.Cols();
+	m1rows = m1->Rows(); m1cols = m1->Cols();
+	m2rows = m2->Rows(); m2cols = m2->Cols();
 
 	if (m1cols != m2rows) return NULL;
 
@@ -345,11 +345,11 @@ Bitmatrix *Sub_Matrix(Bitmatrix *m, vector <int> &rows)
 	Bitmatrix *bm;
 	char mval;
 	int mrows = 0, mcols = 0;
-	mrows = m.Rows(); mcols = m.Cols();
+	mrows = m->Rows(); mcols = m->Cols();
 
-	if (rows.size() >= m1rows || rows.size() <= 0) return NULL;
+	if (rows.size() >= mrows || rows.size() <= 0) return NULL;
 
-	bm = new Bitmatrix(rows, mcols);
+	bm = new Bitmatrix(rows.size(), mcols);
 	for (int r = 0; r < rows.size(); r++) {
 		for (int c = 0; c < mcols; c++) {
 			mval = m->Val(rows[r], c);
