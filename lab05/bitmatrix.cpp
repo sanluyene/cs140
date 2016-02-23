@@ -174,11 +174,6 @@ void Bitmatrix::PGM(string fn, int pixels, int border)
 	newrows = (rows * pixels) + ((rows + 1) * border);
 	newcols = (cols * pixels) + ((cols + 1) * border);
 
-cout << "rows " << rows << endl;
-cout << "cols " << cols << endl;
-cout << "new rows " << newrows << endl;
-cout << "new cols " << newcols << endl;
-
 	pgm = fopen(fn.c_str(), "w");
 
 	// Print the required non-pixel values for the PGM file
@@ -211,14 +206,13 @@ cout << "new cols " << newcols << endl;
 			}
 			fprintf(pgm, "\n");
 		}
-	}
-
-	// Print the ending border rows
-	for (int i = 0; i < border; i++) {
-		for (int j = 0; j < newcols; j++) {
-			fprintf(pgm, "0 ");
+		// Print the ending border rows
+		for (int i = 0; i < border; i++) {
+			for (int j = 0; j < newcols; j++) {
+				fprintf(pgm, "0 ");
+			}
+			fprintf(pgm, "\n");
 		}
-		fprintf(pgm, "\n");
 	}
 
 	fclose(pgm);
