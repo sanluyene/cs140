@@ -57,13 +57,14 @@ int Bitmatrix::Cols()
 }
 
 // This method sets a specific bitmatrix entry to the desired value
+// We are only using 0's and 1's
 void Bitmatrix::Set(int row, int col, char val)
 {
 	if (row < 0 || col < 0) return;
 	M[row][col] = val;
 }
 
-// This method retrieves a value from the bitmatrix
+// This method retrieves a specific value from the bitmatrix
 char Bitmatrix::Val(int row, int col)
 {
 	if (row < 0 || col < 0) return -1;
@@ -104,7 +105,7 @@ void Bitmatrix::Write(string fn)
 	fout.close();
 }
 
-// This method swaps the given rows' entries 1 for 1
+// This method will swap all entries in the two specified rows
 void Bitmatrix::Swap_Rows(int r1, int r2)
 {
 	if (r1 < 0 || r2 < 0) return;
@@ -116,8 +117,8 @@ void Bitmatrix::Swap_Rows(int r1, int r2)
 	}
 }
 
-// This method effectively XOR's the two given rows, and sets
-// the results to the first given row
+// This method effectively XOR's the values from two given rows
+// and sets the results to the first given row
 void Bitmatrix::R1_Plus_Equals_R2(int r1, int r2)
 {
 	int tmp;
@@ -129,7 +130,7 @@ void Bitmatrix::R1_Plus_Equals_R2(int r1, int r2)
 	}
 }
 
-// This was given to us, and reads a given file to create a bitmatrix
+// This method was given to us, and reads a given file to create a bitmatrix
 Bitmatrix::Bitmatrix(string fn) 
 {
 	ifstream f;
@@ -171,6 +172,7 @@ void Bitmatrix::PGM(string fn, int pixels, int border)
 
 	rows = M.size();
 	cols = M[0].size();
+	// We need to account for the size of the border
 	newrows = (rows * pixels) + ((rows + 1) * border);
 	newcols = (cols * pixels) + ((cols + 1) * border);
 
@@ -206,7 +208,7 @@ void Bitmatrix::PGM(string fn, int pixels, int border)
 			}
 			fprintf(pgm, "\n");
 		}
-		// Print the border rows inbetween rows and at the end
+		// Print the border inbetween rows and at the end
 		for (int i = 0; i < border; i++) {
 			for (int j = 0; j < newcols; j++) {
 				fprintf(pgm, "0 ");
@@ -218,6 +220,7 @@ void Bitmatrix::PGM(string fn, int pixels, int border)
 	fclose(pgm);
 }
 
+// This method copies an entire bitmatrix into a new bitmatrix
 Bitmatrix *Bitmatrix::Copy()
 {
 	Bitmatrix *bm;
@@ -232,7 +235,9 @@ Bitmatrix *Bitmatrix::Copy()
 	return bm;
 }
 
-
+// This is a constructor for a new bitmatrix hash table
+// The size corresponds to the number of hash rows available
+// We will use separate chaining as our collision resolution
 BM_Hash::BM_Hash(int size)
 {
 	table.resize(size);
@@ -250,11 +255,13 @@ void BM_Hash::Store(string &key, Bitmatrix *bm)
 
 	for (int j = 0; j < table[hash].size(); j++) {
 		if (table[hash][j]->key == key) {
+			// The entry already exists
 			table[hash][j]->bm = bm;
 			update = true;
 		}
 	}
 
+	// The entry does not exist
 	if (update == false) {
 		entry = new HTE;
 		entry->key = key;
@@ -270,9 +277,11 @@ Bitmatrix *BM_Hash::Recall(string &key)
 	int hash;
 
 	hash = djb_hash(key) % table.size();
+
 	for (int j = 0; j < table[hash].size(); j++) {
 		if (table[hash][j]->key == key) return table[hash][j]->bm;
 	}
+
 	return NULL;
 }
 
@@ -299,9 +308,12 @@ Bitmatrix *Sum(Bitmatrix *m1, Bitmatrix *m2)
 	Bitmatrix *bm;
 	char m1val, m2val, newval;
 	int m1rows = 0, m1cols = 0, m2rows = 0, m2cols = 0;
+
+	// We need the given bitmatricies' information
 	m1rows = m1->Rows(); m1cols = m1->Cols();
 	m2rows = m2->Rows(); m2cols = m2->Cols();
 
+	// If they are not equal in size, then the summation will not work
 	if (m1rows != m2rows || m1cols != m2cols) return NULL;
 
 	bm = new Bitmatrix(m1rows, m1cols);
@@ -325,9 +337,12 @@ Bitmatrix *Product(Bitmatrix *m1, Bitmatrix *m2)
 	// Iterators
 	int c = 0, r = 0, c1 = 0;
 
+	// We need the given bitmatricies' information
 	m1rows = m1->Rows(); m1cols = m1->Cols();
 	m2rows = m2->Rows(); m2cols = m2->Cols();
 
+	// If the first's rows and second's columns are not equal,
+	// then the product will not work properly
 	if (m1cols != m2rows) return NULL;
 
 	bm = new Bitmatrix(m1rows, m2cols);
@@ -353,8 +368,12 @@ Bitmatrix *Sub_Matrix(Bitmatrix *m, vector <int> &rows)
 	Bitmatrix *bm;
 	char mval;
 	int mrows = 0, mcols = 0;
+
+	// We need the given bitmatrix's information
 	mrows = m->Rows(); mcols = m->Cols();
 
+	// If we ask for more rows than exist in the bitmatrix, or no rows
+	// then this method will not work
 	if (rows.size() > mrows || rows.size() <= 0) return NULL;
 
 	bm = new Bitmatrix(rows.size(), mcols);
@@ -374,8 +393,11 @@ Bitmatrix *Inverse(Bitmatrix *m)
 	Bitmatrix *bm;
 	char mval;
 	int mrows = 0, mcols = 0;
+
+	// We need the given bitmatrix's information
 	mrows = m->Rows(); mcols = m->Cols();
 
+	// If the bitmatrix is not square, it will not have an inverse
 	if (mrows != mcols) return NULL;
 
 	bm = new Bitmatrix(mrows, mcols);
