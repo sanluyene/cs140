@@ -67,7 +67,7 @@ void Bitmatrix::Set(int row, int col, char val)
 char Bitmatrix::Val(int row, int col)
 {
 	if (row < 0 || col < 0) return -1;
-	return (M[row][col] - 48);
+	return (M[row][col] - '0');
 }
 
 // This method was given to us, and prints the entire bitmatrix
@@ -97,7 +97,7 @@ void Bitmatrix::Write(string fn)
 
 	for (int i = 0; i < M.size(); i++) {
 		for (int j = 0; j < M[i].size(); j++) {
-			fout << (M[i][j] - 48);
+			fout << (M[i][j] - '0');
 		}
 		fout << "\n";
 	}
@@ -196,7 +196,7 @@ void Bitmatrix::PGM(string fn, int pixels, int border)
 				}
 				for (int k = 0; k < pixels; k++) {
 					// The actual pixel
-					if (M[i][j] == 48) fprintf(pgm, "255 ");
+					if (M[i][j] == '0') fprintf(pgm, "255 ");
 					else fprintf(pgm, "100 ");
 				}
 			}
@@ -307,8 +307,8 @@ Bitmatrix *Sum(Bitmatrix *m1, Bitmatrix *m2)
 	bm = new Bitmatrix(m1rows, m1cols);
 	for (int r = 0; r < m1rows; r++) {
 		for (int c = 0; c < m1cols; c++) {
-			m1val = m1->Val(r, c) + 48; m2val = m2->Val(r, c) + 48;
-			newval = (((m1val - 48) + (m2val - 48)) % 2) + 48;
+			m1val = m1->Val(r, c) + '0'; m2val = m2->Val(r, c) + '0';
+			newval = (((m1val - '0') + (m2val - '0')) % 2) + '0';
 			bm->Set(r, c, newval);
 		}
 	}
@@ -321,18 +321,26 @@ Bitmatrix *Product(Bitmatrix *m1, Bitmatrix *m2)
 {
 	Bitmatrix *bm;
 	char m1val, m2val, newval;
-	int m1rows = 0, m1cols = 0, m2rows = 0, m2cols = 0;
+	int m1rows = 0, m1cols = 0, m2rows = 0, m2cols = 0, total = 0;
+	// Iterators
+	int c = 0, r = 0, c1 = 0;
+
 	m1rows = m1->Rows(); m1cols = m1->Cols();
 	m2rows = m2->Rows(); m2cols = m2->Cols();
 
 	if (m1cols != m2rows) return NULL;
 
 	bm = new Bitmatrix(m1rows, m2cols);
-	for (int r = 0; r < m1rows; r++) {
-		for (int c = 0; c < m2cols; c++) {
-			m1val = m1->Val(r, c) + 48; m2val = m2->Val(r, c) + 48;
-			newval = ((m1val - 48) * (m2val - 48)) + 48;
+	for (r = 0; r < m1rows; r++) {
+		for (c = 0; c < m2cols; c++) {
+			for (c1 = 0; c1 < m1cols; c1++) {
+				m1val = m1->Val(r, c1) + '0';
+				m2val = m2->Val(c1, c) + '0';
+				total += (m1val - '0') * (m2val - '0');
+			}
+			newval = (total % 2) + '0';
 			bm->Set(r, c, newval);
+			total = 0;
 		}
 	}
 
@@ -363,5 +371,14 @@ Bitmatrix *Sub_Matrix(Bitmatrix *m, vector <int> &rows)
 // This method will generate the inverse of an existing matrix
 Bitmatrix *Inverse(Bitmatrix *m)
 {
-	return NULL;
+	Bitmatrix *bm;
+	char mval;
+	int mrows = 0, mcols = 0;
+	mrows = m->Rows(); mcols = m->Cols();
+
+	if (mrows != mcols) return NULL;
+
+	bm = new Bitmatrix(mrows, mcols);
+
+	return bm;
 }
