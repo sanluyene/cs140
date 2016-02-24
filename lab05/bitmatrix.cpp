@@ -3,7 +3,7 @@
 // Part 1: 1-28 and 101-120 (2/24)
 // Part 2: Remainder (3/2)
 // Author: Ashley Sattler
-// Date: 02/19/2016
+// Date: 02/24/2016
 
 #include <fstream>
 #include <sstream>
@@ -307,8 +307,8 @@ Bitmatrix *Sum(Bitmatrix *m1, Bitmatrix *m2)
 	bm = new Bitmatrix(m1rows, m1cols);
 	for (int r = 0; r < m1rows; r++) {
 		for (int c = 0; c < m1cols; c++) {
-			m1val = m1->Val(r, c); m2val = m2->Val(r, c);
-			newval = (m1val + m2val) % 2;
+			m1val = m1->Val(r, c) + 48; m2val = m2->Val(r, c) + 48;
+			newval = (((m1val - 48) + (m2val - 48)) % 2) + 48;
 			bm->Set(r, c, newval);
 		}
 	}
@@ -330,8 +330,8 @@ Bitmatrix *Product(Bitmatrix *m1, Bitmatrix *m2)
 	bm = new Bitmatrix(m1rows, m2cols);
 	for (int r = 0; r < m1rows; r++) {
 		for (int c = 0; c < m2cols; c++) {
-			m1val = m1->Val(r, c); m2val = m2->Val(r, c);
-			newval = (m1val * m2val);
+			m1val = m1->Val(r, c) + 48; m2val = m2->Val(r, c) + 48;
+			newval = ((m1val - 48) * (m2val - 48)) + 48;
 			bm->Set(r, c, newval);
 		}
 	}
