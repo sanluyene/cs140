@@ -355,7 +355,7 @@ Bitmatrix *Sub_Matrix(Bitmatrix *m, vector <int> &rows)
 	int mrows = 0, mcols = 0;
 	mrows = m->Rows(); mcols = m->Cols();
 
-	if (rows.size() >= mrows || rows.size() <= 0) return NULL;
+	if (rows.size() > mrows || rows.size() <= 0) return NULL;
 
 	bm = new Bitmatrix(rows.size(), mcols);
 	for (int r = 0; r < rows.size(); r++) {

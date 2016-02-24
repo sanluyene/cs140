@@ -35,14 +35,14 @@ Problem 034 is correct.
 Problem 035 is correct.
 Problem 036 is correct.
 Problem 037 is correct.
-Problem 038 is incorrect.
+Problem 038 is correct.
 Problem 039 is correct.
-Problem 040 is incorrect.
+Problem 040 is correct.
 Problem 041 is correct.
 Problem 042 is correct.
 Problem 043 is correct.
-Problem 044 is incorrect.
-Problem 045 is incorrect.
+Problem 044 is correct.
+Problem 045 is correct.
 Problem 046 is correct.
 Problem 047 is correct.
 Problem 048 is correct.
@@ -60,7 +60,7 @@ Problem 059 is correct.
 Problem 060 is correct.
 Problem 061 is correct.
 Problem 062 is correct.
-Problem 063 is incorrect.
+Problem 063 is correct.
 Problem 064 is correct.
 Problem 065 is correct.
 Problem 066 is correct.
@@ -70,10 +70,10 @@ Problem 069 is correct.
 Problem 070 is correct.
 Problem 071 is correct.
 Problem 072 is correct.
-Problem 073 is incorrect.
+Problem 073 is correct.
 Problem 074 is correct.
 Problem 075 is correct.
-Problem 076 is incorrect.
+Problem 076 is correct.
 Problem 077 is correct.
 Problem 078 is correct.
 Problem 079 is correct.
@@ -85,7 +85,7 @@ Problem 084 is correct.
 Problem 085 is correct.
 Problem 086 is correct.
 Problem 087 is correct.
-Problem 088 is incorrect.
+Problem 088 is correct.
 Problem 089 is correct.
 Problem 090 is correct.
 Problem 091 is correct.
@@ -127,7 +127,7 @@ Problem 126 is correct.
 Problem 127 is correct.
 Problem 128 is correct.
 Problem 129 is correct.
-Problem 130 is incorrect.
+Problem 130 is correct.
 Problem 131 is correct.
 Problem 132 is correct.
 Problem 133 is correct.
@@ -135,7 +135,7 @@ Problem 134 is correct.
 Problem 135 is correct.
 Problem 136 is correct.
 Problem 137 is correct.
-Problem 138 is incorrect.
+Problem 138 is correct.
 Problem 139 is correct.
 Problem 140 is correct.
 Problem 141 is incorrect.
@@ -199,4 +199,4 @@ Problem 198 is incorrect.
 Problem 199 is incorrect.
 Problem 200 is incorrect.
 
-130 Correct out of 200
+140 Correct out of 200
