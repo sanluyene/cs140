@@ -393,6 +393,7 @@ Bitmatrix *Inverse(Bitmatrix *m)
 	Bitmatrix *bm;
 	char mval;
 	int mrows = 0, mcols = 0;
+	bool inverse = false;
 
 	// We need the given bitmatrix's information
 	mrows = m->Rows(); mcols = m->Cols();
@@ -400,7 +401,31 @@ Bitmatrix *Inverse(Bitmatrix *m)
 	// If the bitmatrix is not square, it will not have an inverse
 	if (mrows != mcols) return NULL;
 
+	// We will begin by making the new bitmatrix the identity matrix
 	bm = new Bitmatrix(mrows, mcols);
+	for (int r = 0; r < mrows; r++) {
+		for (int c = 0; c < mcols; c++) {
+			if (r == c) bm->Set(r, c, '1');
+		}
+	}
+
+	// All changes will be performed on both the existing matrix
+	// and the new matrix in order to find the inverse, if it exists
+	for (int i = 0; i < mrows; i++) {
+		mval = m[i][i];
+		if (mval != '1') {
+			inverse = false;
+			for (int j = 0; j < mcols; j++) {
+				if (m[j][i] == '1') {
+					m->Swap_Rows(i, j);
+					bm->Swap_Rows(i, j);
+					inverse = true;
+				}
+			}
+		}
+	}
+	// If we couldn't find a proper row, the inverse does not exist
+	if (inverse == false) return NULL;
 
 	return bm;
 }
