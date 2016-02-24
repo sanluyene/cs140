@@ -360,7 +360,7 @@ Bitmatrix *Sub_Matrix(Bitmatrix *m, vector <int> &rows)
 	bm = new Bitmatrix(rows.size(), mcols);
 	for (int r = 0; r < rows.size(); r++) {
 		for (int c = 0; c < mcols; c++) {
-			mval = m->Val(rows[r], c);
+			mval = m->Val(rows[r], c) + '0';
 			bm->Set(r, c, mval);
 		}
 	}
