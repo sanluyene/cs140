@@ -412,20 +412,45 @@ Bitmatrix *Inverse(Bitmatrix *m)
 	// All changes will be performed on both the existing matrix
 	// and the new matrix in order to find the inverse, if it exists
 	for (int i = 0; i < mrows; i++) {
-		mval = m[i][i];
+		mval = m->Val(i, i) + '0';
 		if (mval != '1') {
-			inverse = false;
-			for (int j = 0; j < mcols; j++) {
-				if (m[j][i] == '1') {
+	//			inverse = false;
+			for (int j = i+1; j < mrows; j++) {
+				mval = m->Val(j, i) + '0';
+				if (mval == '1') {
 					m->Swap_Rows(i, j);
 					bm->Swap_Rows(i, j);
-					inverse = true;
+	//					inverse = true;
+					break;
 				}
+			}
+			// If we couldn't find a proper row, the inverse does not exist
+	//			if (inverse == false) return NULL;
+		}
+
+		// Now, look at every row j such that j > i. If M[j][i] equals one,
+		// then set row j equal to the sum of rows i and j.
+		for (int j = i+1; j < mrows; j++) {
+			mval = m->Val(j, i);
+			if (mval == '1') {
+				m->R1_Plus_Equals_R2(j, i);
+				bm->R1_Plus_Equals_R2(j, i);
 			}
 		}
 	}
-	// If we couldn't find a proper row, the inverse does not exist
-	if (inverse == false) return NULL;
+
+	// If there is any j > i where M[i][j] equals one, replace row
+	// i with the sum of row i and row j.
+	for (int i = mrows-1; i >= 0; i--) {
+		for (int j = i+1; j < mcols; j++) {
+			mval = m->Val(i, j) + '0';
+			if (mval == '1') {
+cout << "i: " << i << " j: " << j << endl;
+				m->R1_Plus_Equals_R2(i, j);
+				bm->R1_Plus_Equals_R2(i, j);
+			}
+		}
+	}
 
 	return bm;
 }
