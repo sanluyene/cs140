@@ -108,12 +108,12 @@ void Bitmatrix::Write(string fn)
 // This method will swap all entries in the two specified rows
 void Bitmatrix::Swap_Rows(int r1, int r2)
 {
+	int tmp = 0, c = 0;
 	if (r1 < 0 || r2 < 0) return;
-	int tmp;
-	for (int i = 0; i < M[0].size(); i++) {
-		tmp = M[r1][i];
-		M[r1][i] = M[r2][i];
-		M[r2][i] = tmp;
+	for (c = 0; c < M[0].size(); c++) {
+		tmp = M[r1][c];
+		M[r1][c] = M[r2][c];
+		M[r2][c] = tmp;
 	}
 }
 
@@ -121,12 +121,12 @@ void Bitmatrix::Swap_Rows(int r1, int r2)
 // and sets the results to the first given row
 void Bitmatrix::R1_Plus_Equals_R2(int r1, int r2)
 {
-	int tmp;
+	int tmp = 0, c = 0;
 	if (r1 < 0 || r2 < 0) return;
-	for (int i = 0; i < M[r1].size(); i++) {
-		if((M[r1][i] == '0' && M[r2][i] == '0') || (M[r1][i] == '1' && M[r2][i] == '1'))
-			M[r1][i] = '0';
-		else M[r1][i] = '1';
+	for (c = 0; c < M[r1].size(); c++) {
+		if((M[r1][c] == '0' && M[r2][c] == '0') || (M[r1][c] == '1' && M[r2][c] == '1'))
+			M[r1][c] = '0';
+		else M[r1][c] = '1';
 	}
 }
 
@@ -394,6 +394,8 @@ Bitmatrix *Inverse(Bitmatrix *m)
 	char mval;
 	int mrows = 0, mcols = 0;
 	bool inverse = false;
+	// For iterations
+	int r = 0, c = 0;
 
 	// We need the given bitmatrix's information
 	mrows = m->Rows(); mcols = m->Cols();
@@ -403,51 +405,51 @@ Bitmatrix *Inverse(Bitmatrix *m)
 
 	// We will begin by making the new bitmatrix the identity matrix
 	bm = new Bitmatrix(mrows, mcols);
-	for (int r = 0; r < mrows; r++) {
-		for (int c = 0; c < mcols; c++) {
+	for (r = 0; r < mrows; r++) {
+		for (c = 0; c < mcols; c++) {
 			if (r == c) bm->Set(r, c, '1');
 		}
 	}
 
 	// All changes will be performed on both the existing matrix
 	// and the new matrix in order to find the inverse, if it exists
-	for (int i = 0; i < mrows; i++) {
-		mval = m->Val(i, i) + '0';
+	// Suppose you are at row r. If M[r][r] is not one, then find a 
+	// row c where c > r such that M[c][r] equals one, and swap rows 
+	// r and c. If you can't find such a row, the matrix is not invertible
+	for (r = 0; r < mrows; r++) {
+		mval = m->Val(r, r) + '0';
 		if (mval != '1') {
-	//			inverse = false;
-			for (int j = i+1; j < mrows; j++) {
-				mval = m->Val(j, i) + '0';
+			inverse = false;
+			for (c = r+1; c < mrows; c++) {
+				mval = m->Val(c, r) + '0';
 				if (mval == '1') {
-					m->Swap_Rows(i, j);
-					bm->Swap_Rows(i, j);
-	//					inverse = true;
-					break;
+					m->Swap_Rows(r, c);
+					bm->Swap_Rows(r, c);
+					inverse = true;
 				}
 			}
 			// If we couldn't find a proper row, the inverse does not exist
-	//			if (inverse == false) return NULL;
+			if (inverse == false) return NULL;
 		}
 
-		// Now, look at every row j such that j > i. If M[j][i] equals one,
-		// then set row j equal to the sum of rows i and j.
-		for (int j = i+1; j < mrows; j++) {
-			mval = m->Val(j, i);
+		// Now, look at every row c such that c > r. If M[c][r] equals one,
+		// then set row c equal to the sum of rows r and c.
+		for (c = r+1; c < mrows; c++) {
+			mval = m->Val(c, r) + '0';
 			if (mval == '1') {
-				m->R1_Plus_Equals_R2(j, i);
-				bm->R1_Plus_Equals_R2(j, i);
+				m->R1_Plus_Equals_R2(c, r);
+				bm->R1_Plus_Equals_R2(c, r);
 			}
 		}
 	}
-
-	// If there is any j > i where M[i][j] equals one, replace row
-	// i with the sum of row i and row j.
-	for (int i = mrows-1; i >= 0; i--) {
-		for (int j = i+1; j < mcols; j++) {
-			mval = m->Val(i, j) + '0';
+	// If there is any c > r where M[r][c] equals one, replace row
+	// r with the sum of row r and row c.
+	for (r = mrows-1; r >= 0; r--) {
+		for (c = r+1; c < mrows; c++) {
+			mval = m->Val(r, c) + '0';
 			if (mval == '1') {
-cout << "i: " << i << " j: " << j << endl;
-				m->R1_Plus_Equals_R2(i, j);
-				bm->R1_Plus_Equals_R2(i, j);
+				m->R1_Plus_Equals_R2(r, c);
+				bm->R1_Plus_Equals_R2(r, c);
 			}
 		}
 	}
