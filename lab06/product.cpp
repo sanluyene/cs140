@@ -6,6 +6,8 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <cstdio>
+#include <cmath>
 #include "product.h"
 
 using namespace std;
@@ -51,7 +53,44 @@ void Product::Clear() {
 }
 
 void Product::Print() {
+	// factor will be our temporary subtration for factoring numer and denom
+	// printed will be our counter for printing formatting
+	// i is our loop counter
+	// final will tell us whether or not the factored remains are in the numer or denom
+	int factor = 0, printed = 0, i = 0;
+	vector<int> final;
 
+	final.resize(numerator.size());
+	for (i = 0; i < numerator.size(); i++) {
+		factor = numerator[i] - denominator[i];
+		final.push_back(factor);
+	}
+
+	for (i = 0; i < final.size(); i++) {
+		if (final[i] > 0) {
+			while (final[i] > 0)
+			{	
+				if (printed == 0) printf("%d", i);
+				else printf(" * %d", i);
+				final[i]--;
+				printed++;
+			}
+		}
+	}
+	if (printed == 0) printf("1");
+
+	for (i = 0; i < final.size(); i++) {
+		if (final[i] < 0) {
+			final[i] = abs(final[i]);
+			while (final[i] > 0)
+			{	
+				printf(" / %d", i);
+				final[i]--;
+				printed++;
+			}
+		}
+	}
+	printf("\n");
 }
 
 double Product::Calculate_Product() {
