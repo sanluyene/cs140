@@ -23,12 +23,14 @@ void Product::Invert() {
 }
 
 void Product::Multiply_Number(int n) {
-	if (numerator.size() <= 0 || denominator.size() <= 0) return;
+//	if (numerator == NULL || denominator == NULL) return;
+	if (numerator.size() < n) numerator.resize(n+1, 0);
 	numerator[n]++;
 }
 
 void Product::Divide_Number(int n) {
-	if (numerator.size() <= 0 || denominator.size() <= 0) return;
+//	if (numerator.size() <= 0 || denominator.size() <= 0) return;
+	if (denominator.size() < n) denominator.resize(n+1, 0);
 	denominator[n]++;
 }
 
