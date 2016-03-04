@@ -23,25 +23,29 @@ void Product::Invert() {
 }
 
 void Product::Multiply_Number(int n) {
-	//	if (numerator == NULL || denominator == NULL) return;
 	if (numerator.size() <= n) numerator.resize(n+1, 0);
 	if (denominator.size() <= n) denominator.resize(n+1, 0);
 	numerator[n]++;
 }
 
 void Product::Divide_Number(int n) {
-	//	if (numerator.size() <= 0 || denominator.size() <= 0) return;
 	if (numerator.size() <= n) numerator.resize(n+1, 0);
 	if (denominator.size() <= n) denominator.resize(n+1, 0);
 	denominator[n]++;
 }
 
 void Product::Multiply_Factorial(int n) {
-
+	while (n > 0) {
+		Multiply_Number(n);
+		n--;
+	}
 }
 
 void Product::Divide_Factorial(int n) {
-
+	while (n > 0) {
+		Divide_Number(n);
+		n--;
+	}
 }
 
 void Product::Multiply_Binom(int n, int k) {
@@ -53,7 +57,8 @@ void Product::Divide_Binom(int n, int k) {
 }
 
 void Product::Clear() {
-
+	numerator.resize(0);
+	denominator.resize(0);
 }
 
 void Product::Print() {
