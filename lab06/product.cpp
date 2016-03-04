@@ -24,13 +24,15 @@ void Product::Invert() {
 
 void Product::Multiply_Number(int n) {
 //	if (numerator == NULL || denominator == NULL) return;
-	if (numerator.size() < n) numerator.resize(n+1, 0);
+	if (numerator.size() <= n) numerator.resize(n+1, 0);
+	if (denominator.size() <= n) denominator.resize(n+1, 0);
 	numerator[n]++;
 }
 
 void Product::Divide_Number(int n) {
 //	if (numerator.size() <= 0 || denominator.size() <= 0) return;
-	if (denominator.size() < n) denominator.resize(n+1, 0);
+	if (numerator.size() <= n) numerator.resize(n+1, 0);
+	if (denominator.size() <= n) denominator.resize(n+1, 0);
 	denominator[n]++;
 }
 
@@ -55,39 +57,38 @@ void Product::Clear() {
 }
 
 void Product::Print() {
-	// factor will be our temporary subtration for factoring numer and denom
+	// factor will be our temporary subtraction for factoring numer and denom
 	// printed will be our counter for printing formatting
 	// i is our loop counter
-	// final will tell us whether or not the factored remains are in the numer or denom
+	// fin will tell us whether or not the factored remains are in the numer or denom
 	int factor = 0, printed = 0, i = 0;
-	vector<int> final;
+	vector<int> fin;
 
-	final.resize(numerator.size());
 	for (i = 0; i < numerator.size(); i++) {
 		factor = numerator[i] - denominator[i];
-		final.push_back(factor);
+		fin.push_back(factor);
 	}
 
-	for (i = 0; i < final.size(); i++) {
-		if (final[i] > 0) {
-			while (final[i] > 0)
+	for (i = 0; i < fin.size(); i++) {
+		if (fin[i] > 0) {
+			while (fin[i] > 0)
 			{	
 				if (printed == 0) printf("%d", i);
 				else printf(" * %d", i);
-				final[i]--;
+				fin[i]--;
 				printed++;
 			}
 		}
 	}
 	if (printed == 0) printf("1");
 
-	for (i = 0; i < final.size(); i++) {
-		if (final[i] < 0) {
-			final[i] = abs(final[i]);
-			while (final[i] > 0)
+	for (i = 0; i < fin.size(); i++) {
+		if (fin[i] < 0) {
+			fin[i] = abs(fin[i]);
+			while (fin[i] > 0)
 			{	
 				printf(" / %d", i);
-				final[i]--;
+				fin[i]--;
 				printed++;
 			}
 		}
