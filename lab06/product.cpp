@@ -49,11 +49,15 @@ void Product::Divide_Factorial(int n) {
 }
 
 void Product::Multiply_Binom(int n, int k) {
-
+	Multiply_Factorial(n);
+	Divide_Factorial(k);
+	Divide_Factorial(n-k);
 }
 
 void Product::Divide_Binom(int n, int k) {
-
+	Divide_Factorial(n);
+	Multiply_Factorial(k);
+	Multiply_Factorial(n-k);
 }
 
 void Product::Clear() {
