@@ -91,7 +91,7 @@ void Product::Print() {
 	}
 	if (printed == 0) printf("1");
 
-	for (i = 0; i < fin.size(); i++) {
+	for (i = 2; i < fin.size(); i++) {
 		if (fin[i] < 0) {
 			fin[i] = abs(fin[i]);
 			while (fin[i] > 0)
