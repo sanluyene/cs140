@@ -23,14 +23,14 @@ void Product::Invert() {
 }
 
 void Product::Multiply_Number(int n) {
-//	if (numerator == NULL || denominator == NULL) return;
+	//	if (numerator == NULL || denominator == NULL) return;
 	if (numerator.size() <= n) numerator.resize(n+1, 0);
 	if (denominator.size() <= n) denominator.resize(n+1, 0);
 	numerator[n]++;
 }
 
 void Product::Divide_Number(int n) {
-//	if (numerator.size() <= 0 || denominator.size() <= 0) return;
+	//	if (numerator.size() <= 0 || denominator.size() <= 0) return;
 	if (numerator.size() <= n) numerator.resize(n+1, 0);
 	if (denominator.size() <= n) denominator.resize(n+1, 0);
 	denominator[n]++;
@@ -97,7 +97,43 @@ void Product::Print() {
 }
 
 double Product::Calculate_Product() {
-	double i;
-	i = 0.0;
-	return i;
+	// factor will be our temporary subtraction for factoring numer and denom
+	// printed will be our counter for printing formatting
+	// i is our loop counter
+	// fin will tell us whether or not the factored remains are in the numer or denom
+	int factor = 0, printed = 0, i = 0;
+	vector<int> fin;
+	double ans = 0.0;
+
+	for (i = 0; i < numerator.size(); i++) {
+		factor = numerator[i] - denominator[i];
+		fin.push_back(factor);
+	}
+
+	for (i = 0; i < fin.size(); i++) {
+		if (fin[i] > 0) {
+			while (fin[i] > 0)
+			{
+				if (printed == 0) ans = i;
+				else ans *= i;
+				fin[i]--;
+				printed++;
+			}
+		}
+	}
+	if (printed == 0) ans = 1;
+
+	for (i = 0; i < fin.size(); i++) {
+		if (fin[i] < 0) {
+			fin[i] = abs(fin[i]);
+			while (fin[i] > 0)
+			{
+				ans /= i;
+				fin[i]--;
+				printed++;
+			}
+		}
+	}
+
+	return ans;
 }
