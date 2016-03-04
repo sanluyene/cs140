@@ -78,7 +78,7 @@ void Product::Print() {
 		fin.push_back(factor);
 	}
 
-	for (i = 0; i < fin.size(); i++) {
+	for (i = 2; i < fin.size(); i++) {
 		if (fin[i] > 0) {
 			while (fin[i] > 0)
 			{	
