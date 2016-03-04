@@ -35,14 +35,14 @@ void Product::Divide_Number(int n) {
 }
 
 void Product::Multiply_Factorial(int n) {
-	while (n > 0) {
+	while (n > 1) {
 		Multiply_Number(n);
 		n--;
 	}
 }
 
 void Product::Divide_Factorial(int n) {
-	while (n > 0) {
+	while (n > 1) {
 		Divide_Number(n);
 		n--;
 	}
