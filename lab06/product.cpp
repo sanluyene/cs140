@@ -1,7 +1,7 @@
 // CS140 Spring 2016
-// Lab 06: Keno
+// Lab 06: Factorial and Binomial multiplication and division 
 // Author: Ashley Sattler
-// Date: 03/02/2016
+// Date: 03/04/2016
 
 #include <iostream>
 #include <vector>
