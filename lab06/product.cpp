@@ -112,14 +112,14 @@ double Product::Calculate_Product() {
 	// fin will tell us whether or not the factored remains are in the numer or denom
 	int factor = 0, printed = 0, i = 0;
 	vector<int> fin;
-	double ans = 0.0;
+	double ans = 1;
 
 	for (i = 0; i < numerator.size(); i++) {
 		factor = numerator[i] - denominator[i];
 		fin.push_back(factor);
 	}
 
-	for (i = 0; i < fin.size(); i++) {
+	for (i = 2; i < fin.size(); i++) {
 		if (fin[i] > 0) {
 			while (fin[i] > 0)
 			{
@@ -132,7 +132,7 @@ double Product::Calculate_Product() {
 	}
 	if (printed == 0) ans = 1;
 
-	for (i = 0; i < fin.size(); i++) {
+	for (i = 2; i < fin.size(); i++) {
 		if (fin[i] < 0) {
 			fin[i] = abs(fin[i]);
 			while (fin[i] > 0)
