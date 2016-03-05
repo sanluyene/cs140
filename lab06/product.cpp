@@ -12,6 +12,7 @@
 
 using namespace std;
 
+// This method will swap the numerator and denominator values
 void Product::Invert() {
 	int tmp = 0;
 
@@ -22,18 +23,23 @@ void Product::Invert() {
 	}		
 }
 
+// This method adds a number to our numerator
+// Vectors are resized, if necessary
 void Product::Multiply_Number(int n) {
 	if (numerator.size() <= n) numerator.resize(n+1, 0);
 	if (denominator.size() <= n) denominator.resize(n+1, 0);
 	numerator[n]++;
 }
 
+// This method adds a number to our denominator
+// Vectors are resized, if necessary
 void Product::Divide_Number(int n) {
 	if (numerator.size() <= n) numerator.resize(n+1, 0);
 	if (denominator.size() <= n) denominator.resize(n+1, 0);
 	denominator[n]++;
 }
 
+// This method add factorials to our numerator
 void Product::Multiply_Factorial(int n) {
 	while (n > 1) {
 		Multiply_Number(n);
@@ -41,6 +47,7 @@ void Product::Multiply_Factorial(int n) {
 	}
 }
 
+// This method adds factorials to our denominator
 void Product::Divide_Factorial(int n) {
 	while (n > 1) {
 		Divide_Number(n);
@@ -48,18 +55,22 @@ void Product::Divide_Factorial(int n) {
 	}
 }
 
+// This method performs a binomial product: n!/k!(n-k)!
 void Product::Multiply_Binom(int n, int k) {
 	Multiply_Factorial(n);
 	Divide_Factorial(k);
 	Divide_Factorial(n-k);
 }
 
+// This method allows us to divide binominals: k!(n-k)!/n!
+// In theory, you could also just invert the Multiply_Binom
 void Product::Divide_Binom(int n, int k) {
 	Divide_Factorial(n);
 	Multiply_Factorial(k);
 	Multiply_Factorial(n-k);
 }
 
+// This method will empty our numerator and denominator
 void Product::Clear() {
 	numerator.resize(0);
 	denominator.resize(0);
@@ -82,6 +93,8 @@ void Product::Print() {
 		if (fin[i] > 0) {
 			while (fin[i] > 0)
 			{	
+				// If we haven't printed any numbers yet, we don't want the
+				// mathematical operator to appear
 				if (printed == 0) printf("%d", i);
 				else printf(" * %d", i);
 				fin[i]--;
@@ -89,6 +102,7 @@ void Product::Print() {
 			}
 		}
 	}
+	// If there were no numbers for the numerator, we will put a 1 there
 	if (printed == 0) printf("1");
 
 	for (i = 2; i < fin.size(); i++) {
@@ -123,6 +137,8 @@ double Product::Calculate_Product() {
 		if (fin[i] > 0) {
 			while (fin[i] > 0)
 			{
+				// If we haven't printed any numbers yet, we don't want the
+				// mathematical operator to appear
 				if (printed == 0) ans = i;
 				else ans *= i;
 				fin[i]--;
@@ -130,6 +146,7 @@ double Product::Calculate_Product() {
 			}
 		}
 	}
+	// If there were no numbers for the numerator, we will put a 1 there
 	if (printed == 0) ans = 1;
 
 	for (i = 2; i < fin.size(); i++) {

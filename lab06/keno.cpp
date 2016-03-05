@@ -35,7 +35,10 @@ int main (int argc, char **argv) {
 	// The user can match how ever many times they would like, so this
 	// needs to be a while loop to allow multiple inputs
 	while (cin >> numb >> payout) {
+		// We ensure that our numerators and denominators are empty
 		p.Clear();
+		// This formula is given to us as:
+		// binom(80-p, 20-c) * binom(p, c) / binom(80, 20)
 		p.Multiply_Binom(80 - catchb, 20 - numb);
 		p.Multiply_Binom(catchb, numb);
 		p.Divide_Binom(80, 20);
