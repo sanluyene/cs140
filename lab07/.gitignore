@@ -1,0 +1,5 @@
+cp_tester
+tmp*
+random_codes
+code_processor
+*.o
