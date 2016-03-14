@@ -1,4 +1,4 @@
-Problem 001 is incorrect.
+Problem 001 is correct.
 Problem 002 is incorrect.
 Problem 003 is incorrect.
 Problem 004 is incorrect.
@@ -27,7 +27,7 @@ Problem 026 is correct.
 Problem 027 is incorrect.
 Problem 028 is incorrect.
 Problem 029 is incorrect.
-Problem 030 is incorrect.
+Problem 030 is correct.
 Problem 031 is incorrect.
 Problem 032 is incorrect.
 Problem 033 is incorrect.
@@ -119,4 +119,4 @@ Problem 118 is incorrect.
 Problem 119 is incorrect.
 Problem 120 is incorrect.
 
-1 Correct out of 120
+3 Correct out of 120

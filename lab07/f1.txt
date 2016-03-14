@@ -1,0 +1,4 @@
+PRIZE habitat Donation to Habitat for Humanity 35 100
+PRIZE swarokski $30 Swarokski Gift Certificate 75 7
+ADD_USER afest Abigail Fest 200
+WRITE your_dir/f1.txt

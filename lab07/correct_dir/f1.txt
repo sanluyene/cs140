@@ -1,0 +1,3 @@
+PRIZE     habitat       35    100 Donation to Habitat for Humanity
+PRIZE     swarokski     75      7 $30 Swarokski Gift Certificate
+ADD_USER  afest        200 Abigail Fest
