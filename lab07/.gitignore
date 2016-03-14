@@ -3,3 +3,6 @@ tmp*
 random_codes
 code_processor
 *.o
+your_dir
+correct_dir
+*.txt
