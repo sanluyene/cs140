@@ -23,7 +23,7 @@ Problem 022 is incorrect.
 Problem 023 is incorrect.
 Problem 024 is incorrect.
 Problem 025 is incorrect.
-Problem 026 is incorrect.
+Problem 026 is correct.
 Problem 027 is incorrect.
 Problem 028 is incorrect.
 Problem 029 is incorrect.
@@ -119,4 +119,4 @@ Problem 118 is incorrect.
 Problem 119 is incorrect.
 Problem 120 is incorrect.
 
-0 Correct out of 120
+1 Correct out of 120
