@@ -64,6 +64,8 @@ int Code_Processor::Redeem_Prize(string username, string prize) {
 	return 0;
 }
 
+Code_Processor::~Code_Processor() {}
+
 int Code_Processor::Write(const char *file) {
 
 	return 0;
