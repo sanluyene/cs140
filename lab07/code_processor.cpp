@@ -21,7 +21,8 @@ int Code_Processor::New_Prize(string id, string description, int points, int qua
 		p->description = description;
 		p->points = points;
 		p->quantity = quantity;
-		Prizes[id] = p;
+		//Prizes[id] = p;
+		Prizes.insert(make_pair(id, p));
 	}
 
 	return 0;
@@ -38,7 +39,8 @@ int Code_Processor::New_User(string username, string realname, int starting_poin
 		u->username = username;
 		u->realname = realname;
 		u->points = starting_points;
-		Names[username] = u;
+		//Names[username] = u;
+		Names.insert(make_pair(username, u));
 	}
 	else return -1;
 
@@ -59,7 +61,8 @@ int Code_Processor::Add_Phone(string username, string phone) {
     if (uit == Names.end()) return -1;
 	else {
 		uit->second->phone_numbers.insert(phone);
-		Phones[phone] = uit->second;
+		//Phones[phone] = uit->second;
+		Phones.insert(make_pair(phone, uit->second));
 	}
 
 	return 0;
