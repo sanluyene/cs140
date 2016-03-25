@@ -21,6 +21,7 @@ unsigned int djb_hash(string &s)
 	for (i = 0; i < s.size(); i++) {
 		h = (h << 5) + h + s[i];
 	}
+
 	return h;
 }						
 
@@ -76,7 +77,6 @@ int Code_Processor::Delete_User(string username) {
 	// We need to error check to ensure the user exists
 	uit = Names.find(username);
 	if (uit == Names.end()) return -1;
-
 
 	for (pit = Phones.begin(); pit != Phones.end(); pit++) {
 		if (pit->second->username == uit->first) Phones.erase(pit);
@@ -158,6 +158,7 @@ int Code_Processor::Enter_Code(string username, string code) {
 
 	if (hash % 17 == 0) points = 10;
 	else if (hash % 13 == 0) points = 3;
+	else return 0;
 
 	Codes.insert(code);
 	Names[username]->points += points;
@@ -182,6 +183,7 @@ int Code_Processor::Text_Code(string phone, string code) {
 
 	if (hash % 17 == 0) points = 10;
 	else if (hash % 13 == 0) points = 3;
+	else return 0;
 
 	Codes.insert(code);
 	uit->second->points += points;
@@ -192,7 +194,7 @@ int Code_Processor::Text_Code(string phone, string code) {
 // This method marks a code as used once redeemed
 int Code_Processor::Mark_Code_Used(string code) {
 
-	return 0;
+	return -1;
 }
 
 // This method returns the number of points associated with a user
@@ -246,26 +248,24 @@ Code_Processor::~Code_Processor() {
 // This method writes all of the server's current information to a file for backup and
 // restoration purposes
 int Code_Processor::Write(const char *file) {
-	ofstream fout;
+	string fileName;
+	FILE * code;
 	map <string, Prize *>::iterator pit;
 	map <string, User *>::iterator uit;
 
-	fout.open(file);
-	if (fout.fail()) return -1;
+	fileName.append(file);
+	code = fopen(file, "w");
 
 	for (pit = Prizes.begin(); pit != Prizes.end(); pit++) {
-		fout << "PRIZE " << pit->first.c_str() << " " << pit->second->description.c_str() << " ";
-		fout << pit->second->points << " " << pit->second->quantity << endl;
+		fprintf(code, "PRIZE %s %s ", pit->first.c_str(), pit->second->points);
+		fprintf(code, "%d %d\n", pit->second->quantity, pit->second->description.c_str());
 	}
 	for (uit = Names.begin(); uit != Names.end(); uit++) {
-		fout << "ADD_USER " << uit->first.c_str() << " " << uit->second->realname.c_str();
-		fout << " " << uit->second->points << endl;
+		fprintf(code, "ADD_USER %s %s %d\n", uit->first.c_str(), uit->second->points, uit->second->realname.c_str());
 	}
 	for (uit = Phones.begin(); uit != Phones.end(); uit++) {
-		fout << "ADD_PHONE " << uit->second->username.c_str() << " " << uit->first.c_str() << endl;
+		fprintf(code, "ADD_PHONE %s %s\n", uit->second->username.c_str(), uit->first.c_str());
 	}
-
-	fout.close();
 
 	return 0;
 }
