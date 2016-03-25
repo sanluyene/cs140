@@ -10,12 +10,16 @@
 
 using namespace std;
 
+// This method adds a new prize to the prize list
 int Code_Processor::New_Prize(string id, string description, int points, int quantity) {
 	Prize *p;
 	map <string, Prize *>::iterator pit;
 
+	// We need to error check to ensure the prize doesn't already exist, and that it
+	// is starting with a non-negative quantity and point value
 	if (points < 0 || quantity < 0) return -1;
 	pit = Prizes.find(id);
+
 	if (pit == Prizes.end()) {
 		p = new Prize;
 		p->id = id;
@@ -28,12 +32,16 @@ int Code_Processor::New_Prize(string id, string description, int points, int qua
 	return 0;
 }
 
+// This method adds a new user to the user list
 int Code_Processor::New_User(string username, string realname, int starting_points) {
 	User *u;
 	map <string, User *>::iterator uit;
 
+	// We need to error check to ensure the user doesn't already exist, and that they
+	// are starting with non-negative points
 	if (starting_points < 0) return -1;
 	uit = Names.find(username);
+
 	if (uit == Names.end()) {
 		u = new User;
 		u->username = username;
@@ -46,74 +54,102 @@ int Code_Processor::New_User(string username, string realname, int starting_poin
 	return 0;
 }
 
+// This method deletes a user from the user list
 int Code_Processor::Delete_User(string username) {
 
-	return 0;
+	return -1;
 }
 
+// This method adds a phone to the phones list and to the specified user
 int Code_Processor::Add_Phone(string username, string phone) {
+	map <string, User *>::iterator pit;
 	map <string, User *>::iterator uit;
 
-	uit = Phones.find(phone);
-	if (uit != Phones.end()) return -1;
+	// We need to error check to ensure the phone doesn't already exist, that the user
+	// does exist, and that the phone doesn't already belong to someone else
+	pit = Phones.find(phone);
+	if (pit != Phones.end()) return -1;
 	uit = Names.find(username);
 	if (uit == Names.end()) return -1;
-	else {
-		uit->second->phone_numbers.insert(phone);
-		Phones[phone] = uit->second;
-	}
+	if (pit->second->username != uit->first) return -1;
+
+	uit->second->phone_numbers.insert(phone);
+	Phones[phone] = uit->second;
 
 	return 0;
 }
 
+// This method removes a phone from the phone list and from the user's phones
 int Code_Processor::Remove_Phone(string username, string phone) {
+	map <string, User *>::iterator pit;
+	map <string, User *>::iterator uit;
+
+	// We need to error check to ensure the phone and user both exist, and that the
+	// phone is attached to that user
+	pit = Phones.find(phone);
+	if (pit == Phones.end()) return -1;
+	uit = Names.find(username);
+	if (uit == Names.end()) return -1;
 
 	return 0;
 }
 
+// This method returns a list of phones associated with a user
 string Code_Processor::Show_Phones(string username) {
+	map <string, User *>::iterator uit;
+
+	// We need to error check to ensure the user exists
+	uit = Names.find(username);
+	if (uit == Names.end()) return "BAD USER";
 
 	return "";
 }
 
+// This method redeems a code for points
 int Code_Processor::Enter_Code(string username, string code) {
 
 	return 0;
 }
 
+// This method redeems a code for points via a text message
 int Code_Processor::Text_Code(string phone, string code) {
 
 	return 0;
 }
 
+// This method marks a code as used once redeemed
 int Code_Processor::Mark_Code_Used(string code) {
 
 	return 0;
 }
 
+// This method returns the number of points associated with a user
 int Code_Processor::Balance(string username) {
 	map <string, User *>::iterator uit;
 
+	// We need to error check to ensure the user exists
 	uit = Names.find(username);
-
 	if (uit == Names.end()) return -1;
 	else return uit->second->points;
 }
 
+// This method redeems a prize for a specific user
 int Code_Processor::Redeem_Prize(string username, string prize) {
 	map <string, User *>::iterator uit;
 	map <string, Prize *>::iterator pit;
 	int	upoints = 0, ppoints = 0;
 
+	// We need to error check to ensure the user and prize both exist, and that
+	// the user has enough points to afford the prize
 	uit = Names.find(username);
 	pit = Prizes.find(prize);
-
 	if (uit == Names.end()) return -1;
 	if (pit == Prizes.end()) return -1;
 	
 	upoints = uit->second->points;
 	ppoints = pit->second->points;
 
+	// might need to include --->  || pit->second->quantity == 0
 	if (upoints < ppoints) return -1;
 	uit->second->points -= ppoints;
 	pit->second->quantity--;
@@ -123,8 +159,11 @@ int Code_Processor::Redeem_Prize(string username, string prize) {
 	return 0;
 }
 
+// This is the deconstructor
 Code_Processor::~Code_Processor() {}
 
+// This method writes all of the server's current information to a file for backup and
+// restoration purposes
 int Code_Processor::Write(const char *file) {
 	ofstream fout;
 	map <string, Prize *>::iterator pit;
@@ -149,4 +188,3 @@ int Code_Processor::Write(const char *file) {
 
 	return 0;
 }
-
