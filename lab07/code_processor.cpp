@@ -182,7 +182,16 @@ int Code_Processor::Redeem_Prize(string username, string prize) {
 }
 
 // This is the deconstructor
-Code_Processor::~Code_Processor() {}
+Code_Processor::~Code_Processor() {
+	map <string, Prize *>::iterator pit;
+	map <string, User *>::iterator uit;
+	for (pit = Prizes.begin(); pit != Prizes.end(); pit++) {
+		Prizes.erase(pit);
+	}
+	for (uit = Names.begin(); uit != Names.end(); uit++) {
+		Names.erase(uit);
+	}
+}
 
 // This method writes all of the server's current information to a file for backup and
 // restoration purposes
