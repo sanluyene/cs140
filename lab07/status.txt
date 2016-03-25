@@ -1,7 +1,7 @@
 Problem 001 is correct.
 Problem 002 is correct.
 Problem 003 is correct.
-Problem 004 is incorrect.
+Problem 004 is correct.
 Problem 005 is correct.
 Problem 006 is correct.
 Problem 007 is correct.
@@ -24,13 +24,13 @@ Problem 023 is correct.
 Problem 024 is correct.
 Problem 025 is correct.
 Problem 026 is correct.
-Problem 027 is incorrect.
-Problem 028 is incorrect.
+Problem 027 is correct.
+Problem 028 is correct.
 Problem 029 is correct.
 Problem 030 is correct.
 Problem 031 is correct.
 Problem 032 is correct.
-Problem 033 is incorrect.
+Problem 033 is correct.
 Problem 034 is correct.
 Problem 035 is correct.
 Problem 036 is incorrect.
@@ -96,7 +96,7 @@ Problem 095 is incorrect.
 Problem 096 is incorrect.
 Problem 097 is incorrect.
 Problem 098 is incorrect.
-Problem 099 is incorrect.
+Problem 099 is correct.
 Problem 100 is incorrect.
 Problem 101 is incorrect.
 Problem 102 is incorrect.
@@ -119,4 +119,4 @@ Problem 118 is incorrect.
 Problem 119 is incorrect.
 Problem 120 is incorrect.
 
-31 Correct out of 120
+36 Correct out of 120

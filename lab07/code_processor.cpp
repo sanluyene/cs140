@@ -146,7 +146,8 @@ string Code_Processor::Show_Phones(string username) {
 int Code_Processor::Enter_Code(string username, string code) {
 	set <string>::iterator sit;
 	map <string, User *>::iterator uit;
-	int hash = 0, points = 0;
+	unsigned int hash = 0;
+	int points = 0;
 
 	// We need to error check to ensure the user exists and that the code
 	// hasn't already been entered
@@ -169,16 +170,17 @@ int Code_Processor::Enter_Code(string username, string code) {
 
 // This method redeems a code for points via a text message
 int Code_Processor::Text_Code(string phone, string code) {
-	set <string>::iterator sit;
+	set <string>::iterator cit;
 	map <string, User *>::iterator uit;
-	int hash = 0, points = 0;
+	unsigned int hash = 0;
+	int points = 0;
 
 	// We need to error check to ensure the phone exists and that the code
 	// hasn't already been entered
 	uit = Phones.find(phone);
 	if (uit == Phones.end()) return -1;
-	sit = Codes.find(code);
-	if (sit != Codes.end()) return -1;
+	cit = Codes.find(code);
+	if (cit != Codes.end()) return -1;
 
 	hash = djb_hash(code);
 
@@ -194,8 +196,19 @@ int Code_Processor::Text_Code(string phone, string code) {
 
 // This method marks a code as used once redeemed
 int Code_Processor::Mark_Code_Used(string code) {
+	int hash = 0;
+	bool realCode = false;
 
-	return -1;
+	hash = djb_hash(code);
+
+	if (hash % 17 == 0) realCode = true;
+	else if (hash % 13 == 0) realCode = true;
+
+	if (realCode == true) {
+		Codes.insert(code);
+		return 0;
+	}
+	else return -1;
 }
 
 // This method returns the number of points associated with a user
@@ -252,6 +265,7 @@ int Code_Processor::Write(const char *file) {
 	ofstream fout;
 	map <string, Prize *>::iterator pit;
 	map <string, User *>::iterator uit;
+	set <string>::iterator cit;
 
 	fout.open(file);
 	if (fout.fail()) return -1;
@@ -266,6 +280,9 @@ int Code_Processor::Write(const char *file) {
 	}
 	for (uit = Phones.begin(); uit != Phones.end(); uit++) {
 		fout << "ADD_PHONE " << uit->second->username.c_str() << " " << uit->first.c_str() << endl;
+	}
+	for (cit = Codes.begin(); cit !=Codes.end(); cit++) {
+		fout << "MARK_USED " << *cit << endl;
 	}
 
 	fout.close();
