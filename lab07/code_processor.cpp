@@ -43,6 +43,7 @@ int Code_Processor::New_Prize(string id, string description, int points, int qua
 		p->quantity = quantity;
 		Prizes[id] = p;
 	}
+	else return -1;
 
 	return 0;
 }
@@ -248,24 +249,27 @@ Code_Processor::~Code_Processor() {
 // This method writes all of the server's current information to a file for backup and
 // restoration purposes
 int Code_Processor::Write(const char *file) {
-	string fileName;
-	FILE * code;
+	ofstream fout;
 	map <string, Prize *>::iterator pit;
 	map <string, User *>::iterator uit;
 
-	fileName.append(file);
-	code = fopen(file, "w");
+	fout.open(file);
+	if (fout.fail()) return -1;
 
 	for (pit = Prizes.begin(); pit != Prizes.end(); pit++) {
-		fprintf(code, "PRIZE %s %s ", pit->first.c_str(), pit->second->points);
-		fprintf(code, "%d %d\n", pit->second->quantity, pit->second->description.c_str());
+		fout << "PRIZE " << pit->first.c_str() << " " << pit->second->points << " ";
+		fout << pit->second->quantity << " " << pit->second->description.c_str() << endl;
 	}
 	for (uit = Names.begin(); uit != Names.end(); uit++) {
-		fprintf(code, "ADD_USER %s %s %d\n", uit->first.c_str(), uit->second->points, uit->second->realname.c_str());
+		fout << "ADD_USER " << uit->first.c_str() << " " << uit->second->points;
+		fout << " " << uit->second->realname.c_str() << endl;
 	}
 	for (uit = Phones.begin(); uit != Phones.end(); uit++) {
-		fprintf(code, "ADD_PHONE %s %s\n", uit->second->username.c_str(), uit->first.c_str());
+		fout << "ADD_PHONE " << uit->second->username.c_str() << " " << uit->first.c_str() << endl;
 	}
+
+	fout.close();
 
 	return 0;
 }
+
