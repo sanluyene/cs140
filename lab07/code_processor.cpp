@@ -10,6 +10,20 @@
 
 using namespace std;
 
+// This is our hash function, our collision resolution is separate chaining
+unsigned int djb_hash(string &s)
+{
+	int i;
+	unsigned int h;
+
+	h = 5381;
+
+	for (i = 0; i < s.size(); i++) {
+		h = (h << 5) + h + s[i];
+	}
+	return h;
+}						
+
 // This method adds a new prize to the prize list
 int Code_Processor::New_Prize(string id, string description, int points, int quantity) {
 	Prize *p;
@@ -56,7 +70,7 @@ int Code_Processor::New_User(string username, string realname, int starting_poin
 
 // This method deletes a user from the user list
 int Code_Processor::Delete_User(string username) {
-    map <string, User *>::iterator pit;
+	map <string, User *>::iterator pit;
 	map <string, User *>::iterator uit;
 
 	// We need to error check to ensure the user exists
@@ -129,14 +143,50 @@ string Code_Processor::Show_Phones(string username) {
 
 // This method redeems a code for points
 int Code_Processor::Enter_Code(string username, string code) {
+	set <string>::iterator sit;
+	map <string, User *>::iterator uit;
+	int hash = 0, points = 0;
 
-	return 0;
+	// We need to error check to ensure the user exists and that the code
+	// hasn't already been entered
+	uit = Names.find(username);
+	if (uit == Names.end()) return -1;
+	sit = Codes.find(code);
+	if (sit != Codes.end()) return -1;
+
+	hash = djb_hash(code);
+
+	if (hash % 17 == 0) points = 10;
+	else if (hash % 13 == 0) points = 3;
+
+	Codes.insert(code);
+	Names[username]->points += points;
+
+	return points;
 }
 
 // This method redeems a code for points via a text message
 int Code_Processor::Text_Code(string phone, string code) {
+	set <string>::iterator sit;
+	map <string, User *>::iterator uit;
+	int hash = 0, points = 0;
 
-	return 0;
+	// We need to error check to ensure the phone exists and that the code
+	// hasn't already been entered
+	uit = Phones.find(phone);
+	if (uit == Phones.end()) return -1;
+	sit = Codes.find(code);
+	if (sit != Codes.end()) return -1;
+
+	hash = djb_hash(code);
+
+	if (hash % 17 == 0) points = 10;
+	else if (hash % 13 == 0) points = 3;
+
+	Codes.insert(code);
+	uit->second->points += points;
+
+	return points;
 }
 
 // This method marks a code as used once redeemed
@@ -167,7 +217,7 @@ int Code_Processor::Redeem_Prize(string username, string prize) {
 	pit = Prizes.find(prize);
 	if (uit == Names.end()) return -1;
 	if (pit == Prizes.end()) return -1;
-	
+
 	upoints = uit->second->points;
 	ppoints = pit->second->points;
 
