@@ -71,7 +71,7 @@ int Code_Processor::Add_Phone(string username, string phone) {
 	if (pit != Phones.end()) return -1;
 	uit = Names.find(username);
 	if (uit == Names.end()) return -1;
-	if (pit->second->username != uit->first) return -1;
+	if (username != uit->first) return -1;
 
 	uit->second->phone_numbers.insert(phone);
 	Phones[phone] = uit->second;
@@ -85,11 +85,15 @@ int Code_Processor::Remove_Phone(string username, string phone) {
 	map <string, User *>::iterator uit;
 
 	// We need to error check to ensure the phone and user both exist, and that the
-	// phone is attached to that user
+	// phone is attached to the specified user
 	pit = Phones.find(phone);
 	if (pit == Phones.end()) return -1;
 	uit = Names.find(username);
 	if (uit == Names.end()) return -1;
+	if (pit->second->username != uit->first) return -1;
+
+	uit->second->phone_numbers.erase(phone);
+	Phones.erase(pit);
 
 	return 0;
 }
@@ -97,12 +101,18 @@ int Code_Processor::Remove_Phone(string username, string phone) {
 // This method returns a list of phones associated with a user
 string Code_Processor::Show_Phones(string username) {
 	map <string, User *>::iterator uit;
+	set <string>::iterator pit;
+	string phones = "";
 
 	// We need to error check to ensure the user exists
 	uit = Names.find(username);
 	if (uit == Names.end()) return "BAD USER";
 
-	return "";
+	for (pit = Names[username]->second->phone_numbers.begin(); pit != Names[username]->second->phone_numbers.end; pit++) {
+		phones += *pit + "\n";
+	}
+
+	return phones;
 }
 
 // This method redeems a code for points
