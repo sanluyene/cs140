@@ -1,3 +1,8 @@
+// CS140 Spring 2016
+// Lab 07: Server-side processing for a code-based rewards program
+// Author: Ashley Sattler
+// Date: 03/25/2016
+
 #include <set>
 #include <deque>
 #include <map>
@@ -74,14 +79,16 @@ int Code_Processor::New_User(string username, string realname, int starting_poin
 int Code_Processor::Delete_User(string username) {
 	map <string, User *>::iterator pit;
 	map <string, User *>::iterator uit;
+	set <string>::iterator upit;
 
 	// We need to error check to ensure the user exists
 	uit = Names.find(username);
 	if (uit == Names.end()) return -1;
 
-	for (pit = Phones.begin(); pit != Phones.end(); pit++) {
-		if (pit->second->username == uit->first) Phones.erase(pit);
+	for (upit = uit->second->phone_numbers.begin(); upit != uit->second->phone_numbers.end(); upit++) {
+		Phones.erase(*upit);
 	}
+
 	Names.erase(uit);
 
 	return 0;
@@ -101,7 +108,7 @@ int Code_Processor::Add_Phone(string username, string phone) {
 	if (username != uit->first) return -1;
 
 	uit->second->phone_numbers.insert(phone);
-	Phones[phone] = uit->second;
+	Phones.insert(make_pair(phone, uit->second));
 
 	return 0;
 }
@@ -198,17 +205,24 @@ int Code_Processor::Text_Code(string phone, string code) {
 int Code_Processor::Mark_Code_Used(string code) {
 	unsigned int hash = 0;
 	bool realCode = false;
+	set <string>::iterator cit;
 
 	hash = djb_hash(code);
 
+	// We need to error check to ensure the code is a real code, and that
+	// it has not already been added
 	if (hash % 17 == 0) realCode = true;
 	else if (hash % 13 == 0) realCode = true;
 
 	if (realCode == true) {
-		Codes.insert(code);
-		return 0;
+		cit = Codes.find(code);
+		if (cit != Codes.end()) return -1;
+		else {
+			Codes.insert(code);
+			return 0;
+		}
 	}
-	else return -1;
+	return -1;
 }
 
 // This method returns the number of points associated with a user
@@ -237,7 +251,7 @@ int Code_Processor::Redeem_Prize(string username, string prize) {
 	upoints = uit->second->points;
 	ppoints = pit->second->points;
 
-	// might need to include --->  || pit->second->quantity == 0
+	// might need to include || pit->second->quantity == 0
 	if (upoints < ppoints) return -1;
 	uit->second->points -= ppoints;
 	pit->second->quantity--;
@@ -277,9 +291,9 @@ int Code_Processor::Write(const char *file) {
 	for (uit = Names.begin(); uit != Names.end(); uit++) {
 		fout << "ADD_USER " << uit->first.c_str() << " " << uit->second->points;
 		fout << " " << uit->second->realname.c_str() << endl;
-	}
-	for (uit = Phones.begin(); uit != Phones.end(); uit++) {
-		fout << "ADD_PHONE " << uit->second->username.c_str() << " " << uit->first.c_str() << endl;
+		for (cit = uit->second->phone_numbers.begin(); cit != uit->second->phone_numbers.end(); cit++) {
+			fout << "ADD_PHONE " << uit->second->username.c_str() << " " << *cit << endl;
+		}
 	}
 	for (cit = Codes.begin(); cit != Codes.end(); cit++) {
 		fout << "MARK_USED " << *cit << endl;
