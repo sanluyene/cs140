@@ -56,8 +56,20 @@ int Code_Processor::New_User(string username, string realname, int starting_poin
 
 // This method deletes a user from the user list
 int Code_Processor::Delete_User(string username) {
+    map <string, User *>::iterator pit;
+	map <string, User *>::iterator uit;
 
-	return -1;
+	// We need to error check to ensure the user exists
+	uit = Names.find(username);
+	if (uit == Names.end()) return -1;
+
+
+	for (pit = Phones.begin(); pit != Phones.end(); pit++) {
+		if (pit->second->username == uit->first) Phones.erase(pit);
+	}
+	Names.erase(uit);
+
+	return 0;
 }
 
 // This method adds a phone to the phones list and to the specified user
@@ -108,7 +120,7 @@ string Code_Processor::Show_Phones(string username) {
 	uit = Names.find(username);
 	if (uit == Names.end()) return "BAD USER";
 
-	for (pit = Names[username]->second->phone_numbers.begin(); pit != Names[username]->second->phone_numbers.end; pit++) {
+	for (pit = uit->second->phone_numbers.begin(); pit != uit->second->phone_numbers.end(); pit++) {
 		phones += *pit + "\n";
 	}
 
