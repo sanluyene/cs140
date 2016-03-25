@@ -196,7 +196,7 @@ int Code_Processor::Text_Code(string phone, string code) {
 
 // This method marks a code as used once redeemed
 int Code_Processor::Mark_Code_Used(string code) {
-	int hash = 0;
+	unsigned int hash = 0;
 	bool realCode = false;
 
 	hash = djb_hash(code);
@@ -281,7 +281,7 @@ int Code_Processor::Write(const char *file) {
 	for (uit = Phones.begin(); uit != Phones.end(); uit++) {
 		fout << "ADD_PHONE " << uit->second->username.c_str() << " " << uit->first.c_str() << endl;
 	}
-	for (cit = Codes.begin(); cit !=Codes.end(); cit++) {
+	for (cit = Codes.begin(); cit != Codes.end(); cit++) {
 		fout << "MARK_USED " << *cit << endl;
 	}
 
@@ -289,4 +289,3 @@ int Code_Processor::Write(const char *file) {
 
 	return 0;
 }
-
