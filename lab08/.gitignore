@@ -1,0 +1,6 @@
+dl_hash_test
+*.o
+tmp*
+list_editor
+dl_hash
+dlist
