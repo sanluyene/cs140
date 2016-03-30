@@ -8,7 +8,14 @@
 #include "dlist.h"
 
 Dlist::Dlist() {
+	Dnode *d;
 
+	d = new Dnode;
+
+	sentinel = d;
+	d->flink = d;
+	d->blink = d;
+	size = 0;
 }
 
 Dlist::~Dlist() {
@@ -16,59 +23,93 @@ Dlist::~Dlist() {
 }
 
 int Dlist::Empty() {
-
+	return size;
 }
 
 int Dlist::Size() {
-
+	return size;
 }
 
 void Dlist::Push_Front(string s) {
-
+	Insert_Before(s, sentinel->flink);
 }
 
 void Dlist::Push_Back(string s) {
-
+	Insert_Before(s, sentinel);
 }
 
 string Dlist::Pop_Front() {
-	return "";
+	string s = "";
+	Dnode *d, *next;
+
+	d = new Dnode;
+	next = new Dnode;
+
+	d = sentinel->flink;
+	next = d->flink;
+	sentinel->flink = next;
+	next->blink = sentinel;
+	s = d->s;
+
+	size--;
+
+	return s;
 }
 
 string Dlist::Pop_Back() {
-	return "";
+	string s = "";
+	Dnode *d, *prev;
+
+	d = new Dnode;
+	prev = new Dnode;
+
+	d = sentinel->blink;
+	prev = d->blink;
+	sentinel->blink = prev;
+	prev->blink = sentinel;
+	s = d->s;
+
+	size--;
+
+	return s;
 }
 
 Dnode *Dlist::Begin() {
-	Dnode *d;
-	d = new Dnode;
-	return d;
+	return sentinel->flink;
 }
 
 Dnode *Dlist::End() {
-	Dnode *d;
-	d = new Dnode;
-	return d;
+	return sentinel;
 }
 
 Dnode *Dlist::Rbegin() {
-	Dnode *d;
-	d = new Dnode;
-	return d;
+	return sentinel->blink;
 }
 
 Dnode *Dlist::Rend() {
-	Dnode *d;
-	d = new Dnode;
-	return d;
+	return sentinel;
 }
 
 void Dlist::Insert_Before(string s, Dnode *n) {
+	Dnode *prev, *next, *newnode;
 
+	prev = new Dnode;
+	next = new Dnode;
+	newnode = new Dnode;
+
+	prev = n->blink;
+	next = n->flink;
+	newnode->s = s;
+	newnode->blink = prev;
+	newnode->flink = next;
+	prev->flink = newnode;
+	next->blink = newnode;
+
+	size++;
 }
 
 void Dlist::Insert_After(string s, Dnode *n) {
-
+	Insert_Before(s, n->blink);
 }
 
 void Dlist::Erase(Dnode *n) {
