@@ -15,15 +15,16 @@ Dlist::Dlist() {
 	sentinel = d;
 	d->flink = d;
 	d->blink = d;
+	d->s = "";
 	size = 0;
 }
 
 Dlist::~Dlist() {
-
 }
 
 int Dlist::Empty() {
-	return size;
+	if (size > 0) return 0;
+	return 1;
 }
 
 int Dlist::Size() {
@@ -52,6 +53,7 @@ string Dlist::Pop_Front() {
 	s = d->s;
 
 	size--;
+	delete d;
 
 	return s;
 }
@@ -66,10 +68,11 @@ string Dlist::Pop_Back() {
 	d = sentinel->blink;
 	prev = d->blink;
 	sentinel->blink = prev;
-	prev->blink = sentinel;
+	prev->flink = sentinel;
 	s = d->s;
 
 	size--;
+	delete d;
 
 	return s;
 }
@@ -91,25 +94,23 @@ Dnode *Dlist::Rend() {
 }
 
 void Dlist::Insert_Before(string s, Dnode *n) {
-	Dnode *prev, *next, *newnode;
+	Dnode *prev, *newnode;
 
 	prev = new Dnode;
-	next = new Dnode;
 	newnode = new Dnode;
 
 	prev = n->blink;
-	next = n->flink;
 	newnode->s = s;
 	newnode->blink = prev;
-	newnode->flink = next;
+	newnode->flink = n;
 	prev->flink = newnode;
-	next->blink = newnode;
+	n->blink = newnode;
 
 	size++;
 }
 
 void Dlist::Insert_After(string s, Dnode *n) {
-	Insert_Before(s, n->blink);
+	Insert_Before(s, n->flink);
 }
 
 void Dlist::Erase(Dnode *n) {
