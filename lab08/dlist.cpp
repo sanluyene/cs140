@@ -20,6 +20,20 @@ Dlist::Dlist() {
 }
 
 Dlist::~Dlist() {
+	while(!(Empty())) {
+		Dnode *d, *next;
+
+		d = new Dnode;
+		next = new Dnode;
+
+		d = sentinel->flink;
+		next = d->flink;
+		sentinel->flink = next;
+		next->blink = sentinel;
+
+		size--;
+		delete d;
+	}
 }
 
 int Dlist::Empty() {
@@ -114,5 +128,16 @@ void Dlist::Insert_After(string s, Dnode *n) {
 }
 
 void Dlist::Erase(Dnode *n) {
+	Dnode *prev, *next;
 
+	prev = new Dnode;
+	next = new Dnode;
+
+	prev = n->blink;
+	next = n->flink;
+	next->blink = prev;
+	prev->flink = next;
+
+	size--;
+	delete n;
 }
