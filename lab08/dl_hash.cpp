@@ -45,7 +45,7 @@ void DL_Hash::Insert(string &s) {
 
 	val = djb_hash(s) % table.size();
 
-	table[val]->Push_Front(s);
+	if (!(Present(s))) table[val]->Push_Back(s);
 }
 
 int DL_Hash::Present(string &s) {
@@ -66,8 +66,19 @@ int DL_Hash::Present(string &s) {
 
 void DL_Hash::Erase(string &s) {
 	unsigned int val;
+	Dnode *d;
 
 	val = djb_hash(s) % table.size();
+	d = new Dnode;
+
+	d = table[val]->Begin();
+	while (d != table[val]->End()) {
+		if (d->s == s) {
+			delete d;
+			break;
+		}
+		d = d->flink;
+	}
 }
 
 void DL_Hash::Strip_All_Substring(string &s) {
