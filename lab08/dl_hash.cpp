@@ -5,8 +5,6 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <vector>
-#include <string>
 #include <cstdio>
 #include "dl_hash.h"
 
