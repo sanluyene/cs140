@@ -63,23 +63,23 @@ Problem 062 is correct.
 Problem 063 is correct.
 Problem 064 is correct.
 Problem 065 is correct.
-Problem 066 is incorrect.
-Problem 067 is incorrect.
-Problem 068 is incorrect.
-Problem 069 is incorrect.
-Problem 070 is incorrect.
-Problem 071 is incorrect.
-Problem 072 is incorrect.
-Problem 073 is incorrect.
-Problem 074 is incorrect.
-Problem 075 is incorrect.
-Problem 076 is incorrect.
-Problem 077 is incorrect.
-Problem 078 is incorrect.
-Problem 079 is incorrect.
-Problem 080 is incorrect.
-Problem 081 is incorrect.
-Problem 082 is incorrect.
+Problem 066 is correct.
+Problem 067 is correct.
+Problem 068 is correct.
+Problem 069 is correct.
+Problem 070 is correct.
+Problem 071 is correct.
+Problem 072 is correct.
+Problem 073 is correct.
+Problem 074 is correct.
+Problem 075 is correct.
+Problem 076 is correct.
+Problem 077 is correct.
+Problem 078 is correct.
+Problem 079 is correct.
+Problem 080 is correct.
+Problem 081 is correct.
+Problem 082 is correct.
 Problem 083 is incorrect.
 Problem 084 is incorrect.
 Problem 085 is incorrect.
@@ -99,4 +99,4 @@ Problem 098 is incorrect.
 Problem 099 is incorrect.
 Problem 100 is incorrect.
 
-65 Correct out of 100
+82 Correct out of 100

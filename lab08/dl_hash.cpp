@@ -74,7 +74,7 @@ void DL_Hash::Erase(string &s) {
 	d = table[val]->Begin();
 	while (d != table[val]->End()) {
 		if (d->s == s) {
-			delete d;
+			table[val]->Erase(d);
 			break;
 		}
 		d = d->flink;
