@@ -82,7 +82,19 @@ void DL_Hash::Erase(string &s) {
 }
 
 void DL_Hash::Strip_All_Substring(string &s) {
+	Dnode *d;
 
+	d = new Dnode;
+
+	for (int i = 0; i < table.size(); i++) {
+		d = table[i]->Begin();
+		while (d != table[i]->End()) {
+			if (d->s.find(s) != string::npos) {
+				table[i]->Erase(d);
+			}
+			d = d->flink;
+		}
+	}
 }
 
 void DL_Hash::Print() {

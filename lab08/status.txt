@@ -80,23 +80,23 @@ Problem 079 is correct.
 Problem 080 is correct.
 Problem 081 is correct.
 Problem 082 is correct.
-Problem 083 is incorrect.
-Problem 084 is incorrect.
-Problem 085 is incorrect.
-Problem 086 is incorrect.
-Problem 087 is incorrect.
-Problem 088 is incorrect.
-Problem 089 is incorrect.
-Problem 090 is incorrect.
-Problem 091 is incorrect.
-Problem 092 is incorrect.
-Problem 093 is incorrect.
-Problem 094 is incorrect.
-Problem 095 is incorrect.
-Problem 096 is incorrect.
-Problem 097 is incorrect.
-Problem 098 is incorrect.
-Problem 099 is incorrect.
-Problem 100 is incorrect.
+Problem 083 is correct.
+Problem 084 is correct.
+Problem 085 is correct.
+Problem 086 is correct.
+Problem 087 is correct.
+Problem 088 is correct.
+Problem 089 is correct.
+Problem 090 is correct.
+Problem 091 is correct.
+Problem 092 is correct.
+Problem 093 is correct.
+Problem 094 is correct.
+Problem 095 is correct.
+Problem 096 is correct.
+Problem 097 is correct.
+Problem 098 is correct.
+Problem 099 is correct.
+Problem 100 is correct.
 
-82 Correct out of 100
+100 Correct out of 100
