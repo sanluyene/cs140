@@ -15,38 +15,30 @@ Enum::Enum(int length) {
 	s.resize(length);
 }
 
-void Enum::do_enumeration(int index, int ones) {
-cout << "enum index: " << index << " ones " << ones << endl;
-	bool valid = true;
+int Enum::do_enumeration(int index, int ones) {
 	int count = 0;
 
 	// Base case
 	if (index == length) {
 		printf("%s", s.c_str());
-		return;
+		return 1;
 	}
 
-cout << "base" << endl;
-	// Set index to zero
-	s[index] = '0';
-
-cout << "s " << s.c_str() << endl;
-cout << "s[index] " << s[index] << endl;
 	// Check validity
 	for (int i = 0; i < length; i++) {
 		if (s[i] == '1') count++;
 	}
-	if (count > ones) valid = false;
-cout << "valid " << valid << endl;
+	if (count > ones) return 0;
 
-	if (valid) do_enumeration(index++, ones);
-	else {
-		s[index] = '1';
-		if (valid) do_enumeration(index++, ones--);
+	// Otherwise continue solving
+	for (i = '0'; i <= '1'; i++) {
+		s[index] = i;
+		if (i == '1') ones--;
+		if (do_enumeration(index++, ones)) return 1;
 	}
 
 	// Otherwise it is unsuccessful
-	return;	
+	return 0;	
 }
 
 int main(int argc, char **argv) {
