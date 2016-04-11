@@ -13,6 +13,6 @@ class Enum {
 		void do_enumeration(int index, int ones);
 
 	protected:
-		string s = "";
+		string s;
 		int length;
 };

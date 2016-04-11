@@ -5,26 +5,18 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <cstdio>
 #include "enum.h"
 
 using namespace std;
 
 Enum::Enum(int length) {
-	Enum *e;
-
-	e = new Enum;
-
-	e.length = length;
-	e.s->length = length;
-}
-
-int Enum::is_valid(int valid) {
-	for (int i = 0; i < length; i++) {
-
-	}
+	length = length;
+	s.resize(length);
 }
 
 void Enum::do_enumeration(int index, int ones) {
+cout << "enum index: " << index << " ones " << ones << endl;
 	bool valid = true;
 	int count = 0;
 
@@ -34,23 +26,27 @@ void Enum::do_enumeration(int index, int ones) {
 		return;
 	}
 
+cout << "base" << endl;
 	// Set index to zero
-	e.s[index] = 0;
+	s[index] = '0';
 
+cout << "s " << s.c_str() << endl;
+cout << "s[index] " << s[index] << endl;
 	// Check validity
 	for (int i = 0; i < length; i++) {
-		if (e.s[i] == '1') count++;
+		if (s[i] == '1') count++;
 	}
 	if (count > ones) valid = false;
+cout << "valid " << valid << endl;
 
-	if (valid && e->do_enumeration(index++, ones)) return 1;
+	if (valid) do_enumeration(index++, ones);
 	else {
-		e.s[index] = 1;
-		if (valid && e->do_enumeration(index++, ones--)) return 1;
+		s[index] = '1';
+		if (valid) do_enumeration(index++, ones--);
 	}
 
 	// Otherwise it is unsuccessful
-	return 0;	
+	return;	
 }
 
 int main(int argc, char **argv) {
@@ -58,12 +54,12 @@ int main(int argc, char **argv) {
 	int ones = 0;
 
 	if (argc != 3 || atoi(argv[1]) <= 0 || atoi(argv[2]) < 0 || atoi(argv[2]) > atoi(argv[1])) {
-		fprintf(stderr, "%s\n",); "usage: enum length ones\n";
+		fprintf(stderr, "usage: enum length ones\n");
 		return -1;
 	}
 
 	e = new Enum(atoi(argv[1]));
-	ones = argv[2];
+	ones = atoi(argv[2]);
 	e->do_enumeration(0, ones);
 
 	return 0;
