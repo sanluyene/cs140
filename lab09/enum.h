@@ -9,7 +9,7 @@ using namespace std;
 
 class Enum {
 	public:
-		Enum(int length);
+		Enum(int len);
 		int do_enumeration(int index, int ones);
 
 	protected:

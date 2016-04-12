@@ -10,13 +10,12 @@
 
 using namespace std;
 
-Enum::Enum(int length) {
-	length = length;
+Enum::Enum(int len) {
+	length = len;
 	s.resize(length);
 }
 
 int Enum::do_enumeration(int index, int ones) {
-cout << "index " << index << " ones " << ones << endl;
 	// Base case
 	if (index == length) {
 		printf("%s", s.c_str());
