@@ -24,17 +24,16 @@ int Enum::do_enumeration(int index, int ones) {
 		return 1;
 	}
 
-	// Check validity
-	for (int i = 0; i < length; i++) {
-		if (s[i] == '1') count++;
+	// Check and solve
+	if (length > ones) {
+		s[index] = '0';
+		do_enumeration(index++, ones);
+		//return 1;
 	}
-	if (count > ones) return 0;
-
-	// Otherwise continue solving
-	for (i = '0'; i <= '1'; i++) {
-		s[index] = i;
-		if (i == '1') ones--;
-		if (do_enumeration(index++, ones)) return 1;
+	if (ones > 0) {
+		s[index] = '1';
+		do_enumeration(index++, ones--);
+		//return 1;
 	}
 
 	// Otherwise it is unsuccessful
