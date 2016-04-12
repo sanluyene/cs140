@@ -16,8 +16,7 @@ Enum::Enum(int length) {
 }
 
 int Enum::do_enumeration(int index, int ones) {
-	int count = 0;
-
+cout << "index " << index << " ones " << ones << endl;
 	// Base case
 	if (index == length) {
 		printf("%s", s.c_str());
@@ -25,15 +24,15 @@ int Enum::do_enumeration(int index, int ones) {
 	}
 
 	// Check and solve
-	if (length > ones) {
+	if (index > ones) {
 		s[index] = '0';
 		do_enumeration(index++, ones);
-		//return 1;
+		return 1;
 	}
 	if (ones > 0) {
 		s[index] = '1';
 		do_enumeration(index++, ones--);
-		//return 1;
+		return 1;
 	}
 
 	// Otherwise it is unsuccessful
