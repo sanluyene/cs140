@@ -18,20 +18,18 @@ Enum::Enum(int len) {
 int Enum::do_enumeration(int index, int ones) {
 	// Base case
 	if (index == length) {
-		printf("%s", s.c_str());
+		printf("%s\n", s.c_str());
 		return 1;
 	}
 
 	// Check and solve
-	if (index > ones) {
+	if ((length - index) > ones) {
 		s[index] = '0';
-		do_enumeration(index++, ones);
-		return 1;
+		do_enumeration((index + 1), ones);
 	}
 	if (ones > 0) {
 		s[index] = '1';
-		do_enumeration(index++, ones--);
-		return 1;
+		do_enumeration((index + 1), (ones - 1));
 	}
 
 	// Otherwise it is unsuccessful
