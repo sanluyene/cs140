@@ -45,12 +45,14 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 				if (grid[rp + row][cp + column] == '1') grid[rp + row][cp + column] = '0';
 				else grid[rp + row][cp + column] = '1';
 //cout << "piece " << piece << " row " << row << " rp " << rp << " col " << column << " cp " << cp << " grid val " << grid[rp+row][cp+column] << endl;
+//cout << "piece part " << piecepart << endl;
 
 				// Save the move we made to be able to print it later,
 				// so long as it's the very first part of the piece
 				if (piecepart == 0) {
-					moves[piece][1] = rp + row;
-					moves[piece][2] = cp + column;
+//cout << "piece " << piece << " row " << row + rp << " col " << column + cp << " grid val " << grid[rp+row][cp+column] << endl;
+					moves[piece][1] = (rp + row);
+					moves[piece][2] = (cp + column);
 					piecepart++;
 				}
 			}
@@ -64,22 +66,21 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 // this function until a solution has or has not been found
 void ShapeShifter::find_solution(int index) {
 	bool win = true, insert = false;
+	int score = 0;
 
 	// Base case
 	if (index == pieces.size()) {
 		// Test to see if the grid is all 1's for a win
 		for (int r = 0; r < grid.size(); r++) {
 			for (int c = 0; c < grid[0].length(); c++) {
-//cout << "win val " << grid[r][c] << endl;
-				if (grid[r][c] == '0') {
-					win = false;
-					break;
-				}
+//cout << "grid " << grid[r][c] << endl;
+				if (grid[r][c] == '1') score++;
 			}
 		}
-	
+//cout << "score " << score << " size " << (grid.size() * grid[0].length()) << endl;
+
 		// If we've won, we want to print all of the moves we made
-		if (win == true) {
+		if (score == (grid.size() * grid[0].length())) {
 			for (int i = 0; i < moves.size(); i++) {
 				for (int j = 0; j < pieces[i].size(); j++) {
 					printf("%s ", pieces[i][j].c_str());
@@ -97,7 +98,7 @@ void ShapeShifter::find_solution(int index) {
 			insert = Apply(index, r, c);
 			if (insert) find_solution(index + 1);
 
-			// If a future piece doesn't work, undo this piece's placement
+			// If a piece doesn't work, undo the placement
 			Apply(index, r, c);
 		}
 	}
