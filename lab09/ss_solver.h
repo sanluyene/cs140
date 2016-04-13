@@ -6,14 +6,18 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
+#include <vector>
 
 using namespace std;
 
 class Solver {
 	public:
-		Solver(vector<string> grid, vector<vector<string>> pieces);
+		Solver(vector<string> g, vector<vector<string> > p);
 		int insert_piece(int piece);
 
 	protected:
-		int pieces;
+		int ps;
+		vector<string> grid;
+		vector<vector<string> > pieces;
+		vector<int> moves;
 };
