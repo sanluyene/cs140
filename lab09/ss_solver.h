@@ -20,4 +20,5 @@ class ShapeShifter {
 	protected:
 		vector<string> grid;
 		vector<vector<string> > pieces;
+		vector<vector<int> > moves;
 };

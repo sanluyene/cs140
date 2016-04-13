@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <sstream>
 #include <vector>
+#include <string>
 #include "ss_solver.h"
 
 using namespace std;
@@ -16,6 +17,13 @@ using namespace std;
 ShapeShifter::ShapeShifter(vector<string> g, vector<vector<string> > p) {
 	grid = g;
 	pieces = p;
+	moves.resize(pieces.size());
+
+	for (int p = 0; p < moves.size(); p++) {
+		moves[p].push_back(p);
+		moves[p].push_back(0);
+		moves[p].push_back(0);
+	}
 }
 
 // This function will apply a piece at a given row and column.
@@ -32,6 +40,8 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 				// Otherwise, change the grid value
 				if (grid[rp + row][cp + column] == '1') grid[rp + row][cp + column] = '0';
 				else grid[rp + row][cp + column] = '1';
+				moves[piece][1] = rp + row;
+				moves[piece][2] = cp + column;
 			}
 		}
 	}
@@ -55,7 +65,13 @@ void ShapeShifter::find_solution(int index) {
 		}
 	
 		if (win == true) {
-			printf("winning\n");
+			for (int i = 0; i < pieces.size(); i++) {
+				for (int j = 0; j < pieces[i].size(); j++) {
+					printf("%s ", pieces[i][j]);
+				}
+				printf("%d %d\n", moves[i][1], moves[i][2]);
+			}
+cout << "win" << endl;
 			exit(0);
 		}
 		return;		
