@@ -1,0 +1,4 @@
+*.o
+bad_names_list*
+names_list
+segfault1

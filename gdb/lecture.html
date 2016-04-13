@@ -1,0 +1,482 @@
+<html>
+<head>
+<title>Scripts and Utilities -- Gcc lecture</title>
+</head>
+<body bgcolor="#D7FBEC">
+<h1>Scripts and Utilities -- Gcc lecture</h1><br>
+<h2><b>Gcc, gdb, purify and quantify</b></h2><br>
+<hr>
+<ul>
+<li> Fall 2004
+<li><a href="links.html" TARGET="main">Lecture links</a>
+</ul>
+<hr>
+<p>
+Today's lecture will cover <b>gcc</b>, the GNU project's C compiler, and
+<b>gdb</b>, their debugging tool. Also <b>purify</b> and <b>quantify</b>, 
+tools to help in debugging and optimizing code.  First, perform the setup
+from the lecture links.
+This should copy to your new directory some files, create 2 subdirectories and 
+then compile multiple executables.
+</p>
+<p>
+Then I suggest that you read the disclaimer on the <b>gcc</b> man page about 
+currency. 
+</p>
+<p>
+<h3>GCC The GNU Compiler</h3><br>
+<b>gcc</b> assumes that the source file for C code has an extension of <b>.c</b>
+and given that extension, it runs the preprocessor, compiles and assembles 
+the file, producing an executable "a.out" unless you specify 
+otherwise.  
+<pre>
+
+  gcc myfile.c
+
+</pre> 
+produces an executable "a.out" and any intermediate files that my be
+needed are written to /tmp and removed before the compiler finishes.  All 
+the compilers
+in use on our system take a number of command line options and gcc is no
+exception.  Three of the most important, or most used, are <b>-o, -c </b>and <b>-g</b>.  
+-o is used to specify the name of the output file (executable or
+object file).  -c is used when you only wish to generate an object (.o)
+file and, by default, uses the base name of the input file.  Thus if I
+were to use 
+<pre>
+
+  gcc -c myfile.c
+
+</pre> 
+I would generate a file "myfile.o".  This name can be changed using the -o
+option 
+<pre>
+
+  gcc -c myfile.c -o test.o
+
+</pre> 
+will generate the file test.o.  To this you may answer <i>So?</i>  but there
+will come a time when you want/need to rename an output.  
+</p>
+<p>
+The -g option is used when debugging information is needed.  In order to
+run any of the debuggers available to us, some information,
+particularly source file line numbering, is necessary in executable
+code.  This information requires extra time to generate and is sometimes
+incompatible with optimizations you may specify or that the compiler
+may attempt so that the code produced tends to run more slowly.  But
+since you are debugging it, it must not be running well anyway so speed
+is not an issue.
+</p>
+<p>
+
+There are very few restrictions regarding placement of command line
+options but I suggest that you do the following.  First place any
+switches such as -g, -O, -DADD_ that affect the overall operation of the
+compiler, then switches regarding the file(s) such as -c and -o.  Last
+place the library switches.
+</p>
+<p>
+
+The examples I have given previously are extremely simple and don't
+really give you a flavor of the possibilities, or quirks, that can be
+encountered.  You will have to refer to the man page, even though it is
+only about 90% percent accurate (in my opinion) and ask friends.  
+</p>
+<p>
+
+So why should you generate object files instead of making executables
+directly?  The best reason is that for large projects it allows the
+compilation (I hope you are using make) to only be done for those
+source files you have modified.  A "normal" thing to do is to have the
+executable dependent upon the object files of the sources.  Then when a
+source is modified only that one is recompiled and the executable is
+re-linked to the new object.  This also means that by breaking up source
+files, if you have made errors in writing the code you don't get errors for 
+all the code at once but can handle smaller quantities at a time.  It
+also causes you to think more modularly, keep functions which do similar
+things in the same file so they can be easily reused, that sort of thing.
+</p>
+<p>
+Enough talk, some examples.
+<pre>
+
+  gcc -O2 -DDEBUG -I$HOME/mydir/include myfile.o myfile2.o -L$HOME/mydir/lib 
+  -lmylib      
+
+</pre> 
+<p>
+So what does this do?  First the -O2 (note a capital o) says use
+optimization level 2, depending on the compiler this can have the values
+of -O -O2 -O3  and read the man pages for what each one does.  The
+next -DDEBUG  is equivalent to putting the statement 
+<pre>
+
+#define DEBUG 1
+
+</pre> 
+at the beginning of your code and is very useful for debugging/examining
+values in that it will allow conditional compilation.  In your code you
+may place statements such as the following
+<pre>
+
+#ifdef DEBUG
+  printf("val=%d\n",val);
+#endif
+
+#ifndef DEBUG
+#define DEBUG 1
+#endif
+
+#if (DEBUG==1)
+  printf("val=%d\n",val);
+#else
+  printf("no debug\n")
+#endif
+
+</pre> 
+<p>
+The <b>#ifdef</b> and <b>#ifndef</b> are "if defined" and "if not defined" and 
+cause the code which follows, until the corresponding <b>#else</b> or 
+<b>#endif</b>, to be compiled or not based on the result of the test.  
+The <b>#if</b> can use any of the normal C boolean 
+operations '>' '<' '==' '!'  and combinations.  And the values do not have to 
+be <b>#defined</b> but must be able to be evaluated the
+same as in any C conditional statement.  There is also an <b>#elif</b> (else
+if) which can be used on conjunction with these.
+</p>
+<p>
+
+The <b>-I</b> switch tells the compiler that in addition to the directories it
+normally looks in for #include files, which normal files are specified by
+<pre>
+
+#include <stdio.h>
+
+</pre> 
+also now look in the <b>-I</b> directories.  Files specified with
+<pre>
+
+#include "myinclude.h"
+
+</pre> 
+are normally looked for in the current directory (the one the
+source file is in) the 'normal' directories. Now the <b>-I</b> directories will 
+also be searched.  Multiple directories may be specified in this way.  
+<b>-L</b> does the same as <b>-I</b> only for library directories 
+instead of include directories.  The 
+compiler adds the <b>-L</b> directories to the list it searches for
+ <b>-l[name]</b> libraries. <b>-l</b> tells the compiler to include the 
+library <b>[name]</b> in
+those libraries it uses for linking.  Actually it will search its list
+of directories for a file name lib[name].a .  For instance placing -lm
+specifies to that the math library should be used.  This contains functions
+such sqrt().
+<p>
+
+One thing to understand, when multiple .o files are specified the entire
+contents of the files are incorporated into the executable, whether the
+code (functions) is used or not.  With libraries however, only the
+applicable code is used, not the entire library.
+
+</p>
+
+<pre>
+Try the following compilations, run the resulting a.out files and look at
+the source file.  These are examples of the #define and #ifdef
+statements.
+
+UNIX> gcc -DDEBUG comp_test.c
+UNIX> a.out
+-DDEBUG was in the compile line
+UNIX> gcc -DDEBUG=2 -DONE=2 comp_test.c
+UNIX> a.out
+-DDEBUG was in the compile line
+DEBUG had a value greater than 1
+UNIX> gcc -DDEBUG -DONE comp_test.c
+UNIX> a.out
+-DDEBUG was in the compile line
+DEBUG had a value equal to ONE
+UNIX> gcc comp_test.c
+UNIX> a.out
+DEBUG had a value equal to ONE
+-DDEBUG was not in the compile line
+UNIX>
+</pre>
+
+<h3>GDB The GNU Debugger</h3><br>
+<p>
+<b>gdb</b> requires that the executable, and 
+all of the objects if separately compiled, be compiled with the -g switch.
+For example
+<pre>UNIX> gcc -g myfile.c
+<pre>UNIX> gdb myfile
+</pre>
+It is then run by typing gdb &lt;filename&gt;.  This starts the debugger and
+loads the executable.  It will inform you if there is no debugging
+information available or no source code.  I will also inform you if the
+source is newer that the executable.  In that case you may want to
+recompile as the information may not correctly correspond.  When in the
+debugger you can type help at the prompt and get some help information,
+often about as much as the man pages.  
+</p>
+<p>The first thing you will want to do is set breakpoints, places in the
+code where you want execution to stop so that you can examine data.  I
+often start by typing <i>break</i> ( or just b) main.  Following <i>break</i> 
+with a
+function name causes the program to stop as soon as the function is
+entered and you will have the parameters( if any ) displayed along
+with the line number of the source file.  If you know a line number you
+can enter it as "break myfile.c:234".  Once stopped at a break point,
+you may use 
+<ul>
+<li> <i>next</i> (or n) to execute the next statement
+<li> <i>step</i> (or s) "steps into" a function otherwise the function is 
+executed as a statement
+<li> <i>until</i> (u) causes loops to be executed "until done" after
+they have been executed once 
+<li> <i>continue</i> (c) causes the program execution to continue to the next 
+breakpoint or until done.  
+
+</ul>
+One of the best things to use when you encounter segmentation faults, 
+bus errors and the like is <i>bt</i>.  This is "back trace" and lets you 
+see the execution stack.
+</p>
+<p>If you missed something and wish to start over type <i>run</i> (r) and you will
+be able to start over from the beginning.  You will also need to use <i>run</i>
+to begin the program and this is how you specify command line parameters
+to the executable
+<pre>
+run -P myfile.jgr > output.ps
+</pre> 
+will cause the arguments -P and myfile.jgr to be passed to the
+executable and its stdout to be redirected to output.ps.  
+</p>
+<p>It is often difficult to debug interactive processes because of the way
+gdb handles input.  For instance if the next statement to be executed
+is "scanf("%s",input);" and you use next, the program will wait for you
+to type something in and press return but ONLY THE FIRST CHARACTER, will
+be given to scanf and then gdb will say something like 
+<pre>
+
+> <i>Undefined command: "tart".  Try help</i>
+</pre> 
+if what you typed in was "start".  To get around this, place a
+breakpoint <b>after</b> the statements which read keyboard input and "continue"
+through them.  This will allow all the keyboard input to be read in and
+then give you control back.
+</p>
+<p>If your process enters a continuous loop, you can type ^C and you will
+get the debugger prompt back so that you can quit or start executing
+statements one at a time.  The last thing to discuss here is the <i>print</i>
+(p) command which allows you to examine program values.  The only time
+this confusing is when pointers are involved.  But it maintains
+consistency with C style type-casting.  
+<pre>
+print val 
+will print out a character, a string (char *), an int, double, etc.
+print str[9] 
+will print out the 10th character in a string.
+print (char *)(str+9)
+will print out the string starting at the 10th character.
+and so on.  Structures are printed with all fields and field-names.
+</pre> 
+
+<p>
+<i>List</i> (l) lists (displays) the 10 lines surrounding the current line 
+or the ten lines surrounding some (file:)line number.  Continued l's
+successively list the file beginning at the last line displayed.  
+</p>
+<p>
+
+Pressing return at anytime in gdb, with nothing at the prompt, repeats
+the last command regardless whether it was valid or not.  So pressing <i>n</i>
+for <i>next</i> then repeatedly pressing return cause the program to execute
+one line at time.
+</p>
+<p>
+
+A last thing about gdb is that you can attach to a currently running
+process.  This is handy if you are forking off processes and want to
+see what evil things they are doing before they die.  I find the only way
+to really do this is put a <b>sleep(20)</b> or some such statement at the
+beginning of the code I want to debug (which is of course running in
+another window or in the background).  Then do ps to get the pid and
+type "gdb <executable name> pid" and gdb will attach to the running
+process.  VERY handy.  And when you quit gdb it does not terminate the 
+process, just the debugger.
+</p>
+<pre>
+Tests:
+
+UNIX> simple0
+simple0
+Segmentation Fault
+UNIX> gdb simple0
+</pre><br>
+Now you will be running the debugger.  When you get the prompt (gdb)
+just type <i>run</i> and see what happens.  When executation stops type
+<i>bt</i>.  This shows
+<br>
+<pre>
+#0  0xef743de8 in strlen ()
+#1  0xef7823ec in _doprnt ()
+#2  0xef78b1c0 in printf ()
+#3  0x10bc8 in pargs (num=1, array=0xeffff73c) at second.v0.c:63
+#4  0x10840 in main (argc=1, argv=0xeffff73c) at first.v0.c:22
+(gdb) 
+</pre><br>
+Which tells you that the execution was last in strlen().
+Now type<br>
+<pre>
+(gdb) break pargs
+(gdb) run
+</pre><br>
+and answer y to the question.  What will happen?  Program runs and stops
+when it enters the function pargs. Then you can single step through it 
+until the error occurs.
+
+Try simple1 and step through it until the program terminates.  Why did
+it just end without doing anything?  How do you singlestep?  Well
+the best way is to first do<br>
+<pre>
+(gdb) break main
+then do
+(gdb) run
+(gdb) next
+</pre><br>
+until you get to where you want to be.  Try examining some values with
+print.  By the way it never does anything because the value of i is 0.
+Now try
+<pre>
+UNIX> simple2 < test_input
+</pre>
+This will have an Arithmetic Exception error.  Try to find it.
+Arithmetic exceptions are usually divide-by-zero errors.
+Don't forget.  You can get help in the debugger by typing help at the 
+prompt.
+<p>
+To see how to attach to a running process, do
+<pre>
+UNIX> my_last &
+[1] 29025
+UNIX> gdb my_last 29025
+
+(Note that the pid that you get will be different and you need to use the
+one returned on your machine.)
+
+</pre>
+<p>
+<h3>PURIFY and QUANTIFY</h3>
+
+<b>purify</b> and <b>quantify</b> are licensed products that will make finding memory
+problems and speeding up your code much easier.  They are not in the 
+normal paths but are located in /pkgs/rational/releases/PurifyPlus.2003a.06.12/sun4_solaris2/bin/purify and
+/pkgs/rational/releases/PurifyPlus.2003a.06.12/sun4_solaris2/bin/quantify and the executables are <b>purify</b> and <b>quantify</b>.  Now
+I do not know all there is to know about these programs but there are man
+pages and I do have some test files that will give you the flavor of
+them.
+</p>
+<p>
+
+Basically <b>purify</b> and <b>quantify</b> instrument all the code/functions used in a
+program.  Purify tracks memory usage/access and <b>quantify</b> tracks time
+spent in functions and code.  They are easy to use, requiring only that
+you recompile the executable and put <b>purify</b> or <b>quantify</b> before the
+compile line.  You should use the -g option with <b>purify</b> for the line number 
+information. For example:
+<pre>
+
+purify gcc -g myfile
+quantify gcc myfile
+
+</pre> 
+Now this will be a relatively slow process and will result in some
+additional overhead in the execution of the code but again you are
+debugging/optimizing so execution time is a minor issue.  You should
+also be aware that the most useful parts of these are going to be made
+into pop-up windows so be prepared.  Ensure that if you are running the
+processes on a remote machine that your display variable is set to the 
+local display (for csh users at least)  by typing the following at
+the prompt: "setenv DISPLAY '<'local display name'>':0.0".
+</p>
+<p>
+
+
+Then just run the newly compiled executable and voila! instant
+gratification.  More or less.  For repeated runs of the same executable
+for <b>purify</b>, you do not need to exit the <b>purify</b> windows.  And in fact you
+can also run gdb on a process you are <b>purify</b>ing so you can have better
+access to the code/variables.  Read the man page
+</p>
+
+<pre>
+Purify examples:
+
+UNIX> pure0
+
+This will bring up the <b>purify</b> window and then run the process.  You can 
+examine the error by clicking on the box beside 
+
+NPR: Null Pointer Read
+
+then the box beside
+
+pargs
+
+Neat huh?
+
+
+Now try 
+UNIX> pure1
+
+Purify will show 2 memory leaks.  I suspect this is because allocated memory 
+was allocated but never used in the first case and incorrectly allocated in the
+second.  This is a case where a little playing around with code will show what 
+happens.
+
+UNIX> pure2 < test_input
+
+Here is where we find array bounds problems.
+
+UNIX> pure3 < test_input
+
+Another example of bad things happening only this time the program
+did not die.
+
+UNIX> gdb pure3
+
+Now when you type <i>run</i> in gdb, as the program starts <b>purify</b> will come up
+and you can run both together.  Check out the man page on <b>purify</b> for more
+information on this.  Oh, don't forget that you can specify the command line
+arguments in gdb by doing
+
+(gdb) run < test_input
+
+</pre>
+
+<pre>
+Quantify examples:
+
+
+UNIX> usage0 < test_input
+UNIX> usage1 < test_input
+UNIX> usage2 < test_input
+UNIX> usage3 < test_input
+UNIX> usage4 < test_input
+
+These examples are all the same source code.  I modified them by gradually
+deleting calls to printf and some useless operations for randomization and
+looping.  The source code is in the files
+
+first.v3.c  & second.v3.c
+first.v4.c  & second.v4.c
+first.v5.c  & second.v5.c
+first.v6.c  & second.v6.c
+first.v6.c  & second.v7.c
+
+</pre>
+
+</body>
+</html>

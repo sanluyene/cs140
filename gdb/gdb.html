@@ -1,0 +1,887 @@
+<head>
+<style>
+pre, table {
+    color: darkred
+}
+.comment {
+    color: darkgreen
+}
+</style>
+</head>
+<html>
+
+<title>gdb</title>
+<center><h1> How to Use gdb </h1>
+<h2><a href=http://www.cs.utk.edu/~bvz>Brad Vander Zanden</a></h2>
+</center>
+<hr>
+<ul>
+<li> <a href="http://darkdust.net/files/GDB%20Cheat%20Sheet.pdf">gdb cheat sheet</a>: contains quick summary of useful gdb commands.
+<li> gdb does not run well on Macintoshes and may not run well on Window
+  machines. I suggest that you use the hydra machines when you want to
+  use gdb.
+</ul>
+<hr>
+<b>gdb</b> is a GNU debugger that can be very helpful in finding problems
+with your programs. It allows you to do a number of useful things including:
+<p>
+<ol>
+<li> controlling the execution of your program by placing breakpoints and
+single stepping your program.
+<li> printing the values of variables in your program, and
+<li> determining where a segmentation fault or bus error occurs in your
+program.
+</ol>
+<p>
+In CS102 you probably debugged your program by inserting print statements
+into your program. While that technique often proves helpful, gdb provides
+far more functionality and is worth learning. We will start you out with
+a simple tutorial that shows you some of its features and then show you how
+you can use it to help you with debugging. 
+<p>
+In order to use gdb you need to compile your files with the -g option. For
+example:
+<pre>
+gcc -g -c student1.c
+gcc -o student1 student1.o
+</pre>
+<p>
+<hr>
+<h2> A Sample GDB Session </h2>
+<p>
+Start by copying the files in ~bvz/cs140/gdb to your directory
+and then typing <b>make</b>. <tt>make</tt> should compile the sample files
+in your directory into executables.
+<p>
+Now type:
+<pre>
+./names_list
+</pre>
+<tt>names_list</tt> prompts the user for five names and prepends the
+names to a list. The list starts with a sentinel node. The program
+then prints the names in the reverse order from which
+they were entered. 
+In
+this case <tt>names_list</tt> has nothing wrong with it. We simply want
+to use it to show you the various ways in which you can use gdb. 
+After that
+we will show you how you can use gdb to debug programs.
+<p>
+To use gdb with <tt>names_list</tt>, type
+<pre>
+gdb names_list
+</pre>
+<b>gdb</b> is the command you type to invoke the gdb debugger and 
+<tt>names_list</tt> is the name of the executable you wish to debug. 
+<p>
+<hr>
+<h3> Listing the lines in a program </h3>
+<p>
+You can list the lines in your program
+using the <tt>list</tt> command, or <tt>l</tt> for short.
+<tt>list</tt> lists 10 lines of your program, centered about the next line to 
+be executed. If you do it now, it will probably list the first 10 lines in
+your file since your program has not yet started execution. You can make it
+<pre>
+l first_line_number, last_line_number
+</pre>
+For example, typing <tt>l 10,23</tt> will cause gdb to list lines 10-23 of
+the current file. 
+<p>
+Sometimes you will want to list the lines in a different file. For example,
+<tt>names_list</tt> consists of the two files <tt>list.cpp</tt> and
+<tt>add_name.cpp</tt>. The file that was listed defaults to <tt>list.cpp</tt> 
+because that was the first file I gave to gcc. However, I can look at lines
+in <tt>add_name.cpp</tt> by prefixing the line numbers with add_name.cpp. For
+example:
+<pre>
+l add_name.cpp:6,12
+</pre>
+<hr>
+<h2> Executing a Program in GDB </h2>
+<p>
+You start running a program using gdb's <tt>run</tt> command or <tt>r</tt>
+for short. Try it now on the <tt>names_list</tt> program. Simply type 
+<tt>r</tt> at the gdb prompt:
+<pre>
+(gdb) r
+</pre>
+<tt>names_list</tt> does not require any command line arguments but if
+you have a program that requires command line arguments, you list 
+them after the <tt>run</tt> command. For example:
+<pre>
+r 3 gradefile
+</pre>
+<p>
+If your program is seg faulting then the run command will probably suffice
+to start your debugging session. When the program seg faults gdb will tell
+you the file, the procedure, and the line number where the seg fault occurred.
+We will explore debugging later. For the time being we will concentrate on
+showing you how you can control the execution of a program using gdb.
+<p>
+Frequently you will want to stop the program at some point during its
+execution and start single-stepping it. You can cause the program to stop
+at a certain line or when a certain function is called by creating
+breakpoints. A breakpoint is created using the <tt>break</tt> command
+or <tt>b</tt> for short.
+It takes either a line number or a function as an argument. For example,
+each of the follow commands will set a breakpoint in the names_list
+program:
+<pre>
+b 15                  <span class="comment">// set a breakpoint at line 15 in the current file</span>
+b add_name_to_list    <span class="comment">// set a breakpoint on the function add_name_to_list</span>
+b add_name.cpp:8      <span class="comment">// set a breakpoint at line 8 in add_name.cpp</comment>
+</pre>
+When you place a breakpoint on a function, such as <tt>add_name_to_list</tt>,
+gdb will stop the program any time that the function <tt>add_name_to_list</tt>
+is called, no matter where in the program <tt>add_name_to_list</tt> is called.
+<p>
+When a breakpoint is created gdb will assign it a number. If you want to
+later delete the breakpoint you can do so by typing <tt>delete</tt> and
+the breakpoint number. Alternatively you can type <tt>clear</tt> and
+either the line number or the function to which the breakpoint is
+attached. For example:
+<pre>
+delete 1
+clear add_name_to_list
+clear add_name.cpp:8
+</pre>
+These three commands will delete the three breakpoints created earlier.
+<p>
+If you forget what breakpoints you have set, you can type <tt>info b</tt>
+to print the breakpoints. For example:
+<pre>
+(gdb) info b
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x0000000000400b2b in main() at list.cpp:8
+(gdb) 
+</pre>
+The <tt>Disp</tt> field is short for <tt>Disposition</tt> and indicates 
+whether the breakpoint is marked to be 
+disabled or deleted when it is next encountered. The <tt>Enb</tt> field is
+short for <tt>Enabled</tt> and indicates whether or not the breakpoint is
+currently enabled. You do not need to worry about either of these fields.
+The <tt>What</tt> field tells you where the breakpoint is set, and that
+information, plus the number of the breakpoint, are probably the two pieces
+of information you need.
+<p>
+<hr>
+<h3> Continuing from a Breakpoint </h3>
+<p>
+You can cause the program to continue executing and proceed to the next
+breakpoint by typing <tt>continue</tt>, or <tt>c</tt> for short. Try it
+out by re-instating the breakpoints you typed in previously, re-starting the
+program, and then typing <tt>c</tt> each time you reach a breakpoint. You
+will need to re-type the previous breakpoints if you deleted them.
+<p>
+<hr>
+<h3> Printing the Values of Variables </h3>
+<p>
+You can print the values of variables in gdb using the <tt>print</tt> 
+command, or <tt>p</tt> for short. You print items just as you would reference
+them in a C program. However, unlike printf, you do not have to provide
+formatting information.
+<p>
+To try out the printing command first delete your previous
+breakpoints and place a breakpoint at line 21 in list.cpp. Now re-run
+your program from scratch and enter a name when prompted. The program
+will break at line 21:
+<pre>
+(gdb) r
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+ 
+Starting program: /home/bvz/courses/140/sp16/gdb/names_list
+enter a name: brad
+
+Breakpoint 1, main () at list.cpp:21
+21		add_name_to_list(name_list, name); 
+(gdb)
+</pre>
+Now let's print the contents of <tt>name_list</tt> and <tt>name</tt>:
+<pre>
+(gdb) p name_list
+$1 = (listNode *) 0x603010
+(gdb) p name
+$2 = "brad"
+(gdb)
+</pre>
+<tt>name_list</tt> is a pointer which points to memory starting at
+0x603010 and <tt>name</tt> is the string that I just typed in at the prompt.
+We can see that "brad" was
+properly read into <tt>name</tt>. The memory address you see may be 
+different than mine because your program may be allocated a different
+part of memory than mine was. Throughout this tutorial, you should expect
+your memory addresses to differ from the ones shown in this tutorial.
+<p>
+We can print the contents of the node pointed to by name_list by dereferencing
+the pointer:
+<pre>
+(gdb) p *name_list
+$3 = {name = "", next = 0x0}
+</pre>
+Remember that our list has a sentinel node so everything is as it should be.
+The sentinel node's <tt>next</tt> field is the null pointer, thus making
+it an empty list. 
+<p>
+If you want to examine all of the local variables in the function, you
+can type <tt>info locals</tt>:
+<pre>
+(gdb) info locals
+i = 0
+name = "brad"
+name_list = 0x603010
+name_list_ptr = 0x400d10 &lt;__libc_csu_init&gt;
+</pre>
+Note that <tt>i</tt> and <tt>name_list_ptr</tt> both have values, even though
+they have not been initialized. It would be nice if gdb would mark them as
+uninitialized, but you don't always get what you want in life. Since <tt>i</tt>
+and <tt>name_list_ptr</tt> are uninitialized, you can't count on them always
+having reasonable values. For example, when I tried to see what memory 
+was pointed to by <tt>name_list_ptr</tt>, I got the following:
+<pre>
+(gdb) p *name_list_ptr
+$4 = {
+  name = <error reading variable: Cannot access memory at address 0x495641ff89415729>, next = 0x41d589495541f689}
+</pre>
+In other words, <tt>name_list_ptr</tt> does not point to a legitimate memory
+object.
+<p>
+Let's continue with our program's execution. Type <tt>continue</tt>, or <tt>c</tt>, and enter another name:
+<pre>
+(gdb) c
+Continuing.
+enter a name: nels
+ 
+Breakpoint 1, main () at list.cpp:21
+18              add_name_to_list(name_list, name);
+(gdb)
+</pre>
+At this point "brad" should have been added to the list but "nels" should
+not yet have been added to the list. However, "nels" should be contained in
+name. We can check all this out using the print command:
+<pre>
+(gdb) p name   
+$16 = "nels"                       <span class="comment">// "nels" is in name as it should be</span>
+(gdb) p *name_list
+$5 = {name = "", next = 0x603090}  <span class="comment">// the sentinel node points to something</span>
+(gdb) p *name_list->next           <span class="comment">// and that something is "brad"</span>
+$6 = {name = "brad", next = 0x0}
+(gdb)
+</pre>
+Note that brad's node does not point to anything, which is correct. Also
+note how I was able to "chase" a pointer by typing 
+<pre>
+p *name_list->next
+</pre>
+<p>
+Let's try one more iteration of the program:
+<pre>
+(gdb) c
+Continuing.
+enter a name: pat
+ 
+Breakpoint 1, main () at list.cpp:21
+18              add_name_to_list(name_list, name);
+(gdb) p *name_list->next
+$7 = {name = "nels", next = 0x603090}      <span class="comment">// the first node is "nels"</span>
+(gdb) p *name_list->next->next 
+$8 = {name = "brad", next = 0x0}           <span class="comment">// the second node is "brad"</span>
+(gdb) p name    
+$9 = "pat"                                 <span class="comment">// "pat" is in name</span>
+(gdb)
+</pre>
+Notice that I can get arbitrarily far in the list by typing a series of
+<tt>next's</tt>. 
+<p>
+<hr>
+<h3> Single Stepping Through a Program </h3>
+<p>
+Once you have gotten a program to stop you will often want to single step
+through the program, executing one statement at a time, rather than 
+continuing to the next breakpoint. gdb provides you
+with two commands for doing so: 
+<ol>
+<li> <tt>step</tt> (<tt>s</tt> for short): step
+executes each statement and, if it encounters a function call, it will step
+into the function, thus allowing you to follow the flow-of-control into
+subroutines. 
+<p>
+<li><tt>next</tt> (<tt>n</tt> for short): next also executes each
+statement but if it encounters a function call it will execute the function
+as an atomic statement. In other words, it will execute all the
+statements in the function and in any functions that that function might call.
+It will seem as though you typed
+<tt>continue</tt> with a breakpoint set at the next statement. The one
+exception to this statement is that if there is a breakpoint nested in
+the function, then gdb will break when it reaches that breakpoint.
+</ol>
+<p>
+To see the difference between the two types of commands, re-run your
+program from scratch by typing <tt>r</tt>. 
+It should break after it prompts you for a name and you enter one:
+<pre>
+(gdb) r
+Starting program: /home/bvz/courses/140/sp16/gdb/names_list 
+enter a name: brad
+ 
+Breakpoint 1, main () at list.cpp:21
+21              add_name_to_list(name_list, name);
+</pre>
+First try using the <tt>step</tt> command:
+<pre>
+(gdb) s
+add_name_to_list (names=0x603010, name_to_add="brad") at add_name.cpp:7
+7	    listNode *new_node = new listNode;
+(gdb)
+</pre> 
+We have stepped into the function <tt>add_name_to_list</tt> and are about
+to execute the first statement. Before executing this statement try printing
+<tt>new_node</tt>. Since it has not been initialized, it will have a random
+value. When I printed the value of <tt>new_node</tt> I got the following result:
+<pre>
+(gdb) p new_node
+$9 = (listNode *) 0x400a30 &lt;_start&gt;
+</pre>
+Now execute the first statement in <tt>add_name_to_list</tt>
+by typing <tt>s</tt>:
+<pre>
+listNode::listNode (this=0x603090) at list.h:5
+5	class listNode {
+</pre>
+What's happening? gdb is executing the first statement in <tt>add_name_to_list</tt>, which is line 7:
+<pre>
+listNode *new_node = new listNode;
+</pre>
+Note the call to <tt>new</tt>, which creates a new <tt>listNode</tt>. When
+a new <tt>listNode</tt> is created, its constructor gets called. This call
+to the constructor is what is being printed by gdb when you see:
+<pre>
+listNode::listNode (this=0x603090) at list.h:5
+</pre>
+The <tt>this</tt> variable is an implicit parameter passed to every constructor
+that gives the address of the newly allocated object.
+<p>
+Type <tt>s</tt> again:
+<pre>
+(gdb) s
+add_name_to_list (names=0x603010, name_to_add="brad") at add_name.cpp:9
+9	    new_node->name = name_to_add;
+</pre>
+Since the constructor for <tt>listNode</tt> is empty, we immediately step
+out of the constructor and back into <tt>add_name_to_list</tt> at its next
+executable statement, which is line 9.
+<p>
+Try printing out
+the new value of <tt>new_node</tt> and the contents of the memory pointed
+to by <tt>new_node</tt>:
+<pre>
+(gdb) p new_node
+$10 = (listNode *) 0x603090
+(gdb) p *new_node
+$11 = {name = "", next = 0x0}
+(gdb)
+</pre>
+Notice that <tt>new_node</tt> has the same memory address as the <tt>this</tt>
+variable in <tt>listNode</tt>'s constructor. That's because <tt>0x603090</tt>
+is the memory address of the object allocated by new. It was the memory 
+address passed to the constructor and also assigned to <tt>new_node</tt>.
+Also
+note that the contents of <tt>new_node</tt> have 
+reasonable values. string objects are automatically initialized to the empty
+string but it is purely luck that <tt>next</tt> is a null pointer as
+opposed to a random memory address. It's possible that when you run your
+own program, that <tt>next</tt> will point to something random.
+<p>
+Here is a helpful shortcut you can use while single-stepping. 
+Type <tt>s</tt> to execute line 9.
+Now hit return a couple times until you reach statement 12 with the empty
+right curly brace, }. Notice that it single-steps for you. gdb remembers
+the last command that you entered and if you hit return, it will repeat that
+command. This feature is handy when you want to single-step through a number
+of statements. 
+<p>
+You should now be at line 12, which is the end of the function.
+Let us make sure that the new
+node was prepended to the list and that it has the appropriate memory
+contents:
+<pre>
+<table>
+<tr>
+<td>(gdb) p *names</td><td><span class="comment">// print the sentinel node for the names list</span></td>
+</tr>
+<tr><td>$1 = {name = "", next = 0x603090}</td><td><span class="comment">// it points to our new node</span></td></tr>
+<tr><td>(gdb) p *names->next</td><td><span class="comment">// now look at the first node in the list</span></td></tr>
+<tr><td>$2 = {name = "brad", next = 0x0}</td></tr>
+</table>
+</pre>
+Everything looks fine. You might wonder why we indirectly checked the contents
+of the new node by typing <tt>p *names->next</tt> rather than by 
+typing <tt>p new_node</tt>. To see why, try to print new_node:
+<pre>
+(gdb) p new_node
+No symbol "new_node" in current context.
+</pre>
+This seems odd. Why is <tt>new_node</tt> not defined? The reason is that
+we have exited the scope of the block defined by the initial { in the
+function. When we exited this block, <tt>new_node</tt> went out of scope.
+We are still in the function, albeit at its end, so we can still see the
+function's parameters. That's why we used the <tt>names</tt> pointer to
+check everything.
+<p>
+Let's continue by typing <tt>c</tt>
+<pre>
+(gdb) c
+Continuing.
+enter a name: nels
+ 
+Breakpoint 1, main () at list.cpp:21
+21              add_name_to_list(name_list, name);
+(gdb)
+</pre>
+This time we will single step by using <tt>next</tt> rather than <tt>step</tt>:
+<pre>
+(gdb) n
+18          for (i = 0; i < NUM_NAMES; i++) {
+(gdb)
+</pre>
+Notice that we have executed <tt>add_name_to_list</tt> without stepping
+into it and have now gone to the top of the loop. Let's make sure
+everything worked before we continue:
+<pre>
+<table>
+<tr>
+<td>(gdb) p *name_list</td><td><span class="comment">// print the sentinel node so we can find the first node in the list</td>
+</tr>
+<tr><td>$3 = {name = "", next = 0x6030e0}</td></tr>
+<tr>
+<td>(gdb) p *name_list->next</td><td><span class="comment">// the first node should be the new node</td>
+</tr>
+<tr><td>$4 = {name = "nels", next = 0x603090}</td><td><span class="comment">// it is</td></tr>
+<tr>
+<td>(gdb) p *name_list->next->next</td><td><span class="comment">// now check the second node</td>
+</tr>
+<tr><td>$5 = {name = "brad", next = 0x0}</td><td><span class="comment">// it's also ok</td></tr>
+</table>
+</pre>
+Note that the <tt>next</tt> field for the new node 
+points to the previous node we prepended. If you do not believe me, check
+the memory address, which is 0x603090, with the memory address that was
+given to new_node the first time we visited <tt>add_name_to_list</tt>. They
+are the same. 
+<p>
+Instead of typing continue, try typing <tt>n</tt> a couple more times until
+cin gets executed:
+<pre>
+(gdb) n
+19             printf("enter a name: ");
+(gdb) n
+20             cin >> name;
+(gdb) n
+enter a name: sue
+</pre>
+First, note that the prompt string is not printed until you execute the
+cin statement. That is because C++ buffers output until 1) a newline character
+is encountered, or 2) the output exceeds a certain length, or 3) something
+occurs that forces the output to be printed, such as a cin statement.
+<p>
+Also note that if you are using an older version of gdb, that you could 
+get an error message when you entered "sue". The problem with the older versions
+of gdb is that they will only give THE FIRST CHARACTER to
+cin and then they will try to interpret the rest of the character
+string. If you encounter this problem, you can circumvent it by placing a
+breakpoint <b>after</b> the statements which read keyboard input and "continue"
+through them.  Doing so will allow all the keyboard input to be read in before
+control is returned to you. Notice that I cleverly told you to place your
+breakpoint at line 21, which is the first statement after the cin. 
+<p>
+
+<h2> Determining Your Location in a Program </h2>
+<p>
+You can find where you are in a program using the <tt>backtrace</tt> command
+or <tt>bt</tt> for short. The backtrace command will show you the current
+stack of functions that are active. For example, re-create the breakpoint
+at line 10 of <tt>add_name</tt> 
+and then run the program until it reaches the breakpoint:
+<pre>
+(gdb) b add_name.cpp:10
+Breakpoint 2 at 0x400ccb: file add_name.cpp, line 10.
+
+(gdb) r
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+
+Starting program: /home/bvz/courses/140/sp16/gdb/names_list 
+
+enter a name: brad
+ 
+Breakpoint 1, main () at list.cpp:21
+21              add_name_to_list(name_list, name);
+(gdb) c
+Continuing.
+ 
+Breakpoint 2, add_name_to_list (names=0x603010, name_to_add="brad")
+    at add_name.cpp:10
+10	    new_node->next = names->next;
+(gdb)
+</pre>
+Now type <tt>backtrace</tt>, or <tt>bt</tt> for short:
+<pre>
+(gdb) bt
+#0  add_name_to_list (names=0x603010, name_to_add="brad") at add_name.cpp:10
+#1  0x0000000000400b98 in main () at list.cpp:21
+(gdb)
+</pre>
+It tells you that you are currently in <tt>add_name_to_list</tt> at line 10 in 
+<tt>add_name.cpp</tt> and that <tt>add_name_to_list</tt> was called from
+<tt>main</tt> at line 21 in <tt>list.cpp</tt>. Note that the backtrace command 
+also tells you the values of the arguments passed to each active function. 
+<tt>backtrace</tt> is typically the first command you will type when
+debugging a seg fault or bus error because you will want some idea of where
+you are in the program. 
+<p>
+You can use the <tt>up</tt> and <tt>down</tt> commands to move around in
+the stack. These commands are necessary if you want to print a variable that
+is local to another function. For example, if I try to print <tt>main's name</tt>
+variable while I'm stopped at the current breakpoint, I should get the
+following error message:
+<pre>
+(gdb) p name
+No symbol "name" in current context.
+(gdb)
+</pre>
+although you might also see something like:
+<pre>
+(gdb) p name
+$7 = '\000' <repeats 32 times>
+</pre>
+which is nonsense.
+However, if I type "<tt>frame 1</tt>" I will be moved up to the stack record for
+main. I can then print the value of <tt>name</tt>:
+<pre>
+#1  0x0000000000400b98 in main () at list.cpp:21
+21		add_name_to_list(name_list, name);
+(gdb) p name
+$8 = "brad"
+</pre>
+<hr>
+<h2> Debugging Programs </h2>
+<p>
+Now that you've learned the basics of gdb, let's see how you can use it to
+debug a program. Quit gdb and then re-enter it using the program
+<tt>segfault1</tt>:
+<pre>
+(gdb) q
+The program is running.  Exit anyway? (y or n) y
+cetus3> gdb segfault1
+
+(gdb) r
+Starting program: /home/bvz/courses/140/sp16/gdb/segfault1 
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000000000400604 in main () at segfault1.cpp:6
+6	    *number = 10;
+</pre>
+gdb tells us that we received a segfault at line 6 in segfault1.cpp. It also
+shows us that the statement being executed was <tt>*number = 10</tt>. The
+fact that we are trying to assign to a dereferenced pointer should give
+us a strong clue that the pointer does not point to a legitimate piece of
+memory. We can test our hypothesis by checking the memory address pointed
+to by <tt>number</tt>:
+<pre>
+(gdb) p number
+$1 = (int *) 0x0
+(gdb)
+</pre>
+Sure enough, <tt>number</tt> is a null pointer, which means that we have not
+allocated memory for it using <tt>malloc</tt>. Try changing 
+<tt>segfault1.c</tt> so that it calls the new operator to create a new
+int object and assigns it to <tt>number</tt> before trying to assign
+10 to it. Re-compile and re-run the program. It should work and print out 10.
+<p>
+<hr>
+<h2> Debugging a Program with Array Overflow </h2>
+<p>
+In CS102 and perhaps even in CS140 you have encountered problems with stepping
+past the end of an array and your program seg faulting. gdb can help you
+determine where the program is seg faulting and by doing some investigating,
+it might help you determine the source of the error. 
+<p>
+Try running <tt>bad_names_list</tt>. It has an array big enough to hold 3
+names. Try entering 4 names:
+<pre>
+hydra4.eecs.utk.edu> gdb bad_names_list
+
+(gdb) r
+Starting program: /home/bvz/courses/140/sp16/gdb/bad_names_list 
+
+enter a name: brad
+enter a name: peggy
+enter a name: sue
+enter a name: jack
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b8fd75 in ?? () from /lib64/libstdc++.so.6
+</pre>
+What went wrong? The first thing we should do is try to find what line was
+executing in our program when the program crashed. Note that the program
+seg faulted in a function called <tt>/lib64/libstdc++.so.6</tt>. This
+is clearly not a function that we wrote. Use the backtrace command to
+print the stack:
+<pre>
+(gdb) bt
+#0  0x00007ffff7b8fd75 in ?? () from /lib64/libstdc++.so.6
+#1  0x00007ffff7b9103e in std::string::assign(std::string const&) ()
+   from /lib64/libstdc++.so.6
+#2  0x0000000000400c06 in main () at list1.cpp:17
+</pre>
+We can see that we were executing line 17 in <tt>list1.cpp</tt> when
+the program crashed. Let's print this line:
+<pre>
+(gdb) l list1.cpp:17
+12	    int num_names = 0;
+13	    int i;
+14	
+15	    printf("enter a name: ");
+16	    while (cin >> name) {
+17		name_list[num_names] = name;
+18	        printf("enter a name: ");
+19		num_names++;
+20	    }
+21	
+</pre>
+We see that line 17 attempted to assign <tt>name</tt> to our <tt>name_list</tt>
+array. In these situations, it's best to print the names of all of our
+"suspects", which are all of our variables in the statement: <tt>name_list</tt>,
+<tt>num_names</tt>, and <tt>name</tt>:
+<pre>
+(gdb) frame 2
+#2  0x0000000000400c06 in main () at list1.cpp:17
+17		name_list[num_names] = name;
+(gdb) info locals
+name = "jack"
+name_list = {"brad", "peggy", "sue"}
+num_names = 3
+i = 0
+</pre>
+Notice that I first had to type <tt>frame 2</tt> to get to the frame containing
+my main function. Then I typed <tt>info locals</tt> because it was easier
+than individually printing my three variables. 
+<p>
+The resulting print-out may or may not lead you to the error. In this case
+the problem is that the <tt>name_list</tt> array can hold only three names,
+and I'm trying to assign a fourth name to it at index location 3 (the value
+of <tt>num_names</tt>). Since this location is past the end of the array,
+the code seg faults.
+<hr>
+<h2> Debugging an Infinite Loop </h2>
+<p>
+gdb can also be useful in situations where the program does not crash, but
+instead has a logic error that causes unexpected output or unexpected
+behavior, such as an infinite loop. I have created a new file named 
+<tt>add_name1.cpp</tt> that contains a logic error which introduces an
+infinite loop and compiled it with <tt>list.cpp</tt> into an executable
+called <tt>bad_names_list1</tt>. Like <tt>names_list</tt> it is supposed
+to read 5 names and then print them out in reverse order. However, when it
+reaches the fifth name, it instead goes into an infinite loop printing out
+the last name that we entered. 
+<p>
+First try running the program and entering 5 names. You can type <tt>Ctrl-D</tt>
+to stop the program's infinite execution:
+<pre>
+enter a name: joe
+enter a name: frank
+enter a name: nancy
+enter a name: sue
+enter a name: yifan
+yifan
+yifan
+yifan
+yifan
+yifan
+...
+</pre>
+Let's run the program in gdb. In order to use gdb effectively in such
+situations, we need to form a hypothesis about what is wrong with the
+program. Since the program enters an infinite loop when it starts printing
+the list, a natural hypothesis is that something is wrong with our list
+of names. If we look in <tt>list.cpp</tt>, we find that the for loop for
+printing the names starts at line 24, so let's put a breakpoint at that line
+and then run the program until we reach that line:
+<pre>
+hydra4> gdb bad_names_list1
+(gdb) b 24
+Breakpoint 1 at 0x400ba2: file list.cpp, line 24.
+
+(gdb) r
+Starting program: /home/bvz/courses/140/sp16/gdb/bad_names_list1 
+
+enter a name: joe
+enter a name: frank
+enter a name: nancy
+enter a name: sue
+enter a name: yifan
+
+Breakpoint 1, main () at list.cpp:24
+24	    for (name_list_ptr = name_list->next;
+</pre>
+<p>
+Now let's start printing our list manually using gdb. We will start by
+printing the sentinel node:
+<pre>
+(gdb) p *name_list
+$2 = {name = "", next = 0x6031d0}
+</pre>
+That looks fine--the name field is empty and <tt>next</tt> appears to be
+pointing to something. Now let's print the first node in the list:
+<pre>
+(gdb) p *name_list->next
+$3 = {name = "yifan", next = 0x6031d0}
+</pre>
+The name field looks right--it's "yifan". Remember that we are prepending names
+to the list, so "yifan" should be the first node in the list. If you're
+paying close attention to what's been printed thus far, you may notice 
+something funny about the <tt>next</tt> field. However, if you don't see
+anything wrong yet, then try printing the second node:
+<pre>
+(gdb) p *name_list->next->next
+$4 = {name = "yifan", next = 0x6031d0}
+</pre>
+Hmm, that doesn't look right. The second node also appears to be "yifan". 
+Maybe now is the time to look more closely at that <tt>next</tt> field.
+Look at the value of "yifan"'s next field and the value of the sentinel
+node's next field. Notice that they point to the same memory address and
+this memory address must be yifan's node. In other words, yifan's node
+points back to itself rather than pointing to sue's node.
+<p>
+At this point we have confirmed our hypothesis that the list has been
+improperly constructed. We should also be able to understand why the
+for loop is an infinite loop that always prints yifan. At each step, the
+list pointer is being made to point to yifan, and hence the for loop never
+exits and the loop body always prints the string "yifan". 
+<p> 
+You should now suspect that there is a problem in the function
+<tt>add_name_to_list</tt>, which is located in <tt>add_name1.cpp</tt>.
+If you look at the code in that function, I hope you can figure out what
+is wrong by manually inspecting the code. However, suppose that you
+cannot do so. You can use gdb to help you figure out what's wrong.
+<p>
+To do so, you'll need to re-start the program and put a breakpoint on the
+<tt>add_name_to_list</tt> function:
+<pre>
+(gdb) b add_name_to_list
+Breakpoint 1 at 0x400c9f: file add_name1.cpp, line 7.
+
+(gdb) r
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+
+Starting program: /home/bvz/courses/140/sp16/gdb/bad_names_list1 
+
+enter a name: joe
+
+Breakpoint 1, add_name_to_list (names=0x603010, name_to_add="joe")
+    at add_name1.cpp:7
+7	    listNode *new_node = new listNode;
+(gdb) 
+</pre>
+The problem seems to be in how we link the list, so let's use the <tt>next</tt>
+command to skip ahead until we reach the first linking statement, which is
+statement 10. I've also printed <tt>new_node</tt> and the contents of
+<tt>new_node</tt> when I reach statement 10,
+just to make sure everything looks okay (it does):
+<pre>
+(gdb) n
+9	    new_node->name = name_to_add;
+(gdb) n
+10	    names->next = new_node;
+(gdb) p new_node
+$0 = (listNode *) 0x603090
+(gdb) p *new_node
+$1 = {name = "joe", next = 0x0}
+</pre>
+If we inspect statement 10, we can see that it is making the list's sentinel
+node point to joe's node. That's fine--we want to prepend joe to the front of 
+the list. Let's execute statement 10 and make sure it worked by printing
+the first node of the list:
+<pre>
+(gdb) n
+11	    new_node->next = names->next;
+(gdb) print *names->next
+$2 = {name = "joe", next = 0x0}
+</pre>
+So far, so good. Let's move on to the next linking statement, which is
+statement 11. statement 11 is supposed to make joe point to the next
+node in the list. Since the list was previously empty, joe should point
+to the sentinel node, which we will check by printing the contents of
+<tt>new_node->next</tt>:
+<pre>
+(gdb) n
+12	}
+(gdb) print *new_node->next
+No symbol "new_node" in current context.
+</pre>
+ARGHHHHHHH! I hate it when gdb does this. We have reached the end of the
+function and gdb has already de-allocated the <tt>new_node</tt> variable.
+You have two choices here. First you can add a useless statement, such as
+a printf statement, to the
+end of the <tt>add_name_to_list</tt> function so that the function does not
+end at line 12. That way <tt>new_node</tt> will still be available for you
+to examine. However, I don't want to waste my time adding a new statement
+to <tt>add_name_to_list</tt> and re-compiling it. 
+<p>
+I have a better idea. I know that joe is the first node on the list and that
+joe should point to the sentinel node. So the sentinel node should be the
+"second" node on the list (I put "second" in parentheses because the list
+only has one value and the sentinel node marks the end of the list). Therefore
+I can print the second node of the list as follows:
+<pre>
+(gdb) print *names->next->next
+$3 = {name = "joe", next = 0x603090}
+</pre>
+Hmm. That does not look too good. The second node is "joe", not the sentinel
+node. Hopefully at this point we flash back to our earlier exploration with
+yifan and realize that joe must be pointing to himself. If you don't believe
+me, you can re-run the program, and before you execute statement 11, print
+the address of joe's object (you can do that by printing <tt>new_node</tt>).
+You will then find for certain that joe is pointing to himself. 
+<p>
+You now know that statement 11 is not working properly. At this point gdb
+cannot help you any longer. It has given you all the information it can
+provide and you will have to puzzle out the problem from here. Hopefully
+you can. If you can't figure it out, the lab TA will cover the solution
+in lab.
+<hr>
+<h2> A Final Debugging Tip </h2>
+<p>
+When something goes wrong in a program, it often helps to try to come up
+with the simplest possible set of inputs that can reproduce the problem. In 
+<tt>bad_names_list1</tt> you had to enter 5 names before discovering that
+something is wrong. Since the program expects 5 names, you can't make the
+input any shorter. However, you might realize that you could change the
+constant <tt>NUM_NAMES</tt> in <tt>list.cpp</tt> so that it is 1 rather than
+5 and then see if the problem occurs with 1 input. Indeed it does, and that
+could help simplify your debugging task. In this case the problem was so
+simple that the simplification would not really help. However, in lab I
+see many of you start your testing by using Dr. Plank's test cases, rather
+than constructing your own simple examples and using the test editors that
+he provides you with. Only after testing your simple examples and getting
+your program to work with them should you move on to his test cases. When
+one of his test cases fails, you can often make your debugging job easier
+if you can simplify his test file by removing one or more commands. This is
+what I frequently do when I help you with one of his test cases. I keep
+removing commands until I have the simplest possible file that causes the
+same error. Once I have this simpler file, I start trying to find the source
+of the problem. The simpler file means that far fewer statements might be
+responsible for the bug and makes it easier for me to find your error.
+<p>
+<hr>
+<h2> Additional Help </h2>
+<p>
+You can locate additional information about gdb in three ways:
+<ol>
+<li> using the <tt>help</tt> command in gdb
+<li> typing <tt>man gdb</tt> in your unix shell
+<li> surfing the internet
+</ol>
+</html>
