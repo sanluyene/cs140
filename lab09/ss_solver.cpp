@@ -30,6 +30,8 @@ ShapeShifter::ShapeShifter(vector<string> g, vector<vector<string> > p) {
 // If called twice with the same variables, it reverts the grid
 // back to its original state.
 bool ShapeShifter::Apply(int piece, int row, int column) {
+	int piecepart = 0;
+
 	for (int rp = 0; rp < pieces[piece].size(); rp++) {
 		for (int cp = 0; cp < pieces[piece][rp].length(); cp++) {
 			if (pieces[piece][rp][cp] == '1') {
@@ -40,8 +42,12 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 				// Otherwise, change the grid value
 				if (grid[rp + row][cp + column] == '1') grid[rp + row][cp + column] = '0';
 				else grid[rp + row][cp + column] = '1';
-				moves[piece][1] = rp + row;
-				moves[piece][2] = cp + column;
+				if (piecepart == 1) {
+					moves[piece][1] = row;
+					moves[piece][2] = column;
+				}
+
+				piecepart++;
 			}
 		}
 	}
@@ -67,11 +73,10 @@ void ShapeShifter::find_solution(int index) {
 		if (win == true) {
 			for (int i = 0; i < pieces.size(); i++) {
 				for (int j = 0; j < pieces[i].size(); j++) {
-					printf("%s ", pieces[i][j]);
+					printf("%s ", pieces[i][j].c_str());
 				}
 				printf("%d %d\n", moves[i][1], moves[i][2]);
 			}
-cout << "win" << endl;
 			exit(0);
 		}
 		return;		
