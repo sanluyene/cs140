@@ -16,23 +16,33 @@ using namespace std;
 ShapeShifter::ShapeShifter(vector<string> g, vector<vector<string> > p) {
 	grid = g;
 	pieces = p;
-	row = 0;
-	column = 0;
 }
 
 // This function will apply a piece at a given row and column.
 // If called twice with the same variables, it reverts the grid
 // back to its original state.
-int ShapeShifter::Apply(int piece, int row, int column) {
+bool ShapeShifter::Apply(int piece, int row, int column) {
+	for (int rp = 0; rp < pieces[piece].size(); rp++) {
+		for (int cp = 0; cp < pieces[piece][rp].length; cp++) {
+			if (pieces[piece][rp][cp] == '1') {
+				// If the piece row or column are beyond the bounds of the grid
+				// the piece will not fit
+				if (((rp + row) >= grid.size()) || ((cp + column) >= grid[0].length())) return false;
 
-	return 0;
+				// Otherwise, change the grid value
+				if (grid[rp + row][cp + column] == '1') grid[rp + row][cp + column] = '0';
+				else grid[rp + row][cp + column] = '1';
+			}
+		}
+	}
+
+	return true;
 }
 
 // This is our recursive function. We will continue to call
 // this function until a solution has or has not been found
 void ShapeShifter::find_solution(int index) {
-	bool win = true;
-	int inserted = 0;
+	bool win = true, insert = false;
 
 	// Base case
 	if (index == pieces.size()) {
@@ -48,16 +58,18 @@ void ShapeShifter::find_solution(int index) {
 			printf("winning");
 			exit(0);
 		}
-		else return;		
+		return;		
 	}
 
-	// Place the next piece
-	inserted = Apply(pieces[index], row, column);
-	while (!inserted && row < grid.size() && column < grid[0].length()) {
-		// This will undo the bad grid move
-		Apply(pieces[index], row, column);
-		inserted = Apply(pieces[index], row + 1, column + 1);
+	// Place the piece
+	for (int r = 0; r < grid.size(); r++) {
+		for (int c = 0; c < grid[0].length(); c++) {
+			insert = Apply(index, r, c);
+			if (insert == true) break;
+		}
 	}
+
+	if (insert == false) return;
 
 	// If it didn't fail, move on to the next piece
 	find_solution(index + 1);
