@@ -10,14 +10,13 @@
 
 using namespace std;
 
-class Solver {
+class ShapeShifter {
 	public:
-		Solver(vector<string> g, vector<vector<string> > p);
-		int insert_piece(int piece);
+		ShapeShifter(string g, <vector<string> p);
+		int Apply(int piece, int row, int column);
+		void find_solution(int index);
 
 	protected:
-		int ps;
-		vector<string> grid;
-		vector<vector<string> > pieces;
-		vector<int> moves;
+		string grid;
+		vector<string> pieces;
 };

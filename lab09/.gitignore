@@ -2,3 +2,5 @@
 tmp*
 ss_solver
 enum
+ss_random_test
+ss_player
