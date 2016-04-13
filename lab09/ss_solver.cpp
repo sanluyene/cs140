@@ -19,6 +19,8 @@ ShapeShifter::ShapeShifter(vector<string> g, vector<vector<string> > p) {
 	pieces = p;
 	moves.resize(pieces.size());
 
+	// Our moves vector will hold a reference to each of the pieces
+	// for proper move printing
 	for (int p = 0; p < moves.size(); p++) {
 		moves[p].push_back(p);
 		moves[p].push_back(0);
@@ -42,12 +44,15 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 				// Otherwise, change the grid value
 				if (grid[rp + row][cp + column] == '1') grid[rp + row][cp + column] = '0';
 				else grid[rp + row][cp + column] = '1';
-				if (piecepart == 1) {
-					moves[piece][1] = row;
-					moves[piece][2] = column;
-				}
+//cout << "piece " << piece << " row " << row << " rp " << rp << " col " << column << " cp " << cp << " grid val " << grid[rp+row][cp+column] << endl;
 
-				piecepart++;
+				// Save the move we made to be able to print it later,
+				// so long as it's the very first part of the piece
+				if (piecepart == 0) {
+					moves[piece][1] = rp + row;
+					moves[piece][2] = cp + column;
+					piecepart++;
+				}
 			}
 		}
 	}
@@ -65,13 +70,17 @@ void ShapeShifter::find_solution(int index) {
 		// Test to see if the grid is all 1's for a win
 		for (int r = 0; r < grid.size(); r++) {
 			for (int c = 0; c < grid[0].length(); c++) {
-				if (grid[r][c] == '0') win = false;
-				break;
+//cout << "win val " << grid[r][c] << endl;
+				if (grid[r][c] == '0') {
+					win = false;
+					break;
+				}
 			}
 		}
 	
+		// If we've won, we want to print all of the moves we made
 		if (win == true) {
-			for (int i = 0; i < pieces.size(); i++) {
+			for (int i = 0; i < moves.size(); i++) {
 				for (int j = 0; j < pieces[i].size(); j++) {
 					printf("%s ", pieces[i][j].c_str());
 				}
@@ -79,7 +88,7 @@ void ShapeShifter::find_solution(int index) {
 			}
 			exit(0);
 		}
-		return;		
+		return;
 	}
 
 	// Place the piece
