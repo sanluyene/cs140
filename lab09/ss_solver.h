@@ -7,12 +7,13 @@
 #include <cstdlib>
 #include <cstdio>
 #include <vector>
+#include <string>
 
 using namespace std;
 
 class ShapeShifter {
 	public:
-		ShapeShifter(vector<string> g, vector<<vector<string> > p);
+		ShapeShifter(vector<string> g, vector<vector<string> > p);
 		bool Apply(int piece, int row, int column);
 		void find_solution(int index);
 

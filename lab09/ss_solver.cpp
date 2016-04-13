@@ -23,7 +23,7 @@ ShapeShifter::ShapeShifter(vector<string> g, vector<vector<string> > p) {
 // back to its original state.
 bool ShapeShifter::Apply(int piece, int row, int column) {
 	for (int rp = 0; rp < pieces[piece].size(); rp++) {
-		for (int cp = 0; cp < pieces[piece][rp].length; cp++) {
+		for (int cp = 0; cp < pieces[piece][rp].length(); cp++) {
 			if (pieces[piece][rp][cp] == '1') {
 				// If the piece row or column are beyond the bounds of the grid
 				// the piece will not fit
@@ -55,7 +55,7 @@ void ShapeShifter::find_solution(int index) {
 		}
 	
 		if (win == true) {
-			printf("winning");
+			printf("winning\n");
 			exit(0);
 		}
 		return;		
@@ -65,14 +65,12 @@ void ShapeShifter::find_solution(int index) {
 	for (int r = 0; r < grid.size(); r++) {
 		for (int c = 0; c < grid[0].length(); c++) {
 			insert = Apply(index, r, c);
-			if (insert == true) break;
+			if (insert) find_solution(index + 1);
+
+			// If a future piece doesn't work, undo this piece's placement
+			Apply(index, r, c);
 		}
 	}
-
-	if (insert == false) return;
-
-	// If it didn't fail, move on to the next piece
-	find_solution(index + 1);
 
 	return;
 }
