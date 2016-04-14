@@ -36,6 +36,13 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 
 	for (int rp = 0; rp < pieces[piece].size(); rp++) {
 		for (int cp = 0; cp < pieces[piece][rp].length(); cp++) {
+			// If the piece row or column are beyond the bounds of the grid
+			// the piece will not fit
+			if (((rp + row) >= grid.size()) || ((cp + column) >= grid[0].length())) {
+//cout << "out of bounds" << endl;
+				return false;
+			}
+
 			// Save the move we made to be able to print it later,
 			// so long as it's the very first part of the piece
 			if (piecepart == 0) {
@@ -44,12 +51,8 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 				piecepart++;
 			}
 
+			// Change the grid value if the piece part is a 1
 			if (pieces[piece][rp][cp] == '1') {
-				// If the piece row or column are beyond the bounds of the grid
-				// the piece will not fit
-				if (((rp + row) >= grid.size()) || ((cp + column) >= grid[0].length())) return false;
-
-				// Otherwise, change the grid value
 				if (grid[rp + row][cp + column] == '1') grid[rp + row][cp + column] = '0';
 				else grid[rp + row][cp + column] = '1';
 			}
@@ -62,11 +65,12 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 // This is our recursive function. We will continue to call
 // this function until a solution has or has not been found
 bool ShapeShifter::find_solution(int index) {
-	bool insert = true;
+	bool solution = true, apply = false;
 	int score = 0;
 
 	// Base case
 	if (index == pieces.size()) {
+//cout << "win check index " << index << " pieces size " << pieces.size() << endl;
 		// Reset the score in case it carries over any count
 		score = 0;
 
@@ -94,11 +98,17 @@ bool ShapeShifter::find_solution(int index) {
 	// Place the piece
 	for (int r = 0; r < grid.size(); r++) {
 		for (int c = 0; c < grid[0].length(); c++) {
-			Apply(index, r, c);
-			insert = find_solution(index + 1);
+
+//cout << "apply index: " << index << " r " << r << " c " << c << endl;
+//cout << "find sol index " << (index + 1) << endl;
+			apply = Apply(index, r, c);
+			if (apply) solution = find_solution(index + 1);
 
 			// If a piece doesn't work, undo the placement
-			if (!insert) Apply(index, r, c);
+			if (!solution || !apply) {
+//cout << "undoing apply index: " << index << " r " << r << " c " << c << endl;
+				Apply(index, r, c);
+			}
 		}
 	}
 
