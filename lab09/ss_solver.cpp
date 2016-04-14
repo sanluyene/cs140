@@ -38,24 +38,22 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 		for (int cp = 0; cp < pieces[piece][rp].length(); cp++) {
 			// If the piece row or column are beyond the bounds of the grid
 			// the piece will not fit
-			if (((rp + row) >= grid.size()) || ((cp + column) >= grid[0].length())) {
-//cout << "out of bounds" << endl;
-				return false;
-			}
+			if (((rp + row) < grid.size()) && ((cp + column) < grid[0].length())) {
+				// Save the move we made to be able to print it later,
+				// so long as it's the very first part of the piece
+				if (piecepart == 0) {
+					moves[piece][1] = (rp + row);
+					moves[piece][2] = (cp + column);
+					piecepart++;
+				}
 
-			// Save the move we made to be able to print it later,
-			// so long as it's the very first part of the piece
-			if (piecepart == 0) {
-				moves[piece][1] = (rp + row);
-				moves[piece][2] = (cp + column);
-				piecepart++;
+				// Change the grid value if the piece part is a 1
+				if (pieces[piece][rp][cp] == '1') {
+					if (grid[rp + row][cp + column] == '1') grid[rp + row][cp + column] = '0';
+					else grid[rp + row][cp + column] = '1';
+				}
 			}
-
-			// Change the grid value if the piece part is a 1
-			if (pieces[piece][rp][cp] == '1') {
-				if (grid[rp + row][cp + column] == '1') grid[rp + row][cp + column] = '0';
-				else grid[rp + row][cp + column] = '1';
-			}
+			else return false;
 		}
 	}
 
@@ -70,7 +68,6 @@ bool ShapeShifter::find_solution(int index) {
 
 	// Base case
 	if (index == pieces.size()) {
-//cout << "win check index " << index << " pieces size " << pieces.size() << endl;
 		// Reset the score in case it carries over any count
 		score = 0;
 
@@ -98,17 +95,11 @@ bool ShapeShifter::find_solution(int index) {
 	// Place the piece
 	for (int r = 0; r < grid.size(); r++) {
 		for (int c = 0; c < grid[0].length(); c++) {
-
-//cout << "apply index: " << index << " r " << r << " c " << c << endl;
-//cout << "find sol index " << (index + 1) << endl;
 			apply = Apply(index, r, c);
 			if (apply) solution = find_solution(index + 1);
 
 			// If a piece doesn't work, undo the placement
-			if (!solution || !apply) {
-//cout << "undoing apply index: " << index << " r " << r << " c " << c << endl;
-				Apply(index, r, c);
-			}
+			if (!solution || !apply) Apply(index, r, c);
 		}
 	}
 
@@ -123,7 +114,7 @@ int main(int argc, char **argv) {
 	string s;
 	int numpieces = 0;
 
-	for (int i = 1; i <= 3; i++) {
+	for (int i = 1; i <= (argc - 1); i++) {
 		g.push_back(argv[i]);
 	}
 
