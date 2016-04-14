@@ -36,6 +36,14 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 
 	for (int rp = 0; rp < pieces[piece].size(); rp++) {
 		for (int cp = 0; cp < pieces[piece][rp].length(); cp++) {
+			// Save the move we made to be able to print it later,
+			// so long as it's the very first part of the piece
+			if (piecepart == 0) {
+				moves[piece][1] = (rp + row);
+				moves[piece][2] = (cp + column);
+				piecepart++;
+			}
+
 			if (pieces[piece][rp][cp] == '1') {
 				// If the piece row or column are beyond the bounds of the grid
 				// the piece will not fit
@@ -44,17 +52,6 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 				// Otherwise, change the grid value
 				if (grid[rp + row][cp + column] == '1') grid[rp + row][cp + column] = '0';
 				else grid[rp + row][cp + column] = '1';
-//cout << "piece " << piece << " row " << row << " rp " << rp << " col " << column << " cp " << cp << " grid val " << grid[rp+row][cp+column] << endl;
-//cout << "piece part " << piecepart << endl;
-
-				// Save the move we made to be able to print it later,
-				// so long as it's the very first part of the piece
-				if (piecepart == 0) {
-//cout << "piece " << piece << " row " << row + rp << " col " << column + cp << " grid val " << grid[rp+row][cp+column] << endl;
-					moves[piece][1] = (rp + row);
-					moves[piece][2] = (cp + column);
-					piecepart++;
-				}
 			}
 		}
 	}
@@ -64,20 +61,21 @@ bool ShapeShifter::Apply(int piece, int row, int column) {
 
 // This is our recursive function. We will continue to call
 // this function until a solution has or has not been found
-void ShapeShifter::find_solution(int index) {
-	bool win = true, insert = false;
+bool ShapeShifter::find_solution(int index) {
+	bool insert = true;
 	int score = 0;
 
 	// Base case
 	if (index == pieces.size()) {
+		// Reset the score in case it carries over any count
+		score = 0;
+
 		// Test to see if the grid is all 1's for a win
 		for (int r = 0; r < grid.size(); r++) {
 			for (int c = 0; c < grid[0].length(); c++) {
-//cout << "grid " << grid[r][c] << endl;
 				if (grid[r][c] == '1') score++;
 			}
 		}
-//cout << "score " << score << " size " << (grid.size() * grid[0].length()) << endl;
 
 		// If we've won, we want to print all of the moves we made
 		if (score == (grid.size() * grid[0].length())) {
@@ -89,21 +87,22 @@ void ShapeShifter::find_solution(int index) {
 			}
 			exit(0);
 		}
-		return;
+
+		return false;
 	}
 
 	// Place the piece
 	for (int r = 0; r < grid.size(); r++) {
 		for (int c = 0; c < grid[0].length(); c++) {
-			insert = Apply(index, r, c);
-			if (insert) find_solution(index + 1);
+			Apply(index, r, c);
+			insert = find_solution(index + 1);
 
 			// If a piece doesn't work, undo the placement
-			Apply(index, r, c);
+			if (!insert) Apply(index, r, c);
 		}
 	}
 
-	return;
+	return false;
 }
 
 int main(int argc, char **argv) {
