@@ -8,16 +8,16 @@ Problem 007 is correct.
 Problem 008 is correct.
 Problem 009 is correct.
 Problem 010 is correct.
-Problem 011 is incorrect.
-Problem 012 is incorrect.
-Problem 013 is incorrect.
-Problem 014 is incorrect.
-Problem 015 is incorrect.
-Problem 016 is incorrect.
-Problem 017 is incorrect.
-Problem 018 is incorrect.
-Problem 019 is incorrect.
-Problem 020 is incorrect.
+Problem 011 is correct.
+Problem 012 is correct.
+Problem 013 is correct.
+Problem 014 is correct.
+Problem 015 is correct.
+Problem 016 is correct.
+Problem 017 is correct.
+Problem 018 is correct.
+Problem 019 is correct.
+Problem 020 is correct.
 Problem 021 is correct.
 Problem 022 is correct.
 Problem 023 is incorrect.
@@ -56,12 +56,12 @@ Problem 055 is incorrect.
 Problem 056 is correct.
 Problem 057 is correct.
 Problem 058 is incorrect.
-Problem 059 is incorrect.
+Problem 059 is correct.
 Problem 060 is incorrect.
 Problem 061 is incorrect.
 Problem 062 is incorrect.
 Problem 063 is incorrect.
-Problem 064 is incorrect.
+Problem 064 is correct.
 Problem 065 is incorrect.
 Problem 066 is incorrect.
 Problem 067 is incorrect.
@@ -99,4 +99,4 @@ Problem 098 is incorrect.
 Problem 099 is incorrect.
 Problem 100 is incorrect.
 
-16 Correct out of 100
+28 Correct out of 100

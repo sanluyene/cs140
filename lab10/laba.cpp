@@ -25,8 +25,22 @@ void BSTree::Preorder() {
 
 // This method will return the depth of the specified key
 int BSTree::Depth(string key) {
+	BSTNode *n;
+	int depth = 0; 
+
 	if (Find(key) == NULL) return -1;
-	return 0;
+
+	n = sentinel->right;
+	while (1) {
+		if (n == sentinel) return -1;
+		if (key == n->key) return depth;
+		depth++;
+		if (key < n->key) {
+			n = n->left;
+		} else {
+			n = n->right;
+		}
+	}
 }
 
 // This method will return the height of our tree
@@ -61,7 +75,7 @@ void BSTree::recursive_preorder(int level, BSTNode *n) {
 void BSTree::recursive_postorder(int level, BSTNode *n) {
 	if (n == sentinel) return;
 	recursive_postorder((level + 2), n->left);
-    recursive_postorder((level + 2), n->right);
+	recursive_postorder((level + 2), n->right);
 	printf("%*s%s\n", level, "", n->key.c_str());
 }
 
