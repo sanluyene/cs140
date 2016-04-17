@@ -11,38 +11,58 @@
 
 using namespace std;
 
-// These methos are the new ones we implement for this lab
+// These methods are the new ones we implement for this lab
+
+// This method will print our tree in postorder
 void BSTree::Postorder() {
-
+	recursive_postorder(0, sentinel->right);
 }
 
+// This method will print our tree in preorder
 void BSTree::Preorder() {
-
+	recursive_preorder(0, sentinel->right);
 }
 
+// This method will return the depth of the specified key
 int BSTree::Depth(string key) {
+	if (Find(key) == NULL) return -1;
 	return 0;
 }
 
+// This method will return the height of our tree
 int BSTree::Height() {
 	if (Empty()) return -1;
 	return 0;
 }
 
+// This method will return whether or not the tree is AVL balanced
 int BSTree::IsAVL() {
 	return 0;
 }
 
+// This method will attempt to rotate our tree on the specified key
 int BSTree::Rotate(string key) {
 	return 0;
 }
 
+// This method will call recursively every node in our tree in
+// preorder: step 1 print yourself, step 2 print your left child,
+// step 3 print your right child
 void BSTree::recursive_preorder(int level, BSTNode *n) {
-
+	if (n == sentinel) return;
+	printf("%*s%s\n", level, "", n->key.c_str());
+	recursive_preorder((level + 2), n->left);
+	recursive_preorder((level + 2), n->right);
 }
 
+// This method will call recursively ever node in our tree in
+// postorder: step 1 print your left child, step 2 print your right
+// child, step 3 print yourself
 void BSTree::recursive_postorder(int level, BSTNode *n) {
-
+	if (n == sentinel) return;
+	recursive_postorder((level + 2), n->left);
+    recursive_postorder((level + 2), n->right);
+	printf("%*s%s\n", level, "", n->key.c_str());
 }
 
 // These methods below were given to us by the instructor
