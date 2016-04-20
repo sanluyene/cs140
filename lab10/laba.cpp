@@ -74,7 +74,10 @@ int BSTree::IsAVL() {
 int BSTree::Rotate(string key) {
 	BSTNode *n, *parent, *child, *oldparent;
 
+	if (Empty()) return 0;
+
 	n = sentinel->right;
+	if (n->key == key) return 0;
 
 	// First we need to find the node of the specified key, if it exists
 	while (1) {
@@ -98,18 +101,14 @@ int BSTree::Rotate(string key) {
 	// Step 4: form new relationships
 	if (parent->left == n) {
 		// right rotation
-//		if (n->right != sentinel) {
-			child = n->right;
-			parent->left = child;
-//		}
+		child = n->right;
+		parent->left = child;
 		n->right = parent;
 	}
 	else {
 		// left rotation
-//		if (n->left != sentinel) {
-			child = n->left;
-			parent->right = child;
-//		}
+		child = n->left;
+		parent->right = child;
 		n->left = parent;
 	}
 	
