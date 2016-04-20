@@ -20,14 +20,14 @@ Problem 019 is correct.
 Problem 020 is correct.
 Problem 021 is correct.
 Problem 022 is correct.
-Problem 023 is incorrect.
-Problem 024 is incorrect.
-Problem 025 is incorrect.
-Problem 026 is incorrect.
-Problem 027 is incorrect.
-Problem 028 is incorrect.
-Problem 029 is incorrect.
-Problem 030 is incorrect.
+Problem 023 is correct.
+Problem 024 is correct.
+Problem 025 is correct.
+Problem 026 is correct.
+Problem 027 is correct.
+Problem 028 is correct.
+Problem 029 is correct.
+Problem 030 is correct.
 Problem 031 is incorrect.
 Problem 032 is incorrect.
 Problem 033 is correct.
@@ -99,4 +99,4 @@ Problem 098 is incorrect.
 Problem 099 is incorrect.
 Problem 100 is incorrect.
 
-28 Correct out of 100
+36 Correct out of 100

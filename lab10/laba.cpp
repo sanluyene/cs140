@@ -45,8 +45,11 @@ int BSTree::Depth(string key) {
 
 // This method will return the height of our tree
 int BSTree::Height() {
+	int height = 0;
+
 	if (Empty()) return -1;
-	return 0;
+	height = recursive_height(sentinel->right);
+	return height;
 }
 
 // This method will return whether or not the tree is AVL balanced
@@ -69,7 +72,7 @@ void BSTree::recursive_preorder(int level, BSTNode *n) {
 	recursive_preorder((level + 2), n->right);
 }
 
-// This method will call recursively ever node in our tree in
+// This method will call recursively every node in our tree in
 // postorder: step 1 print your left child, step 2 print your right
 // child, step 3 print yourself
 void BSTree::recursive_postorder(int level, BSTNode *n) {
@@ -78,6 +81,26 @@ void BSTree::recursive_postorder(int level, BSTNode *n) {
 	recursive_postorder((level + 2), n->right);
 	printf("%*s%s\n", level, "", n->key.c_str());
 }
+
+// This method will call recursively every node in our tree in order
+// to find the deepest depth of our tree (the height)
+int BSTree::recursive_height(BSTNode *n) {
+	int lheight = -1, rheight = -1;
+
+	if (n->left != sentinel) lheight = recursive_height(n->left);
+	if (n->right != sentinel) rheight = recursive_height(n->right);
+
+	if (lheight > rheight) return lheight + 1;
+	else return rheight + 1;
+}
+
+// This method will call recursively to determine the height on the
+// left and right sides of our tree to check for AVL balance
+// (they may only differ by 1)
+int BSTree::recursive_height_and_avl_check(BSTNode *n) {
+	return 0;
+}
+
 
 // These methods below were given to us by the instructor
 BSTree::BSTree()
