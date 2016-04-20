@@ -54,12 +54,56 @@ int BSTree::Height() {
 
 // This method will return whether or not the tree is AVL balanced
 int BSTree::IsAVL() {
-	return 0;
+	int rheight = 0, lheight = 0;
+	BSTNode *n;
+
+	n = sentinel->right;
+	
+	lheight = recursive_height_and_avl_check(n->left);
+	rheight = recursive_height_and_avl_check(n->right);
+	
+	if (abs(lheight - rheight) > 1) return -2;
+	else if (lheight > rheight) return lheight;
+	else return rheight;
 }
 
 // This method will attempt to rotate our tree on the specified key
 int BSTree::Rotate(string key) {
-	return 0;
+	BSTNode *n, *parent, *child, *newp;
+
+	n = sentinel->right;
+
+	// First we need to find the node of the specified key, if it exists
+	while (1) {
+		if (n == sentinel) return 0;
+		if (key == n->key) break;
+		if (key < n->key) {
+			n = n->left;
+		} else {
+			n = n->right;
+		}
+	}
+
+	parent = n->parent;
+	newp = parent->parent;
+	if (newp->left == parent) newp->left = n;
+	else newp->right = n;
+	n->parent = newp;
+	parent->parent = n;
+cout << "newpchild " << newp->right->key << " parent's parent " << parent->parent->key << " n's parent " << n->parent->key << endl;
+	if (n = parent->left) {
+		child = n->right;
+		n->right = parent;
+		parent->left = child;
+	}
+	else {
+		if (n->left != sentinel) child = n->left;
+		n->left = parent;
+		parent->right = child;
+	}
+	if (child != sentinel) child->parent = parent;
+
+	return 1;
 }
 
 // This method will call recursively every node in our tree in
@@ -98,7 +142,13 @@ int BSTree::recursive_height(BSTNode *n) {
 // left and right sides of our tree to check for AVL balance
 // (they may only differ by 1)
 int BSTree::recursive_height_and_avl_check(BSTNode *n) {
-	return 0;
+	int lheight = -1, rheight = -1;
+
+	if (n->left != sentinel) lheight = recursive_height(n->left);
+	if (n->right != sentinel) rheight = recursive_height(n->right);
+
+	if (lheight > rheight) return lheight + 1;
+	else return rheight + 1;
 }
 
 
