@@ -72,13 +72,13 @@ int BSTree::IsAVL() {
 
 // This method will attempt to rotate our tree on the specified key
 int BSTree::Rotate(string key) {
-	BSTNode *n, *parent, *child, *newp;
+	BSTNode *n, *parent, *child, *oldparent;
 
 	n = sentinel->right;
 
 	// First we need to find the node of the specified key, if it exists
 	while (1) {
-		if (n == sentinel) return 0;
+		if (n == sentinel || n == NULL) return 0;
 		if (key == n->key) break;
 		if (key < n->key) {
 			n = n->left;
@@ -87,24 +87,36 @@ int BSTree::Rotate(string key) {
 		}
 	}
 
+	// Step 1: identify the parent
 	parent = n->parent;
-	newp = parent->parent;
-	if (newp->left == parent) newp->left = n;
-	else newp->right = n;
-	n->parent = newp;
-	parent->parent = n;
+	oldparent = parent->parent;
+	if (oldparent->left == parent) oldparent->left = n;
+	else oldparent->right = n;
 
-//	if (n = parent->left) {
-//		child = n->right;
-//		n->right = parent;
-//		parent->left = child;
-//	}
-//	else {
-//		if (n->left != sentinel) child = n->left;
-//		n->left = parent;
-//		parent->right = child;
-//	}
-//	if (child != sentinel) child->parent = parent;
+	// Step 2: identify direction to rotate
+	// Step 3: identify the subtree that is moving
+	// Step 4: form new relationships
+	if (parent->left == n) {
+		// right rotation
+//		if (n->right != sentinel) {
+			child = n->right;
+			parent->left = child;
+//		}
+		n->right = parent;
+	}
+	else {
+		// left rotation
+//		if (n->left != sentinel) {
+			child = n->left;
+			parent->right = child;
+//		}
+		n->left = parent;
+	}
+	
+	// Adjust parent pointers
+	n->parent = oldparent;
+	parent->parent = n;
+	if (child != sentinel) child->parent = parent;
 
 	return 1;
 }
@@ -147,8 +159,8 @@ int BSTree::recursive_height(BSTNode *n) {
 int BSTree::recursive_height_and_avl_check(BSTNode *n) {
 	int lheight = -1, rheight = -1;
 
-	if (n->left != sentinel) lheight = recursive_height(n->left);
-	if (n->right != sentinel) rheight = recursive_height(n->right);
+	if (n->left != sentinel) lheight = recursive_height_and_avl_check(n->left);
+	if (n->right != sentinel) rheight = recursive_height_and_avl_check(n->right);
 
 	if (lheight > rheight) return lheight + 1;
 	else return rheight + 1;
