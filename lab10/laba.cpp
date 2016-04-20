@@ -7,6 +7,7 @@
 #include <vector>
 #include <cstdlib>
 #include <cstdio>
+#include <cmath>
 #include "laba.h"
 
 using namespace std;
@@ -57,14 +58,16 @@ int BSTree::IsAVL() {
 	int rheight = 0, lheight = 0;
 	BSTNode *n;
 
+	if (Empty()) return 1;
+
 	n = sentinel->right;
-	
-	lheight = recursive_height_and_avl_check(n->left);
-	rheight = recursive_height_and_avl_check(n->right);
-	
-	if (abs(lheight - rheight) > 1) return -2;
-	else if (lheight > rheight) return lheight;
-	else return rheight;
+
+	if (n->left != sentinel) lheight = recursive_height_and_avl_check(n->left);
+	if (n->right != sentinel) rheight = recursive_height_and_avl_check(n->right);
+
+	if ((abs(lheight - rheight)) > 1) return 0;
+	//	else if (lheight > rheight) return lheight;
+	else return 1;
 }
 
 // This method will attempt to rotate our tree on the specified key
@@ -90,18 +93,18 @@ int BSTree::Rotate(string key) {
 	else newp->right = n;
 	n->parent = newp;
 	parent->parent = n;
-cout << "newpchild " << newp->right->key << " parent's parent " << parent->parent->key << " n's parent " << n->parent->key << endl;
-	if (n = parent->left) {
-		child = n->right;
-		n->right = parent;
-		parent->left = child;
-	}
-	else {
-		if (n->left != sentinel) child = n->left;
-		n->left = parent;
-		parent->right = child;
-	}
-	if (child != sentinel) child->parent = parent;
+
+//	if (n = parent->left) {
+//		child = n->right;
+//		n->right = parent;
+//		parent->left = child;
+//	}
+//	else {
+//		if (n->left != sentinel) child = n->left;
+//		n->left = parent;
+//		parent->right = child;
+//	}
+//	if (child != sentinel) child->parent = parent;
 
 	return 1;
 }
