@@ -7,7 +7,6 @@
 #include <vector>
 #include <cstdlib>
 #include <cstdio>
-#include <cmath>
 #include "laba.h"
 
 using namespace std;
@@ -55,18 +54,17 @@ int BSTree::Height() {
 
 // This method will return whether or not the tree is AVL balanced
 int BSTree::IsAVL() {
-	int rheight = 0, lheight = 0;
+	int rheight = -1, lheight = -1;
 	BSTNode *n;
 
 	if (Empty()) return 1;
 
 	n = sentinel->right;
 
-	if (n->left != sentinel) lheight = recursive_height_and_avl_check(n->left);
-	if (n->right != sentinel) rheight = recursive_height_and_avl_check(n->right);
+	if (n->left != sentinel) lheight = recursive_height(n->left);
+	if (n->right != sentinel) rheight = recursive_height(n->right);
 
-	if ((abs(lheight - rheight)) > 1) return 0;
-	//	else if (lheight > rheight) return lheight;
+	if (((lheight - rheight) > 1) || ((rheight - lheight) > 1)) return 0;
 	else return 1;
 }
 
@@ -111,7 +109,7 @@ int BSTree::Rotate(string key) {
 		parent->right = child;
 		n->left = parent;
 	}
-	
+
 	// Adjust parent pointers
 	n->parent = oldparent;
 	parent->parent = n;
@@ -156,7 +154,7 @@ int BSTree::recursive_height(BSTNode *n) {
 // left and right sides of our tree to check for AVL balance
 // (they may only differ by 1)
 int BSTree::recursive_height_and_avl_check(BSTNode *n) {
-	int lheight = -1, rheight = -1;
+	int lheight = 1, rheight = 1;
 
 	if (n->left != sentinel) lheight = recursive_height_and_avl_check(n->left);
 	if (n->right != sentinel) rheight = recursive_height_and_avl_check(n->right);
