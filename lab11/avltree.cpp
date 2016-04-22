@@ -32,9 +32,9 @@ int AVLTree::Insert(string key, void *val) {
     n = sentinel->right;
 
     while (n != sentinel) {
-        if (n->key == s) return 0;
+        if (n->key == key) return 0;
         parent = n;
-        if (s < n->key) {
+        if (key < n->key) {
             n = n->left;
         } else {
             n = n->right;
@@ -42,14 +42,14 @@ int AVLTree::Insert(string key, void *val) {
     }
 
     n = new AVLTNode;
-    n->key = s;
+    n->key = key;
     n->val = val;
     n->parent = parent;
     n->left = sentinel;
     n->right = sentinel;
     if (parent == sentinel) {
         sentinel->right = n;
-    } else if (s < parent->key) {
+    } else if (key < parent->key) {
         parent->left = n;
     } else {
         parent->right = n;
@@ -64,8 +64,8 @@ void *AVLTree::Find(string key) {
     n = sentinel->right;
     while (1) {
         if (n == sentinel) return NULL;
-        if (s == n->key) return n->val;
-        if (s < n->key) {
+        if (key == n->key) return n->val;
+        if (key < n->key) {
             n = n->left;
         } else {
             n = n->right;
@@ -79,8 +79,8 @@ int AVLTree::Delete(string key) {
     void *tmpval;
 
     n = sentinel->right;
-    while (n != sentinel && s != n->key) {
-        if (s < n->key) {
+    while (n != sentinel && key != n->key) {
+        if (key < n->key) {
             n = n->left;
         } else {
             n = n->right;
@@ -137,44 +137,21 @@ vector <void *> AVLTree::Sorted_Vector() {
 }
 
 void AVLTree::Check_Balance(AVLTNode *n) {
-    int rheight = -1, lheight = -1;
-    AVLTNode *n;
+//    if (Empty()) return;
 
-    if (Empty()) return 1;
-
-    n = sentinel->right;
-
-    if (n->left != sentinel) lheight = recursive_height(n->left);
-    if (n->right != sentinel) rheight = recursive_height(n->right);
-
-    if (((lheight - rheight) > 1) || ((rheight - lheight) > 1)) return 0;
-    else return 1;
+    return;
 }
 
 AVLTNode *AVLTree::Rebalance(AVLTNode *n) {
-    AVLTNode *n;
-    n = new AVLTNode;
-    return n;
+    AVLTNode *a;
+    a = new AVLTNode;
+    return a;
 }
 
 void AVLTree::Rotate(AVLTNode *n) {
-    AVLTNode *n, *parent, *child, *oldparent;
+    AVLTNode *parent, *child, *oldparent;
 
-    if (Empty()) return 0;
-
-    n = sentinel->right;
-    if (n->key == key) return 0;
-
-    // First we need to find the node of the specified key, if it exists
-    while (1) {
-        if (n == sentinel || n == NULL) return 0;
-        if (key == n->key) break;
-        if (key < n->key) {
-            n = n->left;
-        } else {
-            n = n->right;
-        }
-    }
+    if (Empty()) return;
 
     // Step 1: identify the parent
     parent = n->parent;
@@ -203,7 +180,7 @@ void AVLTree::Rotate(AVLTNode *n) {
     parent->parent = n;
     if (child != sentinel) child->parent = parent;
 
-    return 1;
+    return;
 }
 
 void AVLTree::recursive_inorder_print(int level, AVLTNode *n) {
