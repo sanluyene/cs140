@@ -161,6 +161,7 @@ vector <void *> AVLTree::Sorted_Vector() {
 	return array;
 }
 
+// This method will check the balance of our AVL Tree
 void AVLTree::Check_Balance(AVLTNode *n) {
 	int nlheight, nrheight, setheight;
 
@@ -173,8 +174,7 @@ void AVLTree::Check_Balance(AVLTNode *n) {
 
 	n->height = setheight;
 	n = Rebalance(n);
-
-	return;
+	Check_Balance(n->parent);
 }
 
 // This method rebalances the tree if necessary to maintain AVL
@@ -183,7 +183,10 @@ AVLTNode *AVLTree::Rebalance(AVLTNode *n) {
 	AVLTNode *lsub, *rsub, *llsub, *rrsub;
 	int lheight = 0, rheight = 0, lsheight = 0, rsheight = 0;
 
-	if (abs(n->left->height - n->right->height) <= 1) return n;
+	lheight = n->left->height;
+	rheight = n->right->height;
+
+	if (abs(lheight - rheight) <= 1) return n;
 
 	// Check which rebalance case we have
 	lsub = n->left;
@@ -238,6 +241,7 @@ AVLTNode *AVLTree::Rebalance(AVLTNode *n) {
 // This method will rotate the AVL Tree about the specified node
 void AVLTree::Rotate(AVLTNode *n) {
 	AVLTNode *parent, *child, *oldparent;
+	int newheight, lheight = -1, rheight = -1;
 
 	if (Empty()) return;
 
@@ -269,8 +273,24 @@ void AVLTree::Rotate(AVLTNode *n) {
 	if (child != sentinel) child->parent = parent;
 
 	// Adjust heights
-	n->height--;
-	parent->height++;
+	lheight = parent->left->height;
+	rheight = parent->right->height;
+
+	if (lheight > rheight) newheight = (lheight + 1);
+	else newheight = (rheight + 1);
+
+	parent->height = newheight;
+	newheight = 0;
+	lheight = -1;
+	rheight = -1;
+
+	lheight = n->left->height;
+	rheight = n->right->height;
+
+	if (lheight > rheight) newheight = (lheight + 1);
+	else newheight = (rheight + 1);
+
+	n->height = newheight;
 
 	return;
 }
