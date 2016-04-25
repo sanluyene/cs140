@@ -1,3 +1,4 @@
 tmp*
 *.o
 avltree_test
+test.txt
