@@ -1,4 +1,4 @@
-Problem 001 is incorrect.
+Problem 001 is correct.
 Problem 002 is incorrect.
 Problem 003 is incorrect.
 Problem 004 is incorrect.
@@ -38,7 +38,7 @@ Problem 037 is incorrect.
 Problem 038 is incorrect.
 Problem 039 is incorrect.
 Problem 040 is correct.
-Problem 041 is incorrect.
+Problem 041 is correct.
 Problem 042 is incorrect.
 Problem 043 is incorrect.
 Problem 044 is incorrect.
@@ -55,14 +55,14 @@ Problem 054 is incorrect.
 Problem 055 is incorrect.
 Problem 056 is incorrect.
 Problem 057 is incorrect.
-Problem 058 is incorrect.
+Problem 058 is correct.
 Problem 059 is incorrect.
 Problem 060 is incorrect.
 Problem 061 is incorrect.
 Problem 062 is incorrect.
 Problem 063 is incorrect.
 Problem 064 is incorrect.
-Problem 065 is incorrect.
+Problem 065 is correct.
 Problem 066 is incorrect.
 Problem 067 is incorrect.
 Problem 068 is incorrect.
@@ -99,4 +99,4 @@ Problem 098 is incorrect.
 Problem 099 is incorrect.
 Problem 100 is incorrect.
 
-1 Correct out of 100
+5 Correct out of 100

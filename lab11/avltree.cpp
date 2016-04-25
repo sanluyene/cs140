@@ -63,7 +63,7 @@ int AVLTree::Insert(string key, void *val) {
 	size++;
 	n->height = 0;
 
-	if (n->parent != sentinel) Check_Balance(n->parent);
+	Check_Balance(n->parent);
 
 	return 1;
 }
@@ -162,16 +162,17 @@ vector <void *> AVLTree::Sorted_Vector() {
 }
 
 void AVLTree::Check_Balance(AVLTNode *n) {
-	int curheight = 0, newheight = 0;
+	int nlheight, nrheight, setheight;
 
-	curheight = n->height;
-	if (n->left != sentinel && n->right !=sentinel) {
-		newheight = (n->left->height > n->right->height) ? (n->left->height + 1) : (n->right->height + 1);
-	}
-	else if (n->left != sentinel) newheight = n->left->height + 1;
-	else newheight = n->right->height + 1;
+	if (n == sentinel) return;
+	nlheight = n->left->height;
+	nrheight = n->right->height;
 
-	if (curheight != newheight) n = Rebalance(n);
+	if (nlheight > nrheight) setheight = (nlheight + 1);
+	else setheight = (nrheight + 1);
+
+	n->height = setheight;
+	n = Rebalance(n);
 
 	return;
 }
@@ -182,7 +183,7 @@ AVLTNode *AVLTree::Rebalance(AVLTNode *n) {
 	AVLTNode *lsub, *rsub, *llsub, *rrsub;
 	int lheight = 0, rheight = 0, lsheight = 0, rsheight = 0;
 
-	if (abs(n->left->height - n->right->height) < 1) return n;
+	if (abs(n->left->height - n->right->height) <= 1) return n;
 
 	// Check which rebalance case we have
 	lsub = n->left;
@@ -278,7 +279,7 @@ void AVLTree::Rotate(AVLTNode *n) {
 void AVLTree::recursive_inorder_print(int level, AVLTNode *n) {
 	if (n == sentinel) return;
 	recursive_inorder_print(level+2, n->right);
-	printf("%*s%s %s\n", level, "", n->height, n->key.c_str());
+	printf("%*s%d %s\n", level, "", n->height, n->key.c_str());
 	recursive_inorder_print(level+2, n->left);
 }
 
