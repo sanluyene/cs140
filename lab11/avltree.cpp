@@ -110,7 +110,6 @@ int AVLTree::Delete(string key) {
 		}
 		if (n->right != sentinel) {
 			n->right->parent = parent;
-			n->right->height--;
 		}
 		delete n;
 		size--;
@@ -121,7 +120,6 @@ int AVLTree::Delete(string key) {
 			parent->right = n->left;
 		}
 		n->left->parent = parent;
-		n->left->height--;
 		delete n;
 		size--;
 	} else {
@@ -131,7 +129,6 @@ int AVLTree::Delete(string key) {
 		Delete(tmpkey);
 		n->key = tmpkey;
 		n->val = tmpval;
-		n->height--;
 	}
 
 	Check_Balance(parent);
@@ -200,7 +197,7 @@ AVLTNode *AVLTree::Rebalance(AVLTNode *n) {
 		rsheight = rrsub->height;
 
 		// Zig Zig
-		if (lsheight > rsheight) {
+		if (lsheight >= rsheight) {
 			Rotate(lsub);
 			Check_Balance(lsub->parent);
 			return lsub;
@@ -220,18 +217,18 @@ AVLTNode *AVLTree::Rebalance(AVLTNode *n) {
 		lsheight = llsub->height;
 		rsheight = rrsub->height;
 
+		// Zig Zig
+		if (rsheight >= lsheight) {
+			Rotate(rsub);
+			Check_Balance(rsub->parent);
+			return rsub;
+		}
 		// Zig Zag
-		if (lsheight > rsheight) {
+		else {
 			Rotate(llsub);
 			Rotate(llsub);
 			Check_Balance(llsub->parent);
 			return llsub;
-		}
-		// Zig Zig
-		else {
-			Rotate(rsub);
-			Check_Balance(rsub->parent);
-			return rsub;
 		}
 	}
 
